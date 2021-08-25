@@ -1,6 +1,6 @@
-# pioProjectTemplate (replace with project title)
+# PentaBot
 
-Template used to create new VA3WAM platformIO/Visual Studio Code projects. Replace this text with one Paragraph of the project description.
+This repository contains the Arduino source code that runs on an embedded processor at the heart of the five legged robot we call PentaBot.
 
 ## Getting Started
 
