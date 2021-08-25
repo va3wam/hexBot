@@ -36,7 +36,7 @@ of conduct, and the process for submitting pull requests to us.
 
 We use [Semantic Versioning](http://semver.org/) for versioning. For the versions
 available, see the [tags on this
-repository](https://github.com/va3wam/pioProjectTemplate/releases). ```Update with link to RELEASES for this respository```.
+repository](https://github.com/va3wam/hexaBot/releases). 
 
 ## Authors
 
