@@ -49,5 +49,4 @@ This project is licensed under the [MIT License](license.md)
 
 ## Acknowledgments
 
-  - List links/people etc that provided help or inspirtation here. 
-
+  - Robot chassis design inspired by [Cameron Buss' Swampy the Hexapod](https://grabcad.com/cameron.buss-1). 
