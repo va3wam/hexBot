@@ -7,16 +7,22 @@
 ## product specific sections in order to make it easier to maintain.
 ################################################################################
 
+## Git.
+## All files in the hidden Git directory. Ensure that the gitignore file itself
+## is not ignored.
+.git*
+!/.gitignore
+
 ## PlatformIO. 
-## All files used by PlatformIO.
+## All files in the hidden PlatformIO directory.
 .pio*
 platformio.ini
 
 ## Visual Studio Code. 
-## All files used by Visual Studio Code.
+## All files in the hidden Visual Studio Code directory.
 .vscode/*
 
-## Build. This is a file that is created if yoou include the line 
-## build_flags = -Wl,-Map,output.map in the environment section of your 
-## platformio.ini file.
+## Build files. 
+## This map file is created if you include the line build_flags = -Wl,-Map,output.map 
+## in the environment section of your platformio.ini file.
 *output.map
