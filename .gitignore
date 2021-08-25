@@ -1,0 +1,22 @@
+################################################################################
+## VA3WAM GitIgnore template v1.0
+## This GitIgnore file is set up to ensure that projects using Visual Studio 
+## Code and PlatformIO as part of the development tool chain do not cause 
+## conflicts between between individual contributor environments when 
+## syncronizing with the Git origin repository. This file is organized into 
+## product specific sections in order to make it easier to maintain.
+################################################################################
+
+## PlatformIO. 
+## All files used by PlatformIO.
+.pio*
+platformio.ini
+
+## Visual Studio Code. 
+## All files used by Visual Studio Code.
+.vscode/*
+
+## Build. This is a file that is created if yoou include the line 
+## build_flags = -Wl,-Map,output.map in the environment section of your 
+## platformio.ini file.
+*output.map
