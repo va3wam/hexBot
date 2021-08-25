@@ -1,6 +1,6 @@
 # HexaBot
 
-This repository contains the Arduino source code that runs on an embedded processor at the heart of the five legged robot we call HexaBot.
+This repository contains the Arduino source code that runs on an embedded processor at the heart of the six legged robot we call HexaBot.
 
 ## Getting Started
 
