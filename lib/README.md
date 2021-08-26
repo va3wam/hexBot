@@ -6,25 +6,25 @@ The source code of each library should be placed in a an own separate directory
 
 For example, see a structure of the following two libraries `Foo` and `Bar`:
 
-|--lib
+.
++-- lib
+|  +-- Bar
+|  |  +-- docs
+|  |  +-- examples
+|  |  +-- src
+|  |  |  +-- Bar.c
+|  |  |  +-- Bar.h
+|  |  +-- library.json (optional, custom build options, etc) https://docs.platformio.org/page/librarymanager/config.html
 |  |
-|  |--Bar
-|  |  |--docs
-|  |  |--examples
-|  |  |--src
-|  |     |- Bar.c
-|  |     |- Bar.h
-|  |  |- library.json (optional, custom build options, etc) https://docs.platformio.org/page/librarymanager/config.html
+|  +-- Foo
+|  |  +-- Foo.c
+|  |  +-- Foo.h
 |  |
-|  |--Foo
-|  |  |- Foo.c
-|  |  |- Foo.h
-|  |
-|  |- README --> THIS FILE
+|  +- README --> THIS FILE
 |
-|- platformio.ini
-|--src
-   |- main.c
++-- platformio.ini
++-- src
+|  +-- main.c
 
 and a contents of `src/main.c`:
 ```
