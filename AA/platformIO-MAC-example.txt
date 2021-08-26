@@ -1,0 +1,19 @@
+; PlatformIO Project Configuration File
+;
+;   Build options: build flags, source filter
+;   Upload options: custom upload port, speed and extra flags
+;   Library options: dependencies, extra library storages
+;   Advanced options: extra scripting
+;
+; Please visit documentation for the other options and examples
+; https://docs.platformio.org/page/projectconf.html
+
+[env:esp32doit-devkit-v1]
+platform = espressif32
+board = esp32doit-devkit-v1
+framework = arduino
+monitor_speed = 115200
+upload_port = /dev/cu.usbserial-0001
+monitor_port = /dev/cu.usbserial-0001
+build_flags = -I include ; Allows code in lib subdirectory to find include directory 
+; build_flags = -Wl,-Map,output.map ; Create build map
