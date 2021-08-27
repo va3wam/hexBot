@@ -8,11 +8,20 @@ This repository contains the Arduino source code that runs on an embedded proces
 
 ## Getting Started
 
-There are a set of standards and practices laid out [here](https://va3wam.github.io/software/#standards) that explain the comon elements of all VA3WAM projects. The sections below provide specific links that point to the instructions that will help you get a copy of this project up and running on your local machine for development and testing purposes. 
+This project require you to have a Hexbot robot. The Robot is made up of a custom robot chassis and PCB as well as the code in this repository. Without a version 3 or later Hexbot robot this code will not be very useful to you. 
 
 ### Prerequisites
 
-A full breakdown of the requirements for tools needed for coding testing and managing version control for the software in this repository can be found [here](https://va3wam.github.io/software/).
+In order to make use of the code in this repository you will require the following items.
+
+* A [Hexbot chassis](doc/hexbotHardware.md).
+* The [Hexbot custom PCB](doc/hexbotCircuit.md).
+* An [MQTT broker](doc/MQTTbroker.md).
+
+Additionally, if you wish to contribute code to this project you should review this material.
+
+* The software development stack that we use is explained [here](https://va3wam.github.io/software/). 
+* Our coding standards and practices are laid out [here](https://va3wam.github.io/software/#standards).  
 
 ### Installing
 
