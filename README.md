@@ -6,6 +6,10 @@ This repository contains the Arduino source code that runs on an embedded proces
 
 ---
 
+![hexaBot](/img/hexapodFullAssembly-hybridRenderingWireframe.svg)
+
+---
+
 ## Getting Started
 
 There are a set of standards and practices laid out [here](https://va3wam.github.io/software/#standards) that explain the comon elements of all VA3WAM projects. The sections below provide specific links that point to the instructions that will help you get a copy of this project up and running on your local machine for development and testing purposes. 
