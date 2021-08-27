@@ -31,13 +31,13 @@ A set of instructions on how to install the source code for VA3WAM projects can 
 
 ``` Maintain a list of links to the documentation found in this repository here.```
 
-## Running the tests
+## Testing
 
 At this time we have no tools or standards for automated testing of Arduino code on an embedded system. 
 
 ## Deployment
 
-At this time we use serial over USB to load the inital code onto the embedded system. Subsequent builds can be uploaded using serial over USB or in some cases use an web interface to do [OTA](https://en.wikipedia.org/wiki/Over-the-air_programming) updates.
+Use serial over USB to load the inital code onto the embedded system. Subsequent builds can be uploaded using either serial over USB or in some cases a web interface can be used to do [OTA](https://en.wikipedia.org/wiki/Over-the-air_programming) updates.
 
 ## Built With
 
