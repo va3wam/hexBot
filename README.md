@@ -1,7 +1,7 @@
 # HexaBot
 
 [![LICENSE](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/mmistakes/minimal-mistakes/master/LICENSE)
-[[](!https://img.shields.io/badge/Made%20for-VSCode-1f425f.svg)
+[[](!https://img.shields.io/badge/Made%20for-VSCode-1f425f.svg)](https://code.visualstudio.com/)
 
 This repository contains the Arduino source code that runs on an embedded processor at the heart of the six legged robot we call HexaBot. The goals of this project can be found [here](goals.md). 
 
