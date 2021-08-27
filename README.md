@@ -29,7 +29,9 @@ A set of instructions on how to install the source code for VA3WAM projects can 
 
 ### Documentation
 
-``` Maintain a list of links to the documentation found in this repository here.```
+Here is an index of links to helpful docucments found in this repository.
+
+* Sample [platformio.ini](AA/platformIO-MAC-example.txt) template
 
 ## Testing
 
