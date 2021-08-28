@@ -1,6 +1,6 @@
 # Hexbot Web Interface
 
-Hexbot features a 2.4GHz 802.11n WiFi radio that requires a WiFi access point capable of communicating at 150Mbps. Hexbot hosts a webserver that can be used to configure values stored in non volitile memory (NVRAM) as well as perform over-the-air (OTA) firmware uppdates.
+Hexbot features a 2.4GHz 802.11n WiFi radio that requires a WiFi access point capable of communicating at 150Mbps. Hexbot hosts a webserver that can be used to configure values stored in non volitile memory (NVRAM) as well as perform over-the-air (OTA) firmware uppdates via a web browser.
 
 ## Configuring NVRam
 
