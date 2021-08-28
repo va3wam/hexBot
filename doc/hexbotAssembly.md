@@ -16,11 +16,12 @@ Here is a list of hardware that you will need to assemble your very own Hexbot.
 
 ## Step 1 - Assemble three right legs
 
-![Right Leg](/img/assembledRightLeg&#32;v2.png)
-
-* Hip
+| Ref Image                                         | Instructions |
+|:-------------------------------------------------:|:----------------:|
+| ![Right Leg](/img/assembledRightLeg&#32;v2.png)   | * Hip
 * Upper leg
-* Lower leg
+* Lower leg | 
+
 
 ## Step 2 - Assemble three left legs
 
