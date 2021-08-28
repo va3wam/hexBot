@@ -8,9 +8,7 @@ Code updates can be done in one of two ways. First, they can be done via a local
 
 ```Put steps here```.
 
-Code updates can also be updated Over-The-Air (OTA) using Hexbot's web interface. Here are the steps to do that.
-
-```Put steps here```.
+Code updates can also be updated Over-The-Air (OTA) using Hexbot's web interface. Details on how this is done can be found [here](webOTA.md).
  
 ## Data Analytics
 
