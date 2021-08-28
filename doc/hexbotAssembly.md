@@ -8,7 +8,7 @@ Here is a list of hardware that you will need to assemble your very own Hexbot.
 
 | Image | Name | Qty |
 |:-----:|:----:|:---:|
-| ![Lower body panel](img/newLowerBody&#32;v7.png) |  Lower body panel | 1 |
+| ![Lower body panel](/img/newLowerBody&#32;v7.png) |  Lower body panel | 1 |
 
 ## Step 1 - Assemble three right legs
 
