@@ -6,4 +6,4 @@ If you wish to contribute to this project you should review this material.
 * The software development stack that we use is explained [here](https://va3wam.github.io/software/). 
 * Our coding standards and practices are laid out [here](https://va3wam.github.io/software/#standards).  
 * Some basic information about us can be found [here](https://va3wam.github.io/about/).  
-* Checkout the GitHub profiles for [Old Squire](https://github.com/va3wam) and [Doug Elliott](https://github.com/nerdoug).
+* Checkout the GitHub profiles for [Old Squire](https://github.com/theagingapprentice) and [Doug Elliott](https://github.com/nerdoug).
