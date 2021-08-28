@@ -11,7 +11,7 @@ Code updates can be done in one of two ways. First, they can be done via a local
 
 ## Configuring NVRAM
 
-Certain environment specific values can be configured in NVRam avoidingg the need to rebuild and update code when the robot moves to a new network environment. Full details for this are found [here](hexbotConfigNVRAM.md).
+Certain environment specific values can be configured in NVRam avoiding the need to rebuild and update code when the robot moves to a new network environment. Full details for this are found [here](hexbotConfigNVRAM.md).
 
 ## Data Analytics
 
