@@ -14,7 +14,7 @@ In order to make use of the code in this repository you will require the followi
 
 * A [Hexbot chassis](doc/hexbotHardware.md).
 * The [Hexbot custom PCB](doc/hexbotCircuit.md).
-* An [MQTT broker](doc/MQTTbroker.md) used by the robot's [MQTT web interface](https://va3wam.github.io/mqtt/messaging/html/javascript/websockets/Mqtt-Web-Pages/).
+* An [MQTT broker](doc/MQTTbroker.md) used by the robot's [MQTT web interface](doc/hexbotWebInterface.md).
 
 ### Code Compatability
 
