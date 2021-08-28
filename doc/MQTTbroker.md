@@ -8,9 +8,6 @@ Hexbot features a 2.4GHz 802.11n WiFi radio that requires a WiFi access point ca
 ### MQTT Interface
 Hexbot acts as an [MQTT](https://en.wikipedia.org/wiki/MQTT) client and supports a PUB/SUB interface that listens for messages on port 1883 encapsulated in IPv4 packets. The robot publishes and subscribes to/from topics via a broker usiing QOS1 MQTT messages encapsulated in TCP/IP packets. 
 
-### Web Interface
-Hexbot also hosts [web pages](hexbotWebInterface.md) that are used for publishing and subscribing to/from topics on the same broker via MQTT messages on port 1883 encapsulated in TCP/IP packets inside of a persitent websocket tunnel on port 9001. 
-
 ## MQTT Client
 We use the MQTTfx client on out computer to issue [commands](mqttCommands.md) to Hexbot.
 
