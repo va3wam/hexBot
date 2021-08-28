@@ -73,7 +73,7 @@ Repeat the steps in this section three times in order to create the three leftt 
 ## Step 3 - Connect legs to body
 
 <figure>
-   <img src="/img/hexapodFullAssembly-hybridRenderingWireframe.svg" alt="Full robot assembly" width="500" height="500"> 
+   <img src="/img/hexapodFullAssembly-hybridRenderingWireframe.svg" alt="Full robot assembly" width="750" height="750"> 
    <figcaption>Fig.3 - Attaching legs to body</figcaption>
 </figure> 
  
