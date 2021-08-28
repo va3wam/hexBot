@@ -8,7 +8,7 @@ This repository contains the Arduino source code that runs on an embedded proces
 
 ## Getting Started
 
-This project require you to have a Hexbot robot. The Robot is made up of a custom robot chassis and PCB as well as the code in this repository. Without a version 3 or later Hexbot robot this code will not be very useful to you. 
+This project requires that you have a Hexbot robot. The Robot is made up of a custom robot chassis and PCB as well as the code in this repository. Without a version 3 or later Hexbot robot this code will not be very useful to you. 
 
 ### Prerequisites
 
