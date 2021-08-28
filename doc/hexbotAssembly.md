@@ -51,7 +51,7 @@ Repeat the steps in this section three times in order to create the three leftt 
     <td align ="left"> 
         <figure>
            <img src="/img/assembledLeftLeg v2.png" alt="Left Leg"> </th>
-           <figcaption>Fig.2 - Hexbot leftt leg assembly</figcaption>
+           <figcaption>Fig.2 - Hexbot left leg assembly</figcaption>
         </figure> 
     </td>
     <td align ="left">
