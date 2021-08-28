@@ -8,4 +8,4 @@ Certain configuration values stored in NVRAM, such as the MQTT boker IP address,
 
 ## Firmware updates
 
-The firmware for the robot can be updated via the web interface. See full detais [here](doc/webOTA.md).
+The firmware for the robot can be updated via the web interface. See full detais [here](webOTA.md).
