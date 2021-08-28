@@ -66,4 +66,6 @@ This project is licensed under the [MIT License](license.md)
 
 ## Acknowledgments
 
-  - Robot chassis design inspired by [Cameron Buss' Swampy the Hexapod](https://grabcad.com/library/swampy-the-hexapod-1). 
+  - Robot chassis design inspired by [Cameron Buss' Swampy the Hexapod](https://grabcad.com/library/swampy-the-hexapod-1).
+  - 3 DOF Inverse Kinematic code inspired by [Avatar
+Aymen Nacer](https://github.com/AymenNacer/Forward-and-Inverse-Kinematics-for-3-DOF-Robotic-arm) 
