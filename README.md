@@ -36,6 +36,8 @@ Here is an index of links to helpful documents found in this repository.
 * Hexbot [assembly instructions](doc/hexbotAssembly.md).
 * Sample [platformio.ini](AA/platformIO-MAC-example.txt) template.
 * [Web interface](doc/hexbotWebInterface.md).
+* [Configure NVRAM remotely](https://github.com/va3wam/hexBot/blob/main/doc/hexbotConfigNVRAM.md).
+* [Perform OTA updates](https://github.com/va3wam/hexBot/blob/main/doc/webOTA.md).
 * [MQTT commands](doc/mqttCommands.md).
 * [Operations manual](doc/hexbotOperationManual.md).
 
