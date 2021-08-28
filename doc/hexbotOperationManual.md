@@ -16,3 +16,7 @@ Certain environment specific values can be configured in NVRam avoiding the need
 ## Data Analytics
 
 Monitoring and dynamic configuration of Hexbot is done via MQTT messages between the web browser client and the robot. The robot outputs two types of data. One is health data in the form of error counts for various events of interest. The second is telemetry data which provides real time sensor data regarding the balancing activities of the robot. The documenation for these messages is maintained within the code itself and is extracted [here]() via Doxygen during merging of code into the main branch of the repository. ```Fix this link once we have Doxygen in place and pull requests automated.```
+
+## Online Documentation
+
+An index of online documentation found in the Hexbot Github repository is located [here](https://github.com/va3wam/hexBot#documentation).
