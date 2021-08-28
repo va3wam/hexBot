@@ -36,7 +36,7 @@ Here is an index of links to helpful documents found in this repository.
 * Sample [platformio.ini](AA/platformIO-MAC-example.txt) template.
 * [Web interface](doc/hexbotWebInterface.md).
 * [MQTT commands](doc/mqttCommands.md).
-* [Operations manual](doc/hexbotOperationManual.md)
+* [Operations manual](doc/hexbotOperationManual.md).
 
 ## Testing
 
