@@ -31,7 +31,7 @@ A set of instructions on how to install the source code for VA3WAM projects can 
 
 Here is an index of links to helpful docucments found in this repository.
 
-* Sample [platformio.ini](AA/platformIO-MAC-example.txt) template
+* Sample [platformio.ini](AA/platformIO-MAC-example.txt) template.
 
 ## Testing
 
@@ -62,10 +62,10 @@ We use [Semantic Versioning](http://semver.org/) in naming the [releases](https:
 
 ## License
 
-This project is licensed under the [MIT License](license.md)
+This project is licensed under the [MIT License](license.md).
 
 ## Acknowledgments
 
   - Robot chassis design inspired by [Cameron Buss' Swampy the Hexapod](https://grabcad.com/library/swampy-the-hexapod-1).
   - 3 DOF Inverse Kinematic code inspired by [Avatar
-Aymen Nacer](https://github.com/AymenNacer/Forward-and-Inverse-Kinematics-for-3-DOF-Robotic-arm) 
+Aymen Nacer](https://github.com/AymenNacer/Forward-and-Inverse-Kinematics-for-3-DOF-Robotic-arm). 
