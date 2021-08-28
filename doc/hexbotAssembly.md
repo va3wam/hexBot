@@ -84,15 +84,8 @@ Repeat the steps in this section six times in order to attach all six legs to th
     </td>
     <td align ="left">
        <ol>  
-          <li>Put horn on 3 motors.</li>  
-          <li>Set the first motor to 90 degrees.</li>  
-          <li>Screw the hip onto the first motor's horn.</li>  
-          <li>Screw the second motor into the hip motor bracket.</li>  
-          <li>Set the second motor to 90 degrees.</li>  
-          <li>Screw one end of the upper leg to the horn of the second motor.</li>  
-          <li>Set the third motor to 90 degrees.</li>  
-          <li>Screw the third motor onto the other end of the upper leg.</li>  
-          <li>Screw the lower leg onto the third motor via its motor bracket.</li> 
+          <li>Insert a leg assemby into a servo bracket on the body.</li>  
+          <li>Use four screws and nuts to secure the assembly in place.</li>  
        </ol>  
     </td>
   </tr>  
