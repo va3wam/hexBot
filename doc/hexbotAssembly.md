@@ -20,13 +20,13 @@ Repeat the steps in this section three times in order to create the three right 
 
  <table>
   <tr>
-    <th> 
+    <td align ="left"> 
         <figure>
            <img src="/img/assembledRightLeg v2.png" alt="Right Leg"> </th>
            <figcaption>Fig.1 - Hexbot right leg assembly</figcaption>
         </figure> 
-    </th>
-    <th>
+    </td>
+    <td align ="left">
        <ol>  
           <li>Put horn on 3 motors.</li>  
           <li>Set the first motor to 90 degrees.</li>  
@@ -38,7 +38,7 @@ Repeat the steps in this section three times in order to create the three right 
           <li>Screw the third motor onto the other end of the upper leg.</li>  
           <li>Screw the lower leg onto the third motor via its motor bracket.</li> 
        </ol>  
-    </th>
+    </td>
   </tr>  
 </table> 
 
