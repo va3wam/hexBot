@@ -2,6 +2,9 @@
 
 This page contains information useful when servicing or operating Hexbot.
 
+## Assembly
+Full Hexbot assembly instructions can be found [here](hexbotAssembly.md).
+
 ## Code Updates
 
 Code updates can be done in one of two ways. First, they can be done via a local USB micro conection. Here are the steps to do that.
