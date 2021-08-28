@@ -58,8 +58,8 @@ We use [Semantic Versioning](http://semver.org/) in naming the [releases](https:
 
 ## Authors
 
-  - **[Old Squire](https://github.com/theagingapprentice)**
-  - **[Doug Elliott](https://github.com/nerdoug)**
+* **[Old Squire](https://github.com/theagingapprentice)**
+* **[Doug Elliott](https://github.com/nerdoug)**
 
 ## License
 
@@ -67,6 +67,10 @@ This project is licensed under the [MIT License](license.md).
 
 ## Acknowledgments
 
-  - Robot chassis design inspired by [Cameron Buss' Swampy the Hexapod](https://grabcad.com/library/swampy-the-hexapod-1).
-  - 3 DOF Inverse Kinematic code inspired by [Avatar
+* Robot chassis design inspired by [Cameron Buss' Swampy the Hexapod](https://grabcad.com/library/swampy-the-hexapod-1).
+* 3 DOF Inverse Kinematic code inspired by [Avatar
 Aymen Nacer](https://github.com/AymenNacer/Forward-and-Inverse-Kinematics-for-3-DOF-Robotic-arm). 
+* Tony DiCola and Adafruit Industries for their MQTT QOS1 Arduino library.
+* Jeff Rowberg for the MPU6050 DMP logic. ```May not use.```
+* DFRobot & John Rickman for their LiquidCrystal I2C LCD display Arduino library. ```May not use.```
+* The many folks involved in porting the Arduino libraries over to the ESP32.
