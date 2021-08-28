@@ -42,11 +42,6 @@ Repeat the steps in this section three times in order to create the three right 
   </tr>  
 </table> 
 
-| Ref Image                                         | Instructions |
-|:-------------------------------------------------:|:----------------:|
-| ![Right Leg](/img/assembledRightLeg&#32;v2.png)   | * Hip<br>* Upper leg<br>* Lower leg | 
-
-
 ## Step 2 - Assemble three left legs
 
 ![Right Leg](/img/assembledLeftLeg&#32;v2.png)
