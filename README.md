@@ -16,7 +16,7 @@ In order to make use of the code in this repository you will require the followi
 
 * A [Hexbot chassis](doc/hexbotHardware.md).
 * The [Hexbot custom PCB](doc/hexbotCircuit.md).
-* An [MQTT broker](doc/MQTTbroker.md).
+* An [MQTT broker](doc/MQTTbroker.md) used by the robot's [web interface](https://va3wam.github.io/mqtt/messaging/html/javascript/websockets/Mqtt-Web-Pages/).
 
 ### Installing
 
@@ -35,7 +35,7 @@ At this time we have no tools or standards for automated testing of Arduino code
 ## Deployment
 
 Use serial over USB to load the inital code onto the embedded system. Subsequent builds can be uploaded using either serial over USB or 
-a web interface hosted by the robot which allows you to do [OTA](https://en.wikipedia.org/wiki/Over-the-air_programming) updates.
+a [web interface](webOTA.md) hosted by the robot which allows you to do [OTA](https://en.wikipedia.org/wiki/Over-the-air_programming) updates.
 
 ## Built With
 
