@@ -4,8 +4,6 @@
 
 This repository contains the Arduino source code that runs on an embedded processor at the heart of the six legged robot we call HexBot. The goals of this project can be found [here](goals.md). 
 
----
-
 ## Getting Started
 
 This project requires that you have a Hexbot robot. The Robot is made up of a custom robot chassis and PCB as well as the code in this repository. Without a version 3 or later Hexbot robot this code will not be very useful to you. 
@@ -17,6 +15,13 @@ In order to make use of the code in this repository you will require the followi
 * A [Hexbot chassis](doc/hexbotHardware.md).
 * The [Hexbot custom PCB](doc/hexbotCircuit.md).
 * An [MQTT broker](doc/MQTTbroker.md) used by the robot's [MQTT web interface](https://va3wam.github.io/mqtt/messaging/html/javascript/websockets/Mqtt-Web-Pages/).
+
+### Code Compatability
+
+The Arduino C++ code was written to run on the Espressif ESP WROOM32 "Software On a Chip" (SOC). The development board used for this SOC is the Adafruit Huzzah32 featherboard. Note that some standard Arduino functions such as AnalogWrite() have not been implemented on the ESP32 SOC and alternate functions such as ledcSetup(), ledcAttachPin() and ledcWrite() must be used in their place. There are some additional compatability issues of note as follows:
+
+* The GPIO pin usage is loosey Adafruit featherboard compliant meaning it will work with some boards such as the Adafruit OLED featherboard.
+* This code will NOT run on an ESP8266 unmodified because of both GPIO incompatability as well as some ESP32 specific libraries that are in use.
 
 ### Installing
 
