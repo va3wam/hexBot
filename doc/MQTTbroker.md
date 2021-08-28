@@ -1,11 +1,11 @@
 # MQTT Broker
 
-The Hexbot robot acts as an IoT Smart [Connected Product/Device](https://en.wikipedia.org/wiki/Smart_device) and uses an [MQTT](https://en.wikipedia.org/wiki/MQTT) broker for publishing and subscribing to topics via QOS1 MQTT messages encapsulated in TCP/IP packets. *Note that Hexbot also hosts [web pages](doc/hexbotWebInterface.md) that are used for publishing and subscribing to topics to the same broker via MQTT messages inside of a persitent websocket tunnel.*
+The Hexbot robot acts as an IoT Smart [Connected Product/Device](https://en.wikipedia.org/wiki/Smart_device) and uses an [MQTT](https://en.wikipedia.org/wiki/MQTT) broker for publishing and subscribing to topics via QOS1 MQTT messages encapsulated in TCP/IP packets. *Note that Hexbot also hosts [web pages](hexbotWebInterface.md) that are used for publishing and subscribing to topics to the same broker via MQTT messages inside of a persitent websocket tunnel.*
 
 Hexbot features a 2.4GHz WiFi radio that requires a WiFi access point, an MQTT broker and a client device capable of running a web browser. This enables the robot to be remotely controlled via MQTT messaging over a WiFi link. For this to work however, you must have a QOS1 capable MQTT broker on your network. 
 
 ## MQTT Client
-We use the MQTTfx client on out computer to issue [commands](doc/mqttCommands.md) to Hexbot.
+We use the MQTTfx client on out computer to issue [commands](mqttCommands.md) to Hexbot.
 
 ## Raspberry Pi
 We host our MQTT broker as a service on a Rapsberry Pi 3 Model B V1.2. 
