@@ -7,11 +7,7 @@ Full Hexbot assembly instructions can be found [here](hexbotAssembly.md).
 
 ## Code Updates
 
-Code updates can be done in one of two ways. First, they can be done via a local USB micro conection. Here are the steps to do that.
-
-```Put steps here```.
-
-Code updates can also be updated Over-The-Air (OTA) using Hexbot's web interface. Details on how this is done can be found [here](webOTA.md).
+Code updates can be done in one of two ways. First, they can be done via a local USB micro conection. There are man places to learn how to do this so we will not include instructions here. Code updates can also be updated Over-The-Air (OTA) using Hexbot's web interface. Details on how this is done can be found [here](webOTA.md).
 
 ## Configuring NVRAM
 
