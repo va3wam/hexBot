@@ -4,7 +4,7 @@ This page will detail the web interface available through Hexbot.
 
 ## Configuring
 
-Certain configuration values stored in NVRAM, such as the MQTT boker IP address, can be set via the web interface. ```Put details here```.
+Certain configuration values stored in NVRAM, such as the MQTT boker IP address, can be set via the web interface. Full details can be found [here](hexbotConfigNVRAM.md).
 
 ## Firmware updates
 
