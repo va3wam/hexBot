@@ -18,11 +18,6 @@ In order to make use of the code in this repository you will require the followi
 * The [Hexbot custom PCB](doc/hexbotCircuit.md).
 * An [MQTT broker](doc/MQTTbroker.md).
 
-Additionally, if you wish to contribute code to this project you should review this material.
-
-* The software development stack that we use is explained [here](https://va3wam.github.io/software/). 
-* Our coding standards and practices are laid out [here](https://va3wam.github.io/software/#standards).  
-
 ### Installing
 
 A set of instructions on how to install the source code for VA3WAM projects can be found [here](https://va3wam.github.io/versionControl/). 
