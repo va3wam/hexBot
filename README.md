@@ -52,8 +52,8 @@ We use [Semantic Versioning](http://semver.org/) in naming the [releases](https:
 
 ## Authors
 
-  - **Old Squire**
-  - **Doug Elliott**
+  - **[Old Squire](https://github.com/theagingapprentice)**
+  - **[Doug Elliott](https://github.com/nerdoug)**
 
 ## License
 
