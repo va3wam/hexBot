@@ -32,6 +32,8 @@ A set of instructions on how to install the source code for VA3WAM projects can 
 Here is an index of links to helpful documents found in this repository.
 
 * Sample [platformio.ini](AA/platformIO-MAC-example.txt) template.
+* [Web interface](doc/hexbotWebInterface.md).
+* [MQTT commands]().
 
 ## Testing
 
