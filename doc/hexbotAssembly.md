@@ -62,7 +62,7 @@ Repeat the steps in this section three times in order to create the three left l
   </tr>  
 </table> 
 
-## Step 3 - Connect legs to body
+## Step 3 - Connect legs to the lower body
 
 Repeat the steps in this section six times in order to attach all six legs to the robot. Make note of the orientation of the motors in figure 3. It is important to ensure that the three motors on each side of the robot body are oriented the same way. When you are done the direction that the servo horns are facing will be considered the front of the robot.
 
@@ -78,7 +78,34 @@ Repeat the steps in this section six times in order to attach all six legs to th
        <ol>  
           <li>Insert a leg assemby into a servo bracket on the body.</li>  
           <li>Use four screws and nuts to secure the assembly in place.</li>  
-       </ol>  
+       </ol> 
+       You have now completed assembly of the lower body and legs. Next you need to assemble the electronics platform.
+    </td>
+  </tr>  
+</table> 
+
+## Step 4 - Mount the upper body and electronics
+
+```We are still in the design phase for Hexbot's electronics so this part of the instructions calls for a bit more inginuiuty at present.```
+
+<table>
+  <tr>
+    <td align ="left"> 
+       <figure>
+          <img src="/img/topBodyLayer.jpg" alt="top layer" width="750" height="750"> 
+          <figcaption>Fig.4 - Top layer</figcaption>
+       </figure> 
+    </td>
+    <td align ="left">
+       <ol>  
+          <li>Fabricate a 4 3/4" wide by 6 1/2" long rectangle out of a thin light material. A piece of 1/8" plexiglass would work well. We will refer to this as the top body layer.</li>
+        <li>Fasten a ~2" by 6" breadboard to the top body layer. Be sure to centre it.</li> 
+        <li>Cut the 4 corners of the top body layer off to allow for maximum clearance of the legs.</li>
+        <li>Mount 2 motor drivers to the top body layer.</li>
+        <li>Drill 1/8" holes in the top body layer. Be sure to align these holes with the nes that already exist in the bottom layer.</li>
+        <li>Mount the top body layer to the bottom layer using ~1 1/2" standoffs bolted through the existing mounting holes.</li>
+       </ol> 
+       Congratulations - you now have a fully assembled Hexbot. From here you need to prototype a circuit which is beyond the scope of these instructions.
     </td>
   </tr>  
 </table> 
