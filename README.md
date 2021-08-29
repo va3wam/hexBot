@@ -30,13 +30,15 @@ Hexbot's firmware is intended to run on the Espressif ESP WROOM32 "Software On a
 
 A set of instructions on how to install the source code for VA3WAM projects can be found [here](https://va3wam.github.io/versionControl/). 
 
-### Documentation
+## Documentation
 
 Here is an index of links to helpful documents found in this repository.
 
 * Hexbot [assembly instructions](doc/hexbotAssembly.md).
 * [Clone](/doc/cloneRepository.md) the Hexbot gitHub repository.
 * Sample [platformio.ini](AA/platformIO-MAC-example.txt) template.
+* Set up [PlatformIO](https://github.com/va3wam/hexBot/blob/main/doc/cloneRepository.md#set-up-platformio).
+* Recommended Visual Studio Code [plugins](https://github.com/va3wam/hexBot/blob/main/doc/cloneRepository.md#visual-studio-code-plugins).
 * [Web interface](doc/hexbotWebInterface.md).
 * [Configure NVRAM remotely](https://github.com/va3wam/hexBot/blob/main/doc/hexbotConfigNVRAM.md).
 * [Perform OTA updates](https://github.com/va3wam/hexBot/blob/main/doc/webOTA.md).
