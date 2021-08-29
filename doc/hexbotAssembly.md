@@ -4,23 +4,7 @@ This document takes you through the steps neccessary to successfully assemble ve
 
 ## What you need
 
-Here is a list of hardware that you will need to assemble your very own Hexbot.
-
-| Image | Name | Qty |
-|:-------------------------------------------------:|:----------------:|:---:|
-| ![Lower body panel](/img/newLowerBody&#32;v7.png) | Lower body panel |  1  |
-| ![Hip](/img/newHip&#32;v12.png)                   | Hip              |  6  |
-| ![Upper leg](/img/upperLeg&#32;v5.png)            | Upper leg        |  6  |
-| ![Lower leg](/img/newLowerLeg&#32;v10.png)        | Lower leg        |  6  |
-| ![Servo motor](/img/MG996R&#32;servo&#32;motor&#32;animated&#32;v4.png)        | Servo Motor        |  18  |
-
-In addition to the parts above you will also need 
-
-* 72 [M3 0.5 x 10 cap head screws](https://www.amazon.ca/gp/product/B07FDLN8C3/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&psc=1)
-* 64 [M3 nuts](https://www.amazon.ca/gp/product/B07FDLN8C3/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&psc=1)
-* 18 [Mallofusa 25 tooth Servo Horn](https://www.amazon.ca/Mallofusa-Servo-Aluminum-Silvery-Helicopter/dp/B00NOGMK3M). 
-* 18 M3 0.5 x6 button head screws (come with the horns). 
-* 2 [SunFounder PCA9685 16 Channel 12 Bit PWM Servo Drivers](https://www.amazon.ca/gp/product/B014KTSMLA/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&psc=1). These will be used to set the motors to the correct angle during the assembly process.  
+Before you start make sure that you have all [the hardware that you need](/doc/hexbotHardware.md).
 
 ## Step 1 - Assemble three right legs
 
