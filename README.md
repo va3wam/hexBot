@@ -40,10 +40,10 @@ Here is an index of links to helpful documents found in this repository.
 * Sample [platformio.ini](AA/platformIO-MAC-example.txt) template.
 * Set up [PlatformIO](https://github.com/va3wam/hexBot/blob/main/doc/cloneRepository.md#set-up-platformio).
 * Recommended Visual Studio Code [plugins](https://github.com/va3wam/hexBot/blob/main/doc/cloneRepository.md#visual-studio-code-plugins).
-* [Web interface](doc/hexbotWebInterface.md).
-* [Configure NVRAM remotely](https://github.com/va3wam/hexBot/blob/main/doc/hexbotConfigNVRAM.md).
-* [Perform OTA updates](https://github.com/va3wam/hexBot/blob/main/doc/webOTA.md).
-* [MQTT commands](doc/mqttCommands.md).
+* Hexbot's [Web interface](doc/hexbotWebInterface.md).
+* How to [configure NVRAM remotely](https://github.com/va3wam/hexBot/blob/main/doc/hexbotConfigNVRAM.md).
+* How to [perform OTA updates](https://github.com/va3wam/hexBot/blob/main/doc/webOTA.md).
+* Available [MQTT commands](doc/mqttCommands.md).
 * [Hexbot Operations manual](doc/hexbotOperationManual.md).
 
 ## Testing
