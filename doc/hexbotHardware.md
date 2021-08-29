@@ -63,7 +63,7 @@ In addition to the parts above you will also need
     <td align ="left"> 
        <figure>
           <img src="/img/mg996r-towerpro-servo-motor.jpg" alt="servo motor" width="100" height="100">
-          <figcaption>Fig.1 - Servo motor</figcaption>
+          <figcaption>Fig.5 - Servo motor</figcaption>
        </figure> 
     </td>
     <td align ="left"> 
@@ -80,7 +80,7 @@ In addition to the parts above you will also need
     <td align ="left"> 
        <figure>
           <img src="/img/servo-horn.jpg" alt="servo horn" width="100" height="100">
-          <figcaption>Fig.2 - Servo horn</figcaption>
+          <figcaption>Fig.6 - Servo horn</figcaption>
        </figure> 
     </td>
     <td align ="left"> 
@@ -92,7 +92,20 @@ In addition to the parts above you will also need
 
 ## Motor Drivers
 
-The Hexpod robot requires a way to connect a large number of servo motors to a microcontroller with limit IO pins. To achieve this we use a pair of Adafruit [PCA9685 16-channel 12-bit servo motor drivers](https://cdn-learn.adafruit.com/downloads/pdf/16-channel-pwm-servo-driver.pdf). These motor drivers have their own onboard NXP Semiconductors [PCA9685 microcontroller](http://www.adafruit.com/datasheets/PCA9685.pdf) that handles the details of PWM signalling to the motors so all we have to do is communicate to them via I2C which only consumes 2 IO pins. The defult I2C address for the driver is 64 (0x40). There is also an all-call address at 112 (0x70). Since hexBot has 18 motors and a single driver can only handle a maximum of 16 we need to use 2 of these drivers. Since both drivers are on the same I2C bus we need to change the I2C address of the second driver to avoid conflicts. Page 13 of the Adafruit document explains how to do this.  
+<table>
+  <tr>
+    <td align ="left"> 
+       <figure>
+          <img src="/img/pca9685-16-channel-12-bit-pwm-servo-driver_1.jpg" alt="motor driver" width="100" height="100">
+          <figcaption>Fig.7 - Motor driver</figcaption>
+       </figure> 
+    </td>
+    <td align ="left"> 
+       The Hexpod robot requires a way to connect a large number of servo motors to a microcontroller with limit IO pins. To achieve this we use a pair of Adafruit [PCA9685 16-channel 12-bit servo motor drivers](https://cdn-learn.adafruit.com/downloads/pdf/16-channel-pwm-servo-driver.pdf). These motor drivers have their own onboard NXP Semiconductors [PCA9685 microcontroller](http://www.adafruit.com/datasheets/PCA9685.pdf) that handles the details of PWM signalling to the motors so all we have to do is communicate to them via I2C which only consumes 2 IO pins. The defult I2C address for the driver is 64 (0x40). There is also an all-call address at 112 (0x70). Since hexBot has 18 motors and a single driver can only handle a maximum of 16 we need to use 2 of these drivers. Since both drivers are on the same I2C bus we need to change the I2C address of the second driver to avoid conflicts. Page 13 of the Adafruit document explains how to do this.     </td>   
+  </tr>
+</table>  
+
+ 
 
 ## Line level converter
 
