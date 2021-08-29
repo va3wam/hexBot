@@ -92,7 +92,7 @@ Repeat the steps in this section six times in order to attach all six legs to th
   <tr>
     <td align ="left"> 
        <figure>
-          <img src="/img/topBodyLayer.jpg" alt="top layer" width="500" height="500"> 
+          <img src="/img/topBodyLayer.jpg" alt="top layer" width="500" height="300"> 
           <figcaption>Fig.4 - Top layer</figcaption>
        </figure> 
     </td>
