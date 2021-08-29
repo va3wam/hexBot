@@ -30,7 +30,7 @@ NOTE: Please do not work in the main branch but rather create branches in which 
 
 # Visual Studio Code Plugins
 
-A quik note on Visual Studio Plugins. We recommand that you install the following:
+A quick note on Visual Studio Plugins. We recommand that you install the following:
 
 1. PlatformIO (embedded system IDE).
 2. GitHub Pull Requests and Issues (Perform github tasks from VCS). See [this article](https://code.visualstudio.com/docs/editor/github).
