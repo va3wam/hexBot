@@ -6,6 +6,7 @@ If you are new to making VA3WAM projects and wish to emulate the local directory
 [this](https://va3wam.github.io/versionControl/#local-directory-setup).
 
 ## Step by step instructions
+
 1. In a terminal window, navigate to the root of your local Git project directory. ```cd .../VisualStudioCode/PlatformIO/Projects```
 2. Clone the remote origin server. ```git clone https://github.com/va3wam/hexaBot.git```
 3. Confirm that you now see a sub-directory off your local project directory named *hexaBot*. (Note the robot name changed from hexabot to HexBot but the repo reference had already been made. Sorry for the confusion).
@@ -14,6 +15,7 @@ If you are new to making VA3WAM projects and wish to emulate the local directory
 6. At this point you have successfully cloned the Hexbot repository. Now you need to set up your PlatformIO IDE.
 
 # Set up PlatformIO
+
 1. In the hexabot directory create a file called platformio.ini.
 2. Copy the content of the appropriate platform template from the AA directory. For MAC use *platformIO-MAC-example.txt*.
 3. Open Visual Studio Code. Make sure that there are no active projects or files open.
@@ -25,3 +27,11 @@ If you are new to making VA3WAM projects and wish to emulate the local directory
 9. Assuming everything has gone well you are all set up with a local repository and an associated remote origin and you are ready to start developing your additions to the repository.
 
 NOTE: Please do not work in the main branch but rather create branches in which to work. You can read about our prefered workflow [here](https://va3wam.github.io/versionControl/#git-workflow).
+
+# Visual Studio Code Plugins
+
+A quik note on Visual Studio Plugins. We recommand that you install the following:
+
+1. PlatformIO (embedded system IDE)
+2. GitHub Pull Requests and Issues (Perform github tasks from VCS)
+3. GitLens (shows full commit history inline in VSC). 
