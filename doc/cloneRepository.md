@@ -32,6 +32,6 @@ NOTE: Please do not work in the main branch but rather create branches in which 
 
 A quik note on Visual Studio Plugins. We recommand that you install the following:
 
-1. PlatformIO (embedded system IDE)
-2. GitHub Pull Requests and Issues (Perform github tasks from VCS)
+1. PlatformIO (embedded system IDE).
+2. GitHub Pull Requests and Issues (Perform github tasks from VCS).
 3. GitLens (shows full commit history inline in VSC). 
