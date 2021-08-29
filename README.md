@@ -36,6 +36,7 @@ Here is an index of links to helpful documents found in this repository.
 
 * List of [hardware components](/doc/hexbotHardware.md).
 * Hexbot [assembly instructions](/doc/hexbotAssembly.md).
+* How to [wire the motors](/doc/wireMotors.md).
 * How to [clone](/doc/cloneRepository.md) the Hexbot gitHub repository.
 * Sample [platformio.ini](AA/platformIO-MAC-example.txt) template.
 * Set up [PlatformIO](https://github.com/va3wam/hexBot/blob/main/doc/cloneRepository.md#set-up-platformio).
