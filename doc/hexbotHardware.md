@@ -12,7 +12,7 @@ Hexbot has a custom chassis designed in Fusion360 and milled out of 6061 extrude
   <tr>
     <td align ="left"> 
        <figure>
-          <img src="/img/mg996r-towerpro-servo-motor.jpg" alt="servo motor" width="500" height="500">
+          <img src="/img/mg996r-towerpro-servo-motor.jpg" alt="servo motor" width="100" height="100">
           <figcaption>Fig.1 - Servo motor</figcaption>
        </figure> 
     </td>
