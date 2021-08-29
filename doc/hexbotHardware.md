@@ -12,12 +12,12 @@ Hexbot has a custom chassis designed in Fusion360 and milled out of 6061 extrude
   <tr>
     <td align ="left"> 
        <figure>
-          <img src="/img/assembledLeftLeg v2.png" alt="Left Leg">
-          <figcaption>Fig.1 - Hexbot left leg assembly</figcaption>
+          <img src="/img/mg996r-towerpro-servo-motor.jpg" alt="servo motor">
+          <figcaption>Fig.1 - Servo motor</figcaption>
        </figure> 
     </td>
     <td align ="left"> 
-       The three leg joint motors are [MG996R Servo motors](https://components101.com/motors/mg996r-servo-motor-datasheet). Each of the three motors require a [Mallofusa 25 tooth Servo Horn](https://www.amazon.ca/Mallofusa-Servo-Aluminum-Silvery-Helicopter/dp/B00NOGMK3M). Our testing has taught us the following:
+       Hexbot's leg joints are [MG996R Servo motors](https://components101.com/motors/mg996r-servo-motor-datasheet). Each of the three motors require a [Mallofusa 25 tooth Servo Horn](https://www.amazon.ca/Mallofusa-Servo-Aluminum-Silvery-Helicopter/dp/B00NOGMK3M). Our testing has taught us the following:
 
 * Use a frequency of 50Hz (20ms period) for the PWM signal used to control these motors.
 * A 50% duty cycle puts the motor in it's centre position. 
