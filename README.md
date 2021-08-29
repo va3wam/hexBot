@@ -12,7 +12,7 @@ This project requires that you have a Hexbot robot. The Robot is made up of a cu
 
 In order to make use of the code in this repository you will require the following items.
 
-* A [Hexbot chassis](doc/hexbotHardware.md).
+* A Hexbot robot made up of [this hardware](doc/hexbotHardware.md).
 * The [Hexbot custom PCB](doc/hexbotCircuit.md).
 * An [MQTT broker](doc/MQTTbroker.md) used by the robot's [MQTT web interface](doc/hexbotWebInterface.md).
 * A [clone](/doc/cloneRepository.md) of the Hexbot gitHub repository into your own local Git repository.
