@@ -105,7 +105,7 @@ Repeat the steps in this section six times in order to attach all six legs to th
         <li>Drill 1/8" holes in the top body layer. Be sure to align these holes with the nes that already exist in the bottom layer.</li>
         <li>Mount the top body layer to the bottom layer using ~1 1/2" standoffs bolted through the existing mounting holes.</li>
        </ol> 
-       Congratulations - you now have a fully assembled Hexbot. From here you need to prototype a circuit which is beyond the scope of these instructions.
+       Congratulations, you now have a fully assembled Hexbot. From here you need to <a href="/docs/wireMotors.md">wire the motors.</a>.
     </td>
   </tr>  
 </table> 
