@@ -1,10 +1,10 @@
 # Hexbot Hardware
 
-This page lists all the parts yu need in order to build your own Hexbot. 
+This page lists all the parts that you need in order to build your own Hexbot. 
 
 ## Chassis
 
-Hexbot's chassis is comprised of the main body section with six protruding legs and a PCB mounted on top. The body and legs are milled out of 6061 extruded aluminium. When pully assembed Hexbot's physical dimensions are roughly:
+Hexbot's chassis is comprised of a lower main body section with six protruding legs and a PCB mounted on top. The body and legs are milled out of 6061 extruded aluminium. When pully assembed Hexbot's physical dimensions are roughly:
 
 * Height = ~ 5 inches when in neutral standing position.
 * Length = ~ 14 inches when in neutral standing position.
