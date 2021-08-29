@@ -24,7 +24,21 @@ Hexbot has a custom chassis designed in Fusion360 and milled out of 6061 extrude
 </table>  
 
 ## Servo Horns
-Each of the three motors require a [Mallofusa 25 tooth Servo Horn](https://www.amazon.ca/Mallofusa-Servo-Aluminum-Silvery-Helicopter/dp/B00NOGMK3M). 
+
+<table>
+  <tr>
+    <td align ="left"> 
+       <figure>
+          <img src="/img/servo-horn.jpg" alt="servo horn" width="100" height="100">
+          <figcaption>Fig.2 - Servo horn</figcaption>
+       </figure> 
+    </td>
+    <td align ="left"> 
+       Each servo motor requires an 
+       <a href="https://www.amazon.ca/gp/product/B00NOGMK3M/ref=ppx_yo_dt_b_asin_title_o04_s00?ie=UTF8&psc=1">aluminium round servo horn with a 25 tooth spline</a>. 
+    </td>   
+  </tr>
+</table>  
 
 ## Motor Drivers
 
