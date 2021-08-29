@@ -15,6 +15,7 @@ In order to make use of the code in this repository you will require the followi
 * A [Hexbot chassis](doc/hexbotHardware.md).
 * The [Hexbot custom PCB](doc/hexbotCircuit.md).
 * An [MQTT broker](doc/MQTTbroker.md) used by the robot's [MQTT web interface](doc/hexbotWebInterface.md).
+* A [clone](/doc/cloneRepository.md) of the Hexbot gitHub repository into your own local Git repository.
 
 ### Code Compatability
 
@@ -34,6 +35,7 @@ A set of instructions on how to install the source code for VA3WAM projects can 
 Here is an index of links to helpful documents found in this repository.
 
 * Hexbot [assembly instructions](doc/hexbotAssembly.md).
+* [Clone](/doc/cloneRepository.md) the Hexbot gitHub repository.
 * Sample [platformio.ini](AA/platformIO-MAC-example.txt) template.
 * [Web interface](doc/hexbotWebInterface.md).
 * [Configure NVRAM remotely](https://github.com/va3wam/hexBot/blob/main/doc/hexbotConfigNVRAM.md).
