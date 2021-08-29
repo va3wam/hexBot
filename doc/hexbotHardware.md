@@ -124,9 +124,19 @@ In addition to the parts above you will also need
 
 ## Main processor
 
-The processing logic for the robot is provided by an Espressif DevKit development board which features an Espressif ESP32 System On A Chip 
-(SOC). This processor is responsible for handling the logic to balance the robot as well as to handle all the real-time communication with 
-an operator as required. We have an article that describes the ESP32 SOC in [greater detail](https://va3wam.github.io/soc/technology%20stack/architecture/SOC-Technology-Stack/) if you are keen to know more about it.
+<table>
+  <tr>
+    <td align ="left"> 
+       <figure>
+          <img src="/img/esp32-board-bg.jpg" alt="ESP32 dev board" width="100" height="100">
+          <figcaption>Fig.9 - ESP32 Dev Board</figcaption>
+       </figure> 
+    </td>
+    <td align ="left"> 
+       The brains of Hexbot come courtesy of an Espressif <a href="https://va3wam.github.io/soc/technology%20stack/architecture/SOC-Technology-Stack/">ESP32</a> Software On a Chip (SOC). We are using Zerynth's <a href="https://testzdoc.zerynth.com/reference/boards/doit_esp32/docs/">DOIT Esp32 DevKit v1</a> development board for ESP32 integration into our circuit.  
+    </td>   
+  </tr>
+</table>  
 
 ## Motion Sensors
 
