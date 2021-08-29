@@ -1,11 +1,61 @@
 # Hexbot Hardware
 
-Hexbot has a custom chassis designed in Fusion360 and milled out of 6061 extruded aluminium. The robot's has a main body section and six legs. Hexbot's physical properties are:
+This page lists all the parts yu need in order to build your own Hexbot. 
+
+## Chassis
+
+Hexbot's chassis is comprised of the main body section with six protruding legs and a PCB mounted on top. The body and legs are milled out of 6061 extruded aluminium. When pully assembed Hexbot's physical dimensions are roughly:
 
 * Height = ~ 5 inches when in neutral standing position.
 * Length = ~ 14 inches when in neutral standing position.
 * Weight = ~ 3 lbs 7.5 Oz without battery or PCB.
 
+Hexbot's chassis is comprised of 1 main body panel, 6 hip components, 6 upper leg components and 6 lower leg components.
+
+<table>
+  <tr>
+    <td align ="left"> 
+       <figure>
+          <img src="/img/newLowerBody v7.png" alt="Main body" width="100" height="100">
+          <figcaption>Fig.1 - Main body</figcaption>
+       </figure> 
+    </td>
+  </tr>
+  <tr>
+    <td align ="left"> 
+       <figure>
+          <img src="/img/newHip v12.png" alt="Hip" width="100" height="100">
+          <figcaption>Fig.2 - Hip</figcaption>
+       </figure> 
+    </td>
+  </tr>
+  <tr>
+    <td align ="left"> 
+       <figure>
+          <img src="/img/upperLeg v5.png" alt="Upper leg" width="100" height="100">
+          <figcaption>Fig.3 - Upper leg</figcaption>
+       </figure> 
+    </td>
+  </tr>
+  <tr>
+    <td align ="left"> 
+       <figure>
+          <img src="/img/newLowerLeg v10.png" alt="Lower leg" width="100" height="100">
+          <figcaption>Fig.4 - Lower leg</figcaption>
+       </figure> 
+    </td>
+  </tr>
+</table>  
+
+## Micellaneous Hardware
+
+In addition to the parts above you will also need 
+
+* 72 [M3 0.5 x 10 cap head screws](https://www.amazon.ca/gp/product/B07FDLN8C3/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&psc=1)
+* 64 [M3 nuts](https://www.amazon.ca/gp/product/B07FDLN8C3/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&psc=1)
+* 18 [Mallofusa 25 tooth Servo Horn](https://www.amazon.ca/Mallofusa-Servo-Aluminum-Silvery-Helicopter/dp/B00NOGMK3M). 
+* 18 M3 0.5 x6 button head screws (come with the horns). 
+ 
 ## Motors
 
 <table>
@@ -17,7 +67,7 @@ Hexbot has a custom chassis designed in Fusion360 and milled out of 6061 extrude
        </figure> 
     </td>
     <td align ="left"> 
-       Hexbot's leg joints are 
+       Hexbot has a total of 18 leg joints. These leg joints are 
        <a href="https://components101.com/motors/mg996r-servo-motor-datasheet">MG996R Servo motors</a>. 
     </td>   
   </tr>
