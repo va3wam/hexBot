@@ -35,7 +35,7 @@ A set of instructions on how to install the source code for VA3WAM projects can 
 Here is an index of links to helpful documents found in this repository.
 
 * List of [hardware components](/doc/hexbotHardware.md).
-* Hexbot [assembly instructions](doc/hexbotAssembly.md).
+* Hexbot [assembly instructions](/doc/hexbotHardware.md#step-1---assemble-three-right-legs).
 * [Clone](/doc/cloneRepository.md) the Hexbot gitHub repository.
 * Sample [platformio.ini](AA/platformIO-MAC-example.txt) template.
 * Set up [PlatformIO](https://github.com/va3wam/hexBot/blob/main/doc/cloneRepository.md#set-up-platformio).
