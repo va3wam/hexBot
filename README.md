@@ -43,7 +43,7 @@ Here is an index of links to helpful documents found in this repository.
 * [Configure NVRAM remotely](https://github.com/va3wam/hexBot/blob/main/doc/hexbotConfigNVRAM.md).
 * [Perform OTA updates](https://github.com/va3wam/hexBot/blob/main/doc/webOTA.md).
 * [MQTT commands](doc/mqttCommands.md).
-* [Operations manual](doc/hexbotOperationManual.md).
+* [Hexbot Operations manual](doc/hexbotOperationManual.md).
 
 ## Testing
 
