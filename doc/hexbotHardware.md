@@ -10,7 +10,7 @@ Hexbot's chassis is comprised of a lower main body section with six protruding l
 * Length = ~ 14 inches when in neutral standing position.
 * Weight = ~ 3 lbs 7.5 Oz without battery or PCB.
 
-Hexbot's chassis is comprised of 1 main body panel, 6 hip components, 6 upper leg components and 6 lower leg components.
+Hexbot's chassis is comprised of 1 lower body panel, 6 hip components, 6 upper leg components and 6 lower leg components. *Note that you you will need to make your own upper body component for mounting the electronics*.   
 
 <table>
   <tr>
