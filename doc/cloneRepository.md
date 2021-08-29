@@ -2,7 +2,8 @@
 
 This page walks you through how to clone the HexBot GitHub repository to your local Git repository. 
 
-```If you are new to making VA3WAM projects and wish to emulate the local directory structure that we use then please read [this](https://va3wam.github.io/versionControl/#local-directory-setup).```
+If you are new to making VA3WAM projects and wish to emulate the local directory structure that we use then please read 
+[this](https://va3wam.github.io/versionControl/#local-directory-setup).
 
 ## Step by step instructions
 1. In a terminal window, navigate to the root of your local Git project directory. ```cd .../VisualStudioCode/PlatformIO/Projects```
