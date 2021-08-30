@@ -12,10 +12,10 @@ This project requires that you have a Hexbot robot. The Robot is made up of a cu
 
 In order to make use of the code in this repository you will require the following items.
 
-* A Hexbot robot made up of [this hardware](doc/hexbotHardware.md).
-* The [Hexbot custom PCB](doc/hexbotCircuit.md).
-* An [MQTT broker](doc/MQTTbroker.md) used by the robot's [MQTT web interface](doc/hexbotWebInterface.md).  
-* A [clone](/doc/cloneRepository.md) of the Hexbot gitHub repository into your own local Git repository.
+* A Hexbot robot made up of [this hardware](/docs/hexbotHardware.md).
+* The [Hexbot custom PCB](/docs/hexbotCircuit.md).
+* An [MQTT broker](/docs/MQTTbroker.md) used by the robot's [MQTT web interface](/docs/hexbotWebInterface.md).  
+* A [clone](/docs/cloneRepository.md) of the Hexbot gitHub repository into your own local Git repository.
 
 ### Code Compatability
 
@@ -34,18 +34,18 @@ A set of instructions on how to install the source code for VA3WAM projects can 
 
 Here is an index of links to helpful documents found in this repository.
 
-* List of [hardware components](/doc/hexbotHardware.md).
-* Hexbot [assembly instructions](/doc/hexbotAssembly.md).
-* How to [wire the motors](/doc/wireMotors.md).
-* How to [clone](/doc/cloneRepository.md) the Hexbot gitHub repository.
+* List of [hardware components](/docs/hexbotHardware.md).
+* Hexbot [assembly instructions](/docs/hexbotAssembly.md).
+* How to [wire the motors](/docs/wireMotors.md).
+* How to [clone](/docs/cloneRepository.md) the Hexbot gitHub repository.
 * Sample [platformio.ini](AA/platformIO-MAC-example.txt) template.
-* Set up [PlatformIO](https://github.com/va3wam/hexBot/blob/main/doc/cloneRepository.md#set-up-platformio).
-* Recommended Visual Studio Code [plugins](https://github.com/va3wam/hexBot/blob/main/doc/cloneRepository.md#visual-studio-code-plugins).
-* Hexbot's [Web interface](doc/hexbotWebInterface.md).
-* How to [configure NVRAM remotely](https://github.com/va3wam/hexBot/blob/main/doc/hexbotConfigNVRAM.md).
-* How to [perform OTA updates](https://github.com/va3wam/hexBot/blob/main/doc/webOTA.md).
-* Available [MQTT commands](doc/mqttCommands.md).
-* [Hexbot Operations manual](doc/hexbotOperationManual.md).
+* Set up [PlatformIO](https://github.com/va3wam/hexBot/blob/main/docs/cloneRepository.md#set-up-platformio).
+* Recommended Visual Studio Code [plugins](https://github.com/va3wam/hexBot/blob/main/docs/cloneRepository.md#visual-studio-code-plugins).
+* Hexbot's [Web interface](/docs/hexbotWebInterface.md).
+* How to [configure NVRAM remotely](https://github.com/va3wam/hexBot/blob/main/docs/hexbotConfigNVRAM.md).
+* How to [perform OTA updates](https://github.com/va3wam/hexBot/blob/main/docs/webOTA.md).
+* Available [MQTT commands](/docs/mqttCommands.md).
+* [Hexbot Operations manual](/docs/hexbotOperationManual.md).
 
 ## Testing
 
@@ -54,7 +54,7 @@ At this time we have no tools or standards for automated testing of Arduino code
 ## Deployment
 
 Use serial over USB to load the inital code onto the embedded system. Subsequent builds can be uploaded using either serial over USB or 
-a [OTA web interface](doc/webOTA.md) hosted by the robot which allows you to do [OTA](https://en.wikipedia.org/wiki/Over-the-air_programming) updates.
+a [OTA web interface](/docs/webOTA.md) hosted by the robot which allows you to do [OTA](https://en.wikipedia.org/wiki/Over-the-air_programming) updates.
 
 ## Built With
 
