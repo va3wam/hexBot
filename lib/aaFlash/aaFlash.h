@@ -1,9 +1,9 @@
-/*!
+/************************************************************************************
  * @file aaFlash.h  
- ===================================================================================*/
-#ifndef aaFlash_h // Start precompiler code block. 
+ ************************************************************************************/
+#ifndef aaFlash_h // Start of precompiler check to avoid dupicate inclusion of this code block.
 
-#define aaFlash_h // Precompiler macro used to avoid dupicate inclusion of this code.
+#define aaFlash_h // Precompiler macro used for precompiler check.
 
 /************************************************************************************
  * @section aaFlashIncludes Included libraries.
@@ -24,7 +24,5 @@ class aaFlash // Indicate that we are extending LiquidCrystal_I2C class with our
       void writeBrokerIP(IPAddress address); // Write to flash memory.
    private: 
 }; //class aaFlash
-
-extern aaFlash flashMem; // Expose all public variables and methods for libraries.
 
 #endif // End of precompiler protected code block
