@@ -14,14 +14,14 @@ In order to make use of the code in this repository you will require the followi
 
 * A Hexbot robot made up of [this hardware](doc/hexbotHardware.md).
 * The [Hexbot custom PCB](doc/hexbotCircuit.md).
-* An [MQTT broker](doc/MQTTbroker.md) used by the robot's [MQTT web interface](doc/hexbotWebInterface.md).
+* An [MQTT broker](doc/MQTTbroker.md) used by the robot's [MQTT web interface](doc/hexbotWebInterface.md).  
 * A [clone](/doc/cloneRepository.md) of the Hexbot gitHub repository into your own local Git repository.
 
 ### Code Compatability
 
 Hexbot software runs as a monolithic firmware image. The high level logic and peripheral interactions are handled using Arduino C++. FreeRTOS is used to run a WiFi stack as well as the primitive xTaskCreatePinnedToCore() which is used to manage mutli-threaded process execution.
 
-Hexbot's firmware is intended to run on the Espressif ESP WROOM32 "Software On a Chip" (SOC). The development board used for this SOC is the [Zerynth DOIT Esp32 DevKit v1](https://testzdoc.zerynth.com/reference/boards/doit_esp32/docs/). Note that some standard Arduino functions such as AnalogWrite() have not been implemented on the ESP32 SOC and alternate functions such as ledcSetup(), ledcAttachPin() and ledcWrite() must be used in their place. There are some additional compatability issues of note as follows:
+Hexbot's firmware is intended to run on the Espressif ESP WROOM32 "Software On a Chip" (SOC). The development board used for this SOC is the [Zerynth DOIT Esp32 DevKit v1](https://testzdoc.zerynth.com/reference/boards/doit_esp32/docs/). ```We may be switching to a different board``` Note that some standard Arduino functions such as AnalogWrite() have not been implemented on the ESP32 SOC and alternate functions such as ledcSetup(), ledcAttachPin() and ledcWrite() must be used in their place. There are some additional compatability issues of note as follows:
 
 * The GPIO pin usage is loosey Adafruit featherboard compliant meaning it will work with some boards such as the Adafruit OLED featherboard.
 * This code will NOT run on an ESP8266 unmodified because of both GPIO incompatability as well as some ESP32 specific libraries that are in use.
@@ -60,6 +60,8 @@ a [OTA web interface](doc/webOTA.md) hosted by the robot which allows you to do 
 
 * [Visual Studio Code](https://code.visualstudio.com/) - Text editor.
 * [PlatformIO](https://platformio.org/) - IDE for ESP32 based Arduino development.
+
+If you are new to these tools then you may want to read [this](https://randomnerdtutorials.com/vs-code-platformio-ide-esp32-esp8266-arduino/).
 
 ## Contributing
 
