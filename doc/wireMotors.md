@@ -1,6 +1,6 @@
 # Wiring Motors
 
-There are 18 motors that need to be connected to 2 different motor drivers. The purpose of ths document is to ensure that your Hexbot's motor wiring is done the same way that the code in this repository expects it to be.
+There are 18 motors that need to be connected to 2 different motor drivers. The purpose of this document is to ensure that your Hexbot's motor wiring is done the same way that the code in this repository expects it to be.
 
  <figure>
   <img src="/img/hexbotMotorWiring.png" alt="Motor wiring" style="width:100%">
