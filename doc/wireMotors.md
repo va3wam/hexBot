@@ -1,6 +1,6 @@
 # Wiring Motors
 
-There are 18 motors to wire up to 2 motor drivers. This document provides guidance to standardize how the leg servo motors are connectred to the motor drivers in order to allow 1 code base to predictably control all Hexbot robots in the same way.
+There are 18 motors that need to be connected to 2 different motor drivers. The purpose of ths document is to ensure that your Hexbot's motor wiring is done the same way that the code in this repository expects it to be.
 
  <figure>
   <img src="/img/hexbotMotorWiring.png" alt="Motor wiring" style="width:100%">
