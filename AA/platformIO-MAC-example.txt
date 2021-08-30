@@ -8,12 +8,25 @@
 ; Please visit documentation for the other options and examples
 ; https://docs.platformio.org/page/projectconf.html
 
-[env:esp32doit-devkit-v1]
+;[env:esp32doit-devkit-v1]
+;platform = espressif32
+;board = esp32doit-devkit-v1
+;framework = arduino
+;monitor_speed = 115200
+;upload_port = /dev/cu.usbserial-0001
+;monitor_port = /dev/cu.usbserial-0001
+;build_flags = -I include ; Allows code in lib subdirectory to find include directory 
+; build_flags = -Wl,-Map,output.map ; Create build map
+
+[env:featheresp32]
 platform = espressif32
-board = esp32doit-devkit-v1
+board = featheresp32
 framework = arduino
 monitor_speed = 115200
-upload_port = /dev/cu.usbserial-0001
-monitor_port = /dev/cu.usbserial-0001
+upload_port = /dev/cu.usbserial*
+monitor_port = /dev/cu.usbserial*
 build_flags = -I include ; Allows code in lib subdirectory to find include directory 
 ; build_flags = -Wl,-Map,output.map ; Create build map
+;extra_scripts =
+;  pre:pre_extra_script.py
+;  post:autoDoc.py
