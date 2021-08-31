@@ -7,11 +7,11 @@ Full Hexbot assembly instructions can be found [here](hexbotAssembly.md).
 
 ## Code Updates
 
-Code updates can be done in one of two ways. First, they can be done via a local USB micro conection. There are man places to learn how to do this so we will not include instructions here. Code updates can also be updated Over-The-Air (OTA) using Hexbot's web interface. Details on how this is done can be found [here](webOTA.md).
+Code updates can be done in one of two ways. First, they can be done via a local USB micro conection. There are man places to learn how to do this so we will not include instructions here. Code updates can also be updated Over-The-Air (OTA) using Hexbot's web interface. Details on how this is done can be found [here](/docs/hexbotWebInterface.md#ota-updater-screen).
 
 ## Configuring NVRAM
 
-Certain environment specific values can be configured in NVRam avoiding the need to rebuild and update code when the robot moves to a new network environment. Full details for this are found [here](hexbotConfigNVRAM.md).
+Certain environment specific values can be configured in NVRam avoiding the need to rebuild and update code when the robot moves to a new network environment. Full details for this are found [here](/docs/hexbotWebInterface.md#config-updater-screen).
 
 ## Data Analytics
 
