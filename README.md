@@ -12,7 +12,7 @@ This project requires that you have a Hexbot robot. The Robot is made up of a cu
 
 Here is an index of links to helpful documents found in this repository.
 
-## Building a Hexbot Robot
+## Constructing a Hexbot Robot
 * List of [hardware components](/docs/hexbotHardware.md).
 * Hexbot [assembly instructions](/docs/hexbotAssembly.md).
 * How to [wire the motors](/docs/wireMotors.md).
