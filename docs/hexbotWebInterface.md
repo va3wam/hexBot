@@ -2,6 +2,10 @@
 
 Hexbot features a 2.4GHz 802.11n [WiFi radio](https://www.juniper.net/documentation/en_US/junos-space-apps/network-director3.1/topics/concept/wireless-radio-channel.html) that requires a WiFi access point capable of communicating at 150Mbps. Hexbot hosts a [web server](https://en.wikipedia.org/wiki/Web_server) that can be used to configure values stored in non volitile memory (NVRAM) as well as perform over-the-air (OTA) firmware updates via a web browser.
 
+<code>
+  One quirk of the web interface is that each screen opens up a seperate tab. For this reason you should get in thhe habit of closing the tabs once you are done with them or you will get overwhelmed by screens during a busy session.
+</code>
+
 ## Login Screen
 
 <table>
@@ -22,7 +26,7 @@ Hexbot features a 2.4GHz 802.11n [WiFi radio](https://www.juniper.net/documentat
       </ol>
         Once you meet all of these conditions then open your web browser and enter Hexbot's IP address in the URL address field. You should be presented with the screen shown in figure 1. You are now talking directly to Hexbot via it's web interface. 
         <br><br>
-        Secutiry is a bit lax at present as the ID and password are hardcoded into the HTML sent to the client. With this in mind it is not too much of a security breach to tell you here that the login credentials are:
+        Security is a bit lax at present as the ID and password are hardcoded into the HTML sent to the client. With this in mind it is not too much of a security breach to tell you here that the login credentials are:
       <ul>
         <li>ID: admin</li>
         <li>Password: admin</li>
