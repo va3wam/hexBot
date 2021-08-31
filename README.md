@@ -4,9 +4,33 @@
 
 This repository contains the Arduino source code that runs on an embedded processor at the heart of the six legged robot we call HexBot. The goals of this project can be found [here](goals.md). 
 
-## Getting Started
+# Getting Started
 
 This project requires that you have a Hexbot robot. The Robot is made up of a custom robot chassis and PCB as well as the code in this repository. Without a version 3 or later Hexbot robot this code will not be very useful to you. 
+
+# Documentation
+
+Here is an index of links to helpful documents found in this repository.
+
+## Building a Hexbot Robot
+* List of [hardware components](/docs/hexbotHardware.md).
+* Hexbot [assembly instructions](/docs/hexbotAssembly.md).
+* How to [wire the motors](/docs/wireMotors.md).
+
+## Development Software Stack
+* How to [clone](/docs/cloneRepository.md) the Hexbot gitHub repository.
+* Sample [platformio.ini](AA/platformIO-MAC-example.txt) template.
+* Set up [PlatformIO](https://github.com/va3wam/hexBot/blob/main/docs/cloneRepository.md#set-up-platformio).
+* Recommended Visual Studio Code [plugins](https://github.com/va3wam/hexBot/blob/main/docs/cloneRepository.md#visual-studio-code-plugins).
+
+## Hexbot User Guides
+* Hexbot's [Web interface](/docs/hexbotWebInterface.md).
+* How to [configure NVRAM remotely](https://github.com/va3wam/hexBot/blob/main/docs/hexbotConfigNVRAM.md).
+* How to [perform OTA updates](https://github.com/va3wam/hexBot/blob/main/docs/webOTA.md).
+* Available [MQTT commands](/docs/mqttCommands.md).
+* [Hexbot Operations manual](/docs/hexbotOperationManual.md).
+
+## Hexbot Developers Guide
 
 ### Prerequisites
 
@@ -28,60 +52,43 @@ Hexbot's firmware is intended to run on the Espressif ESP WROOM32 "Software On a
 
 ### Installing
 
-A set of instructions on how to install the source code for VA3WAM projects can be found [here](https://va3wam.github.io/versionControl/). 
+A set of instructions on how to install the source code for VA3WAM projects can be found [here](https://va3wam.github.io/versionControl/).
 
-## Documentation
-
-Here is an index of links to helpful documents found in this repository.
-
-* List of [hardware components](/docs/hexbotHardware.md).
-* Hexbot [assembly instructions](/docs/hexbotAssembly.md).
-* How to [wire the motors](/docs/wireMotors.md).
-* How to [clone](/docs/cloneRepository.md) the Hexbot gitHub repository.
-* Sample [platformio.ini](AA/platformIO-MAC-example.txt) template.
-* Set up [PlatformIO](https://github.com/va3wam/hexBot/blob/main/docs/cloneRepository.md#set-up-platformio).
-* Recommended Visual Studio Code [plugins](https://github.com/va3wam/hexBot/blob/main/docs/cloneRepository.md#visual-studio-code-plugins).
-* Hexbot's [Web interface](/docs/hexbotWebInterface.md).
-* How to [configure NVRAM remotely](https://github.com/va3wam/hexBot/blob/main/docs/hexbotConfigNVRAM.md).
-* How to [perform OTA updates](https://github.com/va3wam/hexBot/blob/main/docs/webOTA.md).
-* Available [MQTT commands](/docs/mqttCommands.md).
-* [Hexbot Operations manual](/docs/hexbotOperationManual.md).
-
-## Testing
+### Testing
 
 At this time we have no tools or standards for automated testing of Arduino code on an embedded system. 
 
-## Deployment
+### Deployment
 
 Use serial over USB to load the inital code onto the embedded system. Subsequent builds can be uploaded using either serial over USB or 
 a [OTA web interface](/docs/webOTA.md) hosted by the robot which allows you to do [OTA](https://en.wikipedia.org/wiki/Over-the-air_programming) updates.
 
-## Built With
+### Built With
 
 * [Visual Studio Code](https://code.visualstudio.com/) - Text editor.
 * [PlatformIO](https://platformio.org/) - IDE for ESP32 based Arduino development.
 
 If you are new to these tools then you may want to read [this](https://randomnerdtutorials.com/vs-code-platformio-ide-esp32-esp8266-arduino/).
 
-## Contributing
+### Contributing
 
 Please read [CONTRIBUTING.md](contributing.md) for details on our code
 of conduct, and the process for submitting pull requests to us.
 
-## Versioning
+### Versioning
 
 We use [Semantic Versioning](http://semver.org/) in naming the [releases](https://github.com/va3wam/hexaBot/releases) of this code base. 
 
-## Authors
+# Authors
 
 * **[Old Squire](https://github.com/theagingapprentice)**
 * **[Doug Elliott](https://github.com/nerdoug)**
 
-## License
+# License
 
 This project is licensed under the [MIT License](license.md).
 
-## Acknowledgments
+# Acknowledgments
 
 * Robot chassis design inspired by [Cameron Buss' Swampy the Hexapod](https://grabcad.com/library/swampy-the-hexapod-1).
 * 3 DOF Inverse Kinematic code inspired by [Avatar
