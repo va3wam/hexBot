@@ -83,7 +83,7 @@ Hexbot features a 2.4GHz 802.11n [WiFi radio](https://www.juniper.net/documentat
     <td align ="center"> 
        <figure>
           <img src="/img/hexbotWebConfigScreen.png" alt="Hexbot Config Updater Screen" width="300" height="200"><br>
-          <figcaption>Fig.3 - Config Updater Screen</figcaption>
+          <figcaption>Fig.4 - Config Updater Screen</figcaption>
        </figure> 
     </td>
     <td align ="left"> 
@@ -92,11 +92,18 @@ Hexbot features a 2.4GHz 802.11n [WiFi radio](https://www.juniper.net/documentat
 <ol>
   <li>Enter a valid IP address and click the Update button.</li>
   <li>Hexbot does a rudamentary validation of the IP address by pinging it.</li>
-  <li>If the address can be reached then you will see the message *Broker IP successfuly uppdated* and Hexbot updates it's flash memory with this value. Note that flash memory persists through power off.</li>
-  <li>If the address cannot be reached then you will see the message *Broker IP rejected. Keeping old address* and Hexbot discards your input.</li>
+  <li>If the address can be reached then you will see the message *Broker IP successfuly uppdated* on the web page and Hexbot updates it's flash memory with this value. If you have a terminal session connected to Hexbot's USB port then you will also see the messages in your console. See figure 5 for these messages. Note that flash memory persists through power off.</li>
+  <li>If the address cannot be reached then you will see the message *Broker IP rejected. Keeping old address* on the web page and Hexbot discards your input. If you have a terminal session connected to Hexbot's USB port then you will also see the messages in your console. See figure 5 for these messages.</li>
 </ol>
       
-```Normally you will need to perform this task the first time you bring up Hexbot on a new network. Once you make this change you should reboot Hexbot to ensure thhat the new address is being used.```
+<figure>
+  <img src="/img/hexbotConsoleBrokerIPChange.png" alt="Console messages for broker IP change."><br>
+  <figcaption>Fig.5 - Console messages for broker IP change</figcaption>
+</figure> 
+<br><br>      
+<code>
+  Normally you will only need to perform this task the first time that you change the network that Hexbot is connected to. It is a good idea to also check that the broker IP address is correct whenever you load new firmware onto your Hexbot.
+</code>
     </td>
   </tr>  
 </table>
