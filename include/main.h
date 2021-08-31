@@ -49,9 +49,11 @@ char *uniqueNamePtr = &uniqueName[0]; // Pointer to first address position of un
 void setupSerial(); // Initialize the serial output.
 void showCfgDetails(); // Show the environment details of this application.
 void startWebServer(); // Start up the local web server service.
+void connectToMqttBroker(); // Establish connect to the the MQTT broker. 
+void monitorWebServer(); // Look after pending web server requests.
 void setup(); // Arduino mandatory function #1. Runs once at boot. 
 void loop(); // Arduino mandatory function #2. Runs continually.
-void monitorWebServer(); // Look after pending web server requests.
+
 
 
 #endif // End of precompiler protected code block
