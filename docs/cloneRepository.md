@@ -11,13 +11,13 @@ If you are new to making VA3WAM projects and wish to emulate the local directory
 2. Clone the remote origin server. ```git clone https://github.com/va3wam/hexBot.git```
 3. Confirm that you now see a sub-directory off your local project directory named *hexBot*. 
 4. Go into the hexBot directory (if you are not already there) and issue the command ```git remote```. If you get back the response *origin* then jump to step 6. If you get a blank response back then proceed to step 5.
-5. Issue the command ```git remote add origin https://github.com/va3wam/hexBot.git to set up the remote. Now repeat step 4. 
+5. Issue the command ```git remote add origin https://github.com/va3wam/hexBot.git``` to set up the remote. Now repeat step 4. 
 6. At this point you have successfully cloned the Hexbot repository. Now you need to set up your PlatformIO IDE.
 
 # Set up PlatformIO
 
 1. In the hexBot directory create a file called platformio.ini.
-2. Copy the content of the appropriate platform template from the AA directory. For MAC use *platformIO-MAC-example.txt*.
+2. Copy the content of the appropriate platform template from the [AA](/AA/platformIO-MAC-example.txt) directory. For MAC use *platformIO-MAC-example.txt*.
 3. Open Visual Studio Code. Make sure that there are no active projects or files open.
 4. Navigate to the PlatformIO splash screen (use the house icon in the bottom left bar). Make sure that there are no active projects or files open.
 5. Click the open project button.
