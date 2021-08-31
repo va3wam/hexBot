@@ -25,8 +25,8 @@ Here is an index of links to helpful documents found in this repository.
 
 ## Hexbot User Guides
 * Hexbot's [Web interface](/docs/hexbotWebInterface.md).
-* How to [configure NVRAM remotely](https://github.com/va3wam/hexBot/blob/main/docs/hexbotConfigNVRAM.md).
-* How to [perform OTA updates](https://github.com/va3wam/hexBot/blob/main/docs/webOTA.md).
+* How to [configure NVRAM remotely](/docs/hexbotWebInterface.md#config-updater-screen).
+* How to [perform OTA updates](/docs/hexbotWebInterface.md#ota-updater-screen).
 * Available [MQTT commands](/docs/mqttCommands.md).
 * [Hexbot Operations manual](/docs/hexbotOperationManual.md).
 
