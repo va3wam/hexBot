@@ -57,7 +57,7 @@ static bool _mqttConnected;
  * @section mqttDefineConstants Define constants. 
  ************************************************************************************/
 const char* TOP_OF_TREE = "agingApprentice/"; // Define top of MQTT topic tree.
-const char* HEALTH_MQTT_TOPIC = "health"; // Define MQTT health topic.
+const char* HEALTH_MQTT_TOPIC = "/health"; // Define MQTT health topic.
 const char* CHECKIN_MQTT_TOPIC = "checkin"; // Define MQTT health topic.
  
 /**
@@ -195,7 +195,7 @@ void aaMqtt::onMqttUnsubscribe(uint16_t packetId)
  =============================================================================*/
 bool aaMqtt::publishMQTT(const char* topic, const char* msg)
 {
-   char fullTopic[30] = "";
+   char fullTopic[80] = "";
    strcpy(fullTopic,TOP_OF_TREE); // Move vendor name into full topic name.
    strcat(fullTopic,topic); // Append topic into full topic name.
 

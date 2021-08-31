@@ -23,6 +23,7 @@
  ************************************************************************************/
 const char* HOST_NAME_PREFIX = "Hexbot"; // Prefix for our unique network name.
 const char* WEB_APP_TITLE = "Hexbot"; // App name for web page titles.
+char healthTopicTree[50] = ""; // Char array to hold full health topic tree name.
 
 /************************************************************************************
  * @section mainInstantiate Instantiated objects.

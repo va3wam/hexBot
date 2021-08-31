@@ -84,6 +84,66 @@ void startWebServer()
    } //else
 } //startWebServer()
 
+/** 
+ * @brief Establish connect to the the MQTT broker.
+ * @details Retrieve the MQTT broker IP address from Flash memory and ping that 
+ *          address to see if there is a responsive device on the network. If there 
+ *          is then publish a health message noting that end-to-end network services 
+ *          are working. Note that upon connecting to the broker the MQTT library 
+ *          automatically subscribes to the <unique name>/commands topic.  
+ * =================================================================================*/
+void connectToMqttBroker()
+{
+
+   network.getUniqueName(uniqueNamePtr); // Puts unique name value into uniqueName[]
+   Serial.print("<connectToMqttBroker> Hexbot unique network name = ");
+   Serial.println(uniqueName);
+
+   Serial.print("<connectToMqttBroker> Health topic = ");
+   Serial.println(HEALTH_MQTT_TOPIC);
+
+   strcpy(healthTopicTree, uniqueName);
+   strcat(healthTopicTree, HEALTH_MQTT_TOPIC);
+
+   Serial.print("<connectToMqttBroker> Full health topic tree = ");
+   Serial.println(healthTopicTree);
+
+   Serial.print("<connectToMqttBroker> Length of health topic tree = ");
+   Serial.println(strlen(healthTopicTree));
+
+   brokerIP = flash.readBrokerIP(); // Retrieve MQTT broker IP address from NV-RAM.
+   Serial.print("<connectToMqttBroker> MQTT broker IP believed to be ");
+   Serial.println(brokerIP);
+
+   bool tmpPingResult = network.pingIP(brokerIP, 5);
+   String tmpResult[2];
+   tmpResult[0] = "Not found - invalid address";
+   tmpResult[1] = "Found - valid address";
+   Serial.print("<connectToMqttBroker> Ping of broker at "); Serial.print(brokerIP);
+   Serial.print(" resulted in ");
+   Serial.print(tmpPingResult);
+   Serial.print(" (");
+   Serial.print(tmpResult[tmpPingResult]);
+   Serial.println(")");
+   if(tmpPingResult == true)
+   {
+      mqtt.connect(brokerIP, uniqueName);
+      bool x = false;
+      while(x == false)
+      {
+         x = mqtt.publishMQTT(healthTopicTree, "End-to-end network services estabished");
+         delay(1);
+      } //while  
+   } //if
+   else
+   {
+      Serial.println("<connectToMqttBroker> Cannot reach MQTT broker. Boot halting.");
+      while(1)
+      {
+      } // loop  
+   } //else
+} //connectToMqttBroker()
+
 /**
  * @brief Monitor local web service to see if there are any client requests.
  * @details Call to checkForClientRequest() does two things. First, it causes the 
@@ -98,6 +158,10 @@ void monitorWebServer()
       IPAddress tmpIP = localWebService.getBrokerIP(); // Get awaiting IP address.
       Serial.print("<monitorWebServer> Set broker IP to "); Serial.println(tmpIP);
       flash.writeBrokerIP(tmpIP); // Write address to flash.
+
+      brokerIP = flash.readBrokerIP(); // Retrieve MQTT broker IP address from NV-RAM.
+      Serial.print("<setup> MQTT broker IP believed to be ");
+      Serial.println(brokerIP);
    } //if
 } //monitorWebServer()
 
@@ -111,25 +175,7 @@ void setup()
    network.connect(); // Start WiFi connection. 
    startWebServer(); // Start up web server.
    showCfgDetails(); // Show all configuration details.
-
-   brokerIP = flash.readBrokerIP(); // Retrieve MQTT broker IP address from NV-RAM.
-   Serial.print("<setup> MQTT broker IP believed to be ");
-   Serial.println(brokerIP);
-
-   network.getUniqueName(uniqueNamePtr); // Puts unique name value into uniqueName[]
-   Serial.print("<setup> Hexbot unique name = ");
-   Serial.println(uniqueName);
-
-//   Serial.print("<setup> Ping of broker at "); Serial.print(brokerIP);
-//   Serial.print(" resulted in ");
-//   Serial.println(network.pingIP(brokerIP, 5));
-//   mqtt.connect(brokerIP, uniqueName);
-//   bool x = false;
-//   while(x == false)
-//   {
-//      x = mqtt.publishMQTT(HEALTH_MQTT_TOPIC, "This is a test message");
-//      delay(1);
-//   } //while  
+   connectToMqttBroker(); // Connect to MQTT broker.
    Serial.println("<setup> End of setup.");   
 } // setup()
 
