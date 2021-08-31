@@ -39,131 +39,8 @@
  * IN THE SOFTWARE.  
  *****************************************************************************/
 #include <main.h> // Header file for all libraries needed by this program.
-#define serialBaudRate 115200 // Serial terminal baud rate.
-
-/**
- * @brief Initialize the serial output.
- * ==========================================================================*/
-void setupSerial()
-{
-   Serial.begin(serialBaudRate); // Open a serial at specified baud rate. 
-   while (!Serial); // Wait for Serial port to be ready.
-} //setupSerial()
-
-/** 
- * @brief Show the environment details of this application.
- * =================================================================================*/
-void showCfgDetails()
-{
-   Serial.println("<showCfgDetails> Robot Configuration Report");
-   Serial.println("<showCfgDetails> ==========================");
-   appCpu.cfgToConsole(); // Display core0 information on the console.
-   network.cfgToConsole(); // Display network information on the console.
-} //showCfgDetails()
-
-/** 
- * @brief Start up the web server.
- * @details Web server supports configuring the MQTT broker IP without needing to 
- *          rebuild. It also provides a web interface for doing OTA code downloads.
- * =================================================================================*/
-void startWebServer()
-{
-   char uniqueName[HOST_NAME_SIZE]; // Contain unique name for Wifi network purposes. 
-   char *uniqueNamePtr = &uniqueName[0]; // Pointer to starting address of name. 
-   network.getUniqueName(uniqueNamePtr); // Get unique name. 
-   Serial.print("<startWebServer> Unique Name: "); Serial.println(uniqueName);
-   Serial.print("<startWebServer> Name length: "); Serial.println(strlen(uniqueName));
-   isWebServer = localWebService.start(uniqueNamePtr); // Start web server and track result.
-   if(isWebServer)
-   {
-      Serial.println("<startWebServer> Web server successfully started.");
-   } //if
-   else
-   {
-      Serial.println("<startWebServer> Web server failed to start.");
-   } //else
-} //startWebServer()
-
-/** 
- * @brief Establish connect to the the MQTT broker.
- * @details Retrieve the MQTT broker IP address from Flash memory and ping that 
- *          address to see if there is a responsive device on the network. If there 
- *          is then publish a health message noting that end-to-end network services 
- *          are working. Note that upon connecting to the broker the MQTT library 
- *          automatically subscribes to the <unique name>/commands topic.  
- * =================================================================================*/
-void connectToMqttBroker()
-{
-
-   network.getUniqueName(uniqueNamePtr); // Puts unique name value into uniqueName[]
-   Serial.print("<connectToMqttBroker> Hexbot unique network name = ");
-   Serial.println(uniqueName);
-
-   Serial.print("<connectToMqttBroker> Health topic = ");
-   Serial.println(HEALTH_MQTT_TOPIC);
-
-   strcpy(healthTopicTree, uniqueName);
-   strcat(healthTopicTree, HEALTH_MQTT_TOPIC);
-
-   Serial.print("<connectToMqttBroker> Full health topic tree = ");
-   Serial.println(healthTopicTree);
-
-   Serial.print("<connectToMqttBroker> Length of health topic tree = ");
-   Serial.println(strlen(healthTopicTree));
-
-   brokerIP = flash.readBrokerIP(); // Retrieve MQTT broker IP address from NV-RAM.
-   Serial.print("<connectToMqttBroker> MQTT broker IP believed to be ");
-   Serial.println(brokerIP);
-
-   bool tmpPingResult = network.pingIP(brokerIP, 5);
-   String tmpResult[2];
-   tmpResult[0] = "Not found - invalid address";
-   tmpResult[1] = "Found - valid address";
-   Serial.print("<connectToMqttBroker> Ping of broker at "); Serial.print(brokerIP);
-   Serial.print(" resulted in ");
-   Serial.print(tmpPingResult);
-   Serial.print(" (");
-   Serial.print(tmpResult[tmpPingResult]);
-   Serial.println(")");
-   if(tmpPingResult == true)
-   {
-      mqtt.connect(brokerIP, uniqueName);
-      bool x = false;
-      while(x == false)
-      {
-         x = mqtt.publishMQTT(healthTopicTree, "End-to-end network services estabished");
-         delay(1);
-      } //while  
-   } //if
-   else
-   {
-      Serial.println("<connectToMqttBroker> Cannot reach MQTT broker. Boot halting.");
-      while(1)
-      {
-      } // loop  
-   } //else
-} //connectToMqttBroker()
-
-/**
- * @brief Monitor local web service to see if there are any client requests.
- * @details Call to checkForClientRequest() does two things. First, it causes the 
- * localWebServer service to process any new binay downloads. Second, it returns a 
- * boolean, that when TRUE, indicates there is a new IP address for the MQTT broker 
- * that needs to be saved to NV RAM.
- * =================================================================================*/
-void monitorWebServer()
-{
-   if(localWebService.checkForClientRequest()) // New binary or broker IP?
-   {
-      IPAddress tmpIP = localWebService.getBrokerIP(); // Get awaiting IP address.
-      Serial.print("<monitorWebServer> Set broker IP to "); Serial.println(tmpIP);
-      flash.writeBrokerIP(tmpIP); // Write address to flash.
-
-      brokerIP = flash.readBrokerIP(); // Retrieve MQTT broker IP address from NV-RAM.
-      Serial.print("<setup> MQTT broker IP believed to be ");
-      Serial.println(brokerIP);
-   } //if
-} //monitorWebServer()
+// TODO #4 Address error initialization from incompatible pointer type [-Wincompatible-pointer-types]
+// TODO #5 Add I2C suport
 
 /**
  * @brief Standard Arduino initialization routine.
@@ -176,7 +53,7 @@ void setup()
    startWebServer(); // Start up web server.
    showCfgDetails(); // Show all configuration details.
    connectToMqttBroker(); // Connect to MQTT broker.
-   Serial.println("<setup> End of setup.");   
+   Serial.println("<setup> End of setup."); 
 } // setup()
 
 /**
@@ -184,8 +61,5 @@ void setup()
  * ==========================================================================*/
 void loop() 
 {
-   if(localWebService.connectStatus()) // Is there is a valid WiFi connection?
-   {
-      monitorWebServer(); // Handle any pending web client requests. 
-   } //if     
+   monitorWebServer(); // Handle any pending web client requests. 
 } // loop()  
