@@ -47,12 +47,18 @@
  * ==========================================================================*/
 void setup() 
 {
+   String result[2];
+   result[false] = "false";
+   result[true] = "true"; 
    setupSerial(); // Set serial baud rate. 
    Serial.println("<setup> Start of setup.");  
    network.connect(); // Start WiFi connection. 
    startWebServer(); // Start up web server.
    showCfgDetails(); // Show all configuration details.
    connectToMqttBroker(); // Connect to MQTT broker.
+   bool tmp = connectToMqttBroker(); // Connect to MQTT broker.
+   Serial.print("<setup> Connected to MQTT broker = ");
+   Serial.print(tmp); Serial.print("( "); Serial.print(result[tmp]); Serial.println(")");
    Serial.println("<setup> End of setup."); 
 } // setup()
 
