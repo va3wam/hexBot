@@ -36,7 +36,7 @@ void setupSerial(); // Initialize the serial output.
 void showCfgDetails(); // Show the environment details of this application.
 void startWebServer(); // Start up the local web server service.
 void monitorWebServer(); // Look after pending web server requests.
-void connectToMqttBroker(); // Establish connect to the the MQTT broker. 
+bool connectToMqttBroker(); // Establish connect to the the MQTT broker. 
 void setup(); // Arduino mandatory function #1. Runs once at boot. 
 void loop(); // Arduino mandatory function #2. Runs continually.
 
