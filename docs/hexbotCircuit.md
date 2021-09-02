@@ -23,7 +23,7 @@ The PCB is fabricated using a third party service.
 <table>
    <caption>Dev Board Pinout Diagram</caption>
    <tr>
-      <td align ="center"> 
+      <td align ="left"> 
          <figure>
             <img src="/img/pinoutDOIT32devkitv1.png" alt="Dev board pinout" width="300" height="200"><br>
             <figcaption>Fig.1 - Dev board pinout.</figcaption>
