@@ -9,7 +9,7 @@ There are 18 motors that need to be connected to 2 different motor drivers. The 
 
 ## Wiring Chart
 
-Please refer to figure 1 to understand the references made in this chart.
+Please refer to figure 1 to understand the references made in this chart. Once you have the motors set up you will need to sort out the <a href="/docs/hexbotCircuit.md">circuitry</a>.
 
 <table>
    <tr>
