@@ -117,7 +117,7 @@ In addition to the parts above you will also need
        </figure> 
     </td>
     <td align ="left"> 
-       Since the ESP32 microprocessor used for Hexbot's brain is a 3.3VDC device and the PCA9685 microprocessor used in the motor driver board is a 5 VDC device we must use a line level converter on the I2C bus to connect between them. Hexbot uses the KeeYees <a href="https://www.amazon.ca/gp/product/B07LG646VS/ref=ppx_yo_dt_b_asin_title_o00_s00?ie=UTF8&psc=1">4 Channel I2C Logic Level Converter Bi-Directional Module</a>
+       Since the ESP32 microprocessor used for Hexbot's brain is a 3.3VDC device and the PCA9685 microprocessor used in the motor driver board is a 5 VDC device we must use a line level converter on the I2C bus to connect between them. Hexbot uses the KeeYees <a href="https://www.amazon.ca/gp/product/B07LG646VS/ref=ppx_yo_dt_b_asin_title_o00_s00?ie=UTF8&psc=1">4 Channel I2C Logic Level Converter Bi-Directional Module</a> which appears to be a clone of the Sparkfun Bi-Directional Logic Level Converter. For wiring help check out the <a href="https://learn.sparkfun.com/tutorials/bi-directional-logic-level-converter-hookup-guide/all">wiring guide</a>. 
     </td>   
   </tr>
 </table>  
