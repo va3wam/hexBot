@@ -48,13 +48,18 @@ The PCB is fabricated using a third party service.
                <td>D14</td>
                <td>L5</td>
                <td>14</td>
-               <td>Enable right motor driver.</td>
+               <td>Monitor right motor driver PMW freq.</td>
+            </tr>
+            <tr>
+               <td>D12</td>
+               <td>L4</td>
+               <td>12</td>
+               <td>Monitor left motor driver PMW freq.</td>
             </tr>
          </table>
       </td>
-      <code>
-         Note that for some silly reason this diagram uses the same numbers on the left and right so to differentiate them we put an L for left and R for right infrornt of the physical pin numbers.
-      </code>
   </tr>  
 </table>
-
+<code>
+   Note that for some silly reason this diagram uses the same numbers on the left and right so to differentiate them we put an L for left and R for right infront of the physical pin numbers.
+</code>
