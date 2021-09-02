@@ -124,8 +124,6 @@ In addition to the parts above you will also need
 
 ## Main processor
 
-```We may be switching to the Huzzah32 or similar dev board footprint```.
-
 <table>
   <tr>
     <td align ="left"> 
@@ -135,7 +133,7 @@ In addition to the parts above you will also need
        </figure> 
     </td>
     <td align ="left"> 
-       The brains of Hexbot come courtesy of an Espressif <a href="https://va3wam.github.io/soc/technology%20stack/architecture/SOC-Technology-Stack/">ESP32</a> Software On a Chip (SOC). We are using Zerynth's <a href="https://testzdoc.zerynth.com/reference/boards/doit_esp32/docs/">DOIT Esp32 DevKit v1</a> development board for ESP32 integration into our circuit.  
+       The brains of Hexbot come courtesy of an Espressif <a href="https://va3wam.github.io/soc/technology%20stack/architecture/SOC-Technology-Stack/">ESP32</a> Software On a Chip (SOC). We are using Zerynth's 30 pin variant of their <a href="https://testzdoc.zerynth.com/reference/boards/doit_esp32/docs/">DOIT Esp32 DevKit v1</a> development board for ESP32 integration into our circuit.  
     </td>   
   </tr>
 </table>  
