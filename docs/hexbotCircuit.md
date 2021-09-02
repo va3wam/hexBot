@@ -22,16 +22,19 @@ The PCB is fabricated using a third party service.
 
 <table>
    <caption>Dev Board Pinout Diagram</caption>
-   <br><br>
-   <code>
-   Note that for some silly reason this diagram uses the same numbers on the left and right so to differentiate them we put an L for left and R for right infront of the physical pin numbers.
-   </code>
    <tr>
       <td align ="center"> 
          <figure>
             <img src="/img/pinoutDOIT32devkitv1.png" alt="Dev board pinout" width="300" height="200"><br>
             <figcaption>Fig.1 - Dev board pinout.</figcaption>
          </figure> 
+      </td>
+   </tr>
+   <tr>
+      <td>
+         <code>
+         Note that for some silly reason this diagram uses the same numbers on the left and right so to differentiate them we put an L for left and R for right infront of the physical pin numbers.
+         </code>
       </td>
    </tr>
    <tr>
