@@ -13,6 +13,21 @@ The PCB is fabricated using a third party service.
 ## Breadboard wiring
 
 <table>
+   <caption>Dev Board Pinout Diagram</caption># PCB
+
+This page has details about the PCB used for the Hexbot robot. At present we are using a breadboard because we have not designed or manufactured the PCB. Here are the details regarding the breadboard.  
+
+## Design
+
+The circuitry for the Hexbot robot is designed in Eagle CAD.
+
+## Fabrication
+
+The PCB is fabricated using a third party service. 
+
+## Breadboard wiring
+
+<table>
    <caption>Dev Board Pinout Diagram</caption>
    <tr>
       <td align ="center"> 
