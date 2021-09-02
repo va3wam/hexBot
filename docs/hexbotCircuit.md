@@ -10,13 +10,6 @@ The circuitry for the Hexbot robot is designed in Eagle CAD.
 
 The PCB is fabricated using a third party service. 
 
-## Breadboard wiring
-
-<table>
-   <caption>Dev Board Pinout Diagram</caption># PCB
-
-This page has details about the PCB used for the Hexbot robot. At present we are using a breadboard because we have not designed or manufactured the PCB. Here are the details regarding the breadboard.  
-
 ## Design
 
 The circuitry for the Hexbot robot is designed in Eagle CAD.
@@ -28,6 +21,10 @@ The PCB is fabricated using a third party service.
 ## Breadboard wiring
 
 <table>
+   <caption>Dev Board Pinout Diagram</caption>
+   <code>
+   Note that for some silly reason this diagram uses the same numbers on the left and right so to differentiate them we put an L for left and R for right infront of the physical pin numbers.
+   </code>
    <tr>
       <td align ="center"> 
          <figure>
@@ -74,6 +71,4 @@ The PCB is fabricated using a third party service.
       </td>
   </tr>  
 </table>
-<code>
-   Note that for some silly reason this diagram uses the same numbers on the left and right so to differentiate them we put an L for left and R for right infront of the physical pin numbers.
-</code>
+
