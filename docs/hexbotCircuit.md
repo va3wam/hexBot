@@ -75,4 +75,5 @@ The PCB is fabricated using a third party service.
       </td>
   </tr>  
 </table>
-
+<img src="/img/hexbotBreadboard_bb.png" alt="Breadboard" width="300" height="200"><br>
+<figcaption>Fig.2 - Breadboard.</figcaption>
