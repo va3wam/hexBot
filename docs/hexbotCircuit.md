@@ -28,7 +28,6 @@ The PCB is fabricated using a third party service.
 ## Breadboard wiring
 
 <table>
-   <caption>Dev Board Pinout Diagram</caption>
    <tr>
       <td align ="center"> 
          <figure>
