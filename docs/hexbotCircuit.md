@@ -22,6 +22,7 @@ The PCB is fabricated using a third party service.
 
 <table>
    <caption>Dev Board Pinout Diagram</caption>
+   <br><br>
    <code>
    Note that for some silly reason this diagram uses the same numbers on the left and right so to differentiate them we put an L for left and R for right infront of the physical pin numbers.
    </code>
