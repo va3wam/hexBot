@@ -11,6 +11,7 @@ char uniqueName[HOST_NAME_SIZE]; // Character array that holds unique name for W
 char *uniqueNamePtr = &uniqueName[0]; // Pointer to first address position of unique name character array.
 char healthTopicTree[50] = ""; // Char array to hold full health topic tree name.
 
+// TODO #7 : A pingable but non MQTT IP address crash loops code.
 /** 
  * @brief Establish connect to the the MQTT broker.
  * @details Retrieve the MQTT broker IP address from Flash memory and ping that 
@@ -19,7 +20,7 @@ char healthTopicTree[50] = ""; // Char array to hold full health topic tree name
  *          are working. Note that upon connecting to the broker the MQTT library 
  *          automatically subscribes to the <unique name>/commands topic.  
  * =================================================================================*/
-void connectToMqttBroker()
+bool connectToMqttBroker()
 {
    network.getUniqueName(uniqueNamePtr); // Puts unique name value into uniqueName[]
    Serial.print("<connectToMqttBroker> Hexbot unique network name = ");
@@ -64,10 +65,9 @@ void connectToMqttBroker()
    else
    {
       Serial.println("<connectToMqttBroker> Cannot reach MQTT broker. Boot halting.");
-      while(1)
-      {
-      } // loop  
+      return false; 
    } //else
+   return true;
 } //connectToMqttBroker()
 
 #endif // End of precompiler protected code block
