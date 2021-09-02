@@ -73,7 +73,18 @@ The PCB is fabricated using a third party service.
             </tr>
          </table>
       </td>
-  </tr>  
+  </tr> 
+  <tr>
+     <td>
+         <table>
+            <caption>Breadboard Fritzing Diagram</caption>
+            <tr>
+               <td align ="center">     
+                  <img src="/img/hexbotBreadboard_bb.png" alt="Breadboard" width="300" height="200"><br>
+                  <figcaption>Fig.2 - Breadboard.</figcaption>
+               </td>
+            </tr>
+        </table>
+     </td>
+   </tr>
 </table>
-<img src="/img/hexbotBreadboard_bb.png" alt="Breadboard" width="300" height="200"><br>
-<figcaption>Fig.2 - Breadboard.</figcaption>
