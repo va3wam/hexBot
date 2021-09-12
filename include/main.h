@@ -17,7 +17,8 @@
 #include <huzzah32_gpio_pins.h> // Map pins on Adafruit Huzzah32 dev board to friendly names.
 #include <hexbot_gpio_pins.h> // Map Hexbot specific pin naming to generic development board pin names. 
 #include <known_networks.h> // String arrays of known Access Points and their passwords.
-
+#include <InverseK.h> // https://github.com/cgxeiji/CGx-InverseK
+#include <Wire.h> // Required for I2C communication
 /*******************************************************************************
  * @section codeModules Functions put into files according to function.
  * @details Order functions here in a way that ensures that variables get 
@@ -28,6 +29,7 @@
 #include <startWebServer.h> // Start up the web server service. 
 #include <connectToMqttBroker.h> // Establish connect to the the MQTT broker.
 #include <monitorWebServer.h> // Monitor the web server service.
+#include <i2c.h> // Scan I2C buses to see what devices are present.
 
 /************************************************************************************
  * @section mainDeclare Declare functions.
