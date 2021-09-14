@@ -18,8 +18,14 @@
 #ifndef H_INVERSE
 #define H_INVERSE
 
+#ifndef PI // OldSquire: Need conditional here to avoid conflict with Arduino core.
 #define PI 3.14159265359
+#endif
+
+#ifndef HALF_PI // OldSquire: Need conditional here to avoid conflict with Arduino core.
 #define HALF_PI 1.5707963268
+#endif
+
 #define DOUBLE_PI 6.28318530718
 #define DEGREE_STEP 0.01745329251
 
