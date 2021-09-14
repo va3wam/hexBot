@@ -42,36 +42,8 @@
 // TODO #4 Address error initialization from incompatible pointer type [-Wincompatible-pointer-types]
 // TODO #5 Add I2C support
 
-#include <Wire.h> // I2C communication.
-#include <Adafruit_PWMServoDriver.h> // https://github.com/adafruit/Adafruit-PWM-Servo-Driver-Library.
-Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver(0x40, Wire); // I2C address 0x40 (default) on Wire1.
-#define SERVO_FREQ 50 // Analog servos run at a freq of 50Hz creating a period of (1/50*1000 = 20ms). 
-                      // Can be between 40Hz and 1600Hz. Servo motors tyically use 50Hz.
-portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED; // Mutex to prevent ISR and main conflicts                      
-volatile int interruptCounter = 0; // Number of signals from servo driver not processed.
-volatile long last, now; // Track freq of servo motorcontroller PWM signal.
-const byte interruptPin = 14; // GPIO14 is physical pin 5 on 30 pin Devkit V1 board.
-uint32_t oscFreq = 27000000; // Oscillator freq of the PCA9865 servo motor driver. Board specific.
-
-#define PIN_SERVO_FEEDBACK 15 // Connect white PWM pin, 15 = last on last block. Monitor PWM from servo driver.
-int numberOfInterrupts = 0; // Total number of servo driver signals in total.
 unsigned long timer; // Milli count for next action.
-int32_t cadencePeriod; // How long between phases in millis.
-uint8_t leftDriverPinNum = 14; // Target pin on left motor driver.
-uint16_t pwmOnCnt = 0; // PWM counter when to raise signal.
-uint16_t pwmOffCnt = 300; // PWM counter when to lower signal.
-
-/**
- * @brief ISR for PWM signal from PCA9685.
- * =================================================================================*/
-void IRAM_ATTR handleInterrupt() 
-{
-  portENTER_CRITICAL_ISR(&mux);
-  interruptCounter++;
-  last = now;
-  now = millis();
-  portEXIT_CRITICAL_ISR(&mux);
-} // handleInterrupt()
+int32_t cadencePeriod = 2000; // How long between phases in millis.
 
 /**
  * @brief Standard Arduino initialization routine.
@@ -80,16 +52,51 @@ void setup()
 {
    setupSerial(); // Set serial baud rate. 
    Serial.println("<setup> Start of setup.");  
-   Wire.begin(I2C_bus0_SDA,I2C_bus0_SCL,I2C_bus0_speed);
-   scanBus0();
-//   Wire1.begin(I2C_bus1_SDA,I2C_bus1_SCL,I2C_bus1_speed);
-//   scanBus1();
-   network.connect(); // Start WiFi connection. 
-   startWebServer(); // Start up web server.
-   showCfgDetails(); // Show all configuration details.
-   bool tmp = connectToMqttBroker(); // Connect to MQTT broker.
-   Serial.print("<setup> Connected to MQTT broker = ");
-   Serial.print(tmp); Serial.print(" ("); Serial.print(result[tmp]); Serial.println(")");
+   Wire.begin(I2C_bus0_SDA, I2C_bus0_SCL, I2C_bus0_speed); // Init I2C bus0.
+   network.connect(); // Start WiFi connection.
+   if(network.areWeConnected() == true) // If we are on the WiFi network.
+   {
+      networkConnected = true;
+      Serial.println("<setup> Connection to network successfully estabished.");
+      startWebServer(); // Start up web server.
+      bool tmp = connectToMqttBroker(network); // Connect to MQTT broker.
+      if(tmp == true) // If we found an MQTT broker.
+      {
+         mqttBrokerConnected = true;
+         Serial.println("<setup> Connection to MQTT broker successfully established.");
+      } // if
+      else // If we did not find a valid MQTT broker.
+      {
+         mqttBrokerConnected = false;
+         Serial.println("<setup> Connected to MQTT broker failed.");
+      } // else
+   } // if
+   else // If we are NOT on the WiFi network.
+   {
+      networkConnected = false;
+      Serial.println("<setup> Not connencted to the network. No MQTT or web interface.");
+   } // else
+   scanBus0(); // Scan bus0 and show connected devices.
+   if(oledConnected == true) // If an OLED was found on the I2C bus.
+   {
+      Serial.println("<setup> Initialize OLED.");
+      initOled();
+   } // if
+   else // If an OLED was NOT found on the I2C bus.
+   {
+      Serial.println("<setup> OLED not connencted to I2C bus. No OLED messages to be issued.");
+   } //else
+   if(motorController1Connected == true && motorController2Connected == true) // If servo drivers found on I2C bus.
+   {
+      Serial.println("<setup> Initialize servo drivers.");
+      initServo();   
+   } // if
+   else // If servo drivers found on I2C bus.
+   {
+      Serial.println("<setup> One or more servo drivers not connencted to I2C bus. No motion is possible.");
+   } //else
+   showCfgDetails(); // Show all configuration details in one summary.
+   timer = millis(); // Timer for motor driver signalling.
    Serial.println("<setup> End of setup."); 
 } // setup()
 
@@ -99,18 +106,10 @@ void setup()
 void loop() 
 {
    monitorWebServer(); // Handle any pending web client requests. 
-   // Check if external PWM interrupt has occured and track with counters.
-   if(interruptCounter > 0)
+   if(timer <= millis()) // Time to update motor position?
    {
-      portENTER_CRITICAL(&mux);
-      interruptCounter--;
-      portEXIT_CRITICAL(&mux);
-      numberOfInterrupts++;
-   } // if
-
-   if(timer <= millis()) // Time to act?
-   {
-      pwm.setPWM(leftDriverPinNum,pwmOnCnt,pwmOffCnt);
-      timer = millis() + cadencePeriod;
+//      updatePhase(); // Move motor joints through different positions.
+      timer = millis() + cadencePeriod; // Set next motor driver update time.
    } //if
+   checkOledButtons();
 } // loop()  
