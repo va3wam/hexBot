@@ -33,16 +33,15 @@
 #define leftOLED_I2C_ADD 0x3D // OLED used for robot's left eye I2C adddress.
 #define rightOLED_I2C_ADD 0x3C // OLED used for robot' right eye I2C address.
 #define dcMotorController 0xB0 >> 1 // Wire Library only uses 7 bit addresses so you need to shift address one bit to the right.
-#define PCA9685 0x40 // Servo controller I2C address.
 #define LCD16x2 0x3F // Liquid Crystal Display.
 #define PCA9685ServoDriverAllCall 0x70 // Global I2C address for all servo drivers.
-#define PCA9685ServoDriver1 0x40 // First servo driver.
-#define PCA9685ServoDriver2 0x41 // Second servo driver.
-#define PCA9685ServoDriver3 0x42 // Third servo driver.
-#define PCA9685ServoDriver4 0x43 // Fourth servo driver.
-#define PCA9685ServoDriver5 0x44 // Fifth servo driver.
-#define PCA9685ServoDriver6 0x45 // Sixth servo driver.
-#define PCA9685ServoDriver7 0x46 // Seventh servo driver.
+#define PCA9685ServoDriver1 0x40 // I2C address for first servo driver.
+#define PCA9685ServoDriver2 0x41 // I2C address for second servo driver.
+#define PCA9685ServoDriver3 0x42 // I2C address for third servo driver.
+#define PCA9685ServoDriver4 0x43 // I2C address for fourth servo driver.
+#define PCA9685ServoDriver5 0x44 // I2C address for fifth servo driver.
+#define PCA9685ServoDriver6 0x45 // I2C address for sixth servo driver.
+#define PCA9685ServoDriver7 0x46 // I2C address for seventh servo driver.
 
 /*************************************************************************************************************************************
  * @brief Identify a device based on its I2C address
@@ -59,6 +58,7 @@ void identifyDevice(int deviceAddress)
   {
     case rightOLED_I2C_ADD:    
       Serial.println(" identified as Right OLED");
+      oledConnected = true;
       break;
     case leftOLED_I2C_ADD:    
       Serial.println(" identified as Left OLED");
@@ -76,9 +76,11 @@ void identifyDevice(int deviceAddress)
       Serial.println(" identified as PCA9685 16-channel 12-bit servo motor driver ALL CALL");
       break;
     case PCA9685ServoDriver1:
+      motorController1Connected = true;
       Serial.println(" identified as PCA9685 16-channel 12-bit servo motor driver 1");
       break;
     case PCA9685ServoDriver2:
+      motorController2Connected = true;
       Serial.println(" identified as PCA9685 16-channel 12-bit servo motor driver 2");
       break;
     case PCA9685ServoDriver3:
@@ -104,8 +106,6 @@ void identifyDevice(int deviceAddress)
 
 /*************************************************************************************************************************************
  * @brief Scan I2C bus0 aka wire()
- * 
- * @param deviceAddress 
  *************************************************************************************************************************************/
 void scanBus0()
 {
@@ -134,8 +134,6 @@ void scanBus0()
 
 /*************************************************************************************************************************************
  * @brief Scan I2C bus1 aka wire1()
- * 
- * @param deviceAddress 
  *************************************************************************************************************************************/
 void scanBus1()
 {
