@@ -3,6 +3,7 @@
 #define connectToMqttBroker_h // Precompiler macro used for precompiler check.
 
 #include <main.h> // Header file for all libraries needed by this program.
+#include <showCfgDetails.h> // Wifi functions. 
 
 aaFlash flash; // Non-volatile memory management. 
 aaMqtt mqtt; // Publish and subscribe to MQTT broker. 
@@ -21,7 +22,7 @@ String result[2] = {"false","true"}; // Provide english lables for true and flas
  *          are working. Note that upon connecting to the broker the MQTT library 
  *          automatically subscribes to the <unique name>/commands topic.  
  * =================================================================================*/
-bool connectToMqttBroker()
+bool connectToMqttBroker(aaNetwork &network)
 {
    network.getUniqueName(uniqueNamePtr); // Puts unique name value into uniqueName[]
    Serial.print("<connectToMqttBroker> Hexbot unique network name = ");
@@ -70,5 +71,13 @@ bool connectToMqttBroker()
    } //else
    return true;
 } //connectToMqttBroker()
+
+/** 
+ * @brief Return the MQTT broker IP address.
+ * =================================================================================*/
+IPAddress getMqttBrokerIP()
+{
+   return brokerIP;
+} // getMqttBrokerIP()
 
 #endif // End of precompiler protected code block
