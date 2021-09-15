@@ -13,9 +13,10 @@ bool mqttBrokerConnected = false;
 bool oledConnected = false;
 bool motorController1Connected = false;
 bool motorController2Connected = false;
+int8_t displayPage = 1;
 
 /** 
- * @brief Show the environment details of this application.
+ * @brief Show the environment details of this application on console.
  * =================================================================================*/
 void showCfgDetails()
 {
@@ -67,4 +68,25 @@ void showCfgDetails()
    } // else
 } //showCfgDetails()
 
+/** 
+ * @brief Show the environment details of this application on OLED.
+ * 
+ * @details Uses menu system to show different information as needed.
+ * =================================================================================*/
+void displayCfgDetails(int8_t menuToShow)
+{
+   switch (menuToShow) 
+   {
+      case 2:
+         Serial.println("<displayCfgDetails> Display second menu.");
+         break;
+      case 3:
+         Serial.println("<displayCfgDetails> Display third menu.");
+         break;
+      default:
+         Serial.println("<displayCfgDetails> Display first menu.");
+         break;
+   } // switch
+
+} // displayCfgDetails()
 #endif // End of precompiler protected code block
