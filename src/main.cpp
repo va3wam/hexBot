@@ -39,9 +39,6 @@
  * IN THE SOFTWARE.  
  *****************************************************************************/
 #include <main.h> // Header file for all libraries needed by this program.
-// TODO #4 Address error initialization from incompatible pointer type [-Wincompatible-pointer-types]
-// TODO #5 Add I2C support
-
 unsigned long timer; // Milli count for next action.
 int32_t cadencePeriod = 2000; // How long between phases in millis.
 
