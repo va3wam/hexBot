@@ -113,8 +113,9 @@ void checkOledButtons()
       buttonB_flag = false; 
       display.clearDisplay();
       display.setCursor(0, 0);
-      placeTextHcentre("Blank Menu", 1, SH110X_WHITE);
-      display.print("\nShow options here.");
+      placeTextHcentre("Leg Tracking", 1, SH110X_WHITE);
+      display.print("\nGoal: ");
+      display.print(legDirExpl[legDirIndex]);
       delay(10);
       yield();      
       display.display(); // actually display all of the above   
