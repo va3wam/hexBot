@@ -39,11 +39,8 @@
  * IN THE SOFTWARE.  
  *****************************************************************************/
 #include <main.h> // Header file for all libraries needed by this program.
-// TODO #4 Address error initialization from incompatible pointer type [-Wincompatible-pointer-types]
-// TODO #5 Add I2C support
-
 unsigned long timer; // Milli count for next action.
-int32_t cadencePeriod = 2000; // How long between phases in millis.
+//int32_t cadencePeriod = 2000; // How long between phases in millis.
 
 /**
  * @brief Standard Arduino initialization routine.
@@ -106,10 +103,5 @@ void setup()
 void loop() 
 {
    monitorWebServer(); // Handle any pending web client requests. 
-   if(timer <= millis()) // Time to update motor position?
-   {
-//      updatePhase(); // Move motor joints through different positions.
-      timer = millis() + cadencePeriod; // Set next motor driver update time.
-   } //if
    checkOledButtons();
 } // loop()  
