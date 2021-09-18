@@ -31,7 +31,8 @@ typedef struct
 legStruct leg[numDrivers][numLegs];
 int8_t legDirIndex = 0; // What the legs are currently doing.
 int8_t const legDirCnt = 10; // Number of things legs know how to do.
-String legDirExpl[legDirCnt]; // Explanation of what each directive means. 
+String legDirExpl[legDirCnt]; // Explanation of what each directive means.
+bool legStatus = false; 
 
 /**
  * @brief Put leg in neutral position.
