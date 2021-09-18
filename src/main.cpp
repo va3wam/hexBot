@@ -86,11 +86,13 @@ void setup()
    if(motorController1Connected == true && motorController2Connected == true) // If servo drivers found on I2C bus.
    {
       Serial.println("<setup> Initialize servo drivers.");
-      initServo();   
+      legStatus = true; 
+      initServo();  
    } // if
    else // If servo drivers found on I2C bus.
    {
       Serial.println("<setup> One or more servo drivers not connencted to I2C bus. No motion is possible.");
+      legStatus = false;
    } //else
    showCfgDetails(); // Show all configuration details in one summary.
    timer = millis(); // Timer for motor driver signalling.
