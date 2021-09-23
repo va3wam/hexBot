@@ -68,7 +68,12 @@ In addition to the parts above you will also need
     </td>
     <td align ="left"> 
        Hexbot has a total of 18 leg joints. These leg joints are 
-       <a href="https://components101.com/motors/mg996r-servo-motor-datasheet">MG996R Servo motors</a>. 
+       <a href="https://components101.com/motors/mg996r-servo-motor-datasheet">MG996R Servo motors</a>. The applied voltage of this motor should be in range of 4.8 to 7.2V. The frequency of motor is 50 Hz and the PWM duty cycle is 20 milliseconds. This motor has 3 pins as follows:
+      <ul>
+         <li>PWM: Orange</li>
+         <li>VCC: Red</li>
+         <li>GND: Brown</li>
+      </ul>
     </td>   
   </tr>
 </table>  
