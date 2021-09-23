@@ -6,6 +6,7 @@
 #include <Wire.h> // I2C communication.
 #include <Adafruit_PWMServoDriver.h> // https://github.com/adafruit/Adafruit-PWM-Servo-Driver-Library.
 #include <main.h> // Header file for all libraries needed by this program.
+#include <InverseK.h> // Leg movement algorithms.
 
 #define SERVO_FREQ 50 // Analog servos run at ~50 Hz updates.
 #define servoMiddlePWM 300 // 90 degree or center position of servo motor.
@@ -164,5 +165,49 @@ void initServo()
       } // for
    } // for
 } // initServo()
+
+/**
+ * @brief Initialize robot legs.
+ * 
+ * @details We use a 2D inverse kinematic model to manipulate the robot's
+ * legs. We treat the knee joint as the model origin coordinates x=0mm, y=0mm.
+ * We rotate the knee and ankle joints to position the toe joint in a 
+ * cartesian coordinate system. X values for the right legs are positive. X
+ * values for left legs are negative. Y values are positive above the knee and
+ * negative below the knee for both left and right legs. Since this model 
+ * four joints to be defined we create a fake hip joint that is in the exact 
+ * same position as the knee. This is not how things work in reality but it is 
+ * a hack that lets us use this model for our robot.
+ * ==========================================================================*/
+void initLeg()
+{
+   Serial.println("<initleg> Define reverse kinematic model for leg.");
+   float _45degreesInRadians = 0.785398163; // 45 degrees in radians.
+   float _135degreesInRadians = 0.235619449; // 135 degrees in radians.
+   float hipJointDist = 0; // Hip joint is origin so distance is 0mm.
+   float kneeJointDist = 0; // Knee joint is also origin so distance is 0mm.
+   float ankleJointDist = 76.19977; // Ankle joint to origin in mm.
+   float toeJointDist = 110.67793; // Toe joint to origin in mm.
+   float hipMinAngle = 0; // Min angle of hip joint in radians.
+   float hipMaxAngle = 0; // Max angle of knee joint in radians.
+   float kneeMinAngle = _45degreesInRadians; // Min angle of knee joint in radians.
+   float kneeMaxAngle = _135degreesInRadians; // Max angle of knee joint in radians.
+   float ankleMinAngle = _45degreesInRadians; // Min angle of ankle joint in radians.
+   float ankleMaxAngle = _135degreesInRadians; // Max angle of ankle joint in radians.
+   float toeMinAngle = 0; // Min angle of toe in radians.
+   float toeMaxAngle = 0; // Max angle of toe in radians.
+   Link hip, knee, ankle, toe; // Declare key points along leg as links.
+   knee.init(kneeJointDist, kneeMinAngle, kneeMaxAngle); // Init knee joint.
+   ankle.init(ankleJointDist, ankleMinAngle, ankleMaxAngle); // Init ankle joint.
+   toe.init(toeJointDist, toeMinAngle, toeMaxAngle); // Init toe joint.
+   InverseK.attach(hip, knee, ankle, toe); // Attach links to kinematic model.
+} // initLeg()
+
+/**
+ * @brief Calculate angles for leg joints.
+ * ==========================================================================*/
+void calcAngles()
+{
+} // calcAngles()
 
 #endif // End of precompiler protected code block

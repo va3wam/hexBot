@@ -40,7 +40,6 @@
  *****************************************************************************/
 #include <main.h> // Header file for all libraries needed by this program.
 unsigned long timer; // Milli count for next action.
-//int32_t cadencePeriod = 2000; // How long between phases in millis.
 
 /**
  * @brief Standard Arduino initialization routine.
@@ -87,7 +86,8 @@ void setup()
    {
       Serial.println("<setup> Initialize servo drivers.");
       legStatus = true; 
-      initServo();  
+      initServo(); // Put servos into starting position.  
+      initLeg(); // Initilize inverse kinetic model of leg.
    } // if
    else // If servo drivers found on I2C bus.
    {
