@@ -86,8 +86,8 @@ void setup()
    {
       Serial.println("<setup> Initialize servo drivers.");
       legStatus = true; 
-      initServo(); // Put servos into starting position.  
-      initLeg(); // Initilize inverse kinetic model of leg.
+      initServos(); // Put servos into starting position.  
+      initLegs(); // Initilize inverse kinetic model of legs.
    } // if
    else // If servo drivers found on I2C bus.
    {
@@ -95,6 +95,7 @@ void setup()
       legStatus = false;
    } //else
    showCfgDetails(); // Show all configuration details in one summary.
+   moveLeg(0, 0, 120, 0, 70); // drive, leg, x, y, z
    timer = millis(); // Timer for motor driver signalling.
    Serial.println("<setup> End of setup."); 
 } // setup()

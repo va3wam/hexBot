@@ -17,17 +17,36 @@
 Adafruit_PWMServoDriver pwmDriver[numDrivers]; // Servo driver object.
 uint16_t pwmClkStart = 0; // Start value of count-up PWM high signal.
 uint32_t oscFreq = 27000000; // Frequency of oscilator on motor driver. 
+float const _45degreesInRadians = 0.785398163; // 45 degrees in radians.
+float const _135degreesInRadians = 0.235619449; // 135 degrees in radians.
+float hipAngle, kneeAngle, ankleAngle, toeAngle; // Holds results of last calcAngles.
 typedef struct
 {
-     String description; 
-     int8_t driverAdd;
-     int8_t hipPinNum;
-     int8_t kneePinNum;
-     int8_t toePinNum;
-     int16_t maxUp;
-     int16_t maxDown;
-     int16_t maxFront;
-     int16_t maxBack;
+      String description; 
+      int8_t driverAdd;
+      int8_t hipPinNum;
+      int8_t kneePinNum;
+      int8_t toePinNum;
+      int16_t maxUp;
+      int16_t maxDown;
+      int16_t maxFront;
+      int16_t maxBack;
+      float const hipJointDist = 0; // Hip joint is origin so distance is 0mm.
+      float const kneeJointDist = 0; // Knee joint is also origin so distance is 0mm.
+      float const ankleJointDist = 76.19977; // Ankle joint to origin in mm.
+      float const toeJointDist = 110.67793; // Toe joint to origin in mm.
+      float const hipMinAngle = 0; // Min angle of hip joint in radians.
+      float const hipMaxAngle = 0; // Max angle of knee joint in radians.
+      float const kneeMinAngle = _45degreesInRadians; // Min angle of knee joint in radians.
+      float const kneeMaxAngle = _135degreesInRadians; // Max angle of knee joint in radians.
+      float const ankleMinAngle = _45degreesInRadians; // Min angle of ankle joint in radians.
+      float const ankleMaxAngle = _135degreesInRadians; // Max angle of ankle joint in radians.
+      float const toeMinAngle = 0; // Min angle of toe in radians.
+      float const toeMaxAngle = 0; // Max angle of toe in radians.
+      Link hip; // Declare hip as key link point along leg. 
+      Link knee; // Declare knee as key link point along leg.
+      Link ankle; // Declare ankle as key link point along leg.
+      Link toe; // Declare toe as key link point along leg.
 }legStruct;
 legStruct leg[numDrivers][numLegs];
 int8_t legDirIndex = 0; // What the legs are currently doing.
@@ -66,7 +85,7 @@ void startPositionLegs(int8_t driverNum, int8_t legNum)
 /**
  * @brief Initialize serv motor control.
  * ==========================================================================*/
-void initServo() 
+void initServos() 
 {
    int8_t driver; // Left or right driver number
    int8_t legNum; // Front, middle or back leg on specific side
@@ -164,12 +183,12 @@ void initServo()
          startPositionLegs(driverNum, legNum); // Put leg into starting position 
       } // for
    } // for
-} // initServo()
+} // initServos()
 
 /**
  * @brief Initialize robot legs.
  * 
- * @details We use a 2D inverse kinematic model to manipulate the robot's
+ * @details We use an inverse kinematic model to manipulate the robot's
  * legs. We treat the knee joint as the model origin coordinates x=0mm, y=0mm.
  * We rotate the knee and ankle joints to position the toe joint in a 
  * cartesian coordinate system. X values for the right legs are positive. X
@@ -179,35 +198,103 @@ void initServo()
  * same position as the knee. This is not how things work in reality but it is 
  * a hack that lets us use this model for our robot.
  * ==========================================================================*/
-void initLeg()
+void initLegs()
 {
-   Serial.println("<initleg> Define reverse kinematic model for leg.");
-   float _45degreesInRadians = 0.785398163; // 45 degrees in radians.
-   float _135degreesInRadians = 0.235619449; // 135 degrees in radians.
-   float hipJointDist = 0; // Hip joint is origin so distance is 0mm.
-   float kneeJointDist = 0; // Knee joint is also origin so distance is 0mm.
-   float ankleJointDist = 76.19977; // Ankle joint to origin in mm.
-   float toeJointDist = 110.67793; // Toe joint to origin in mm.
-   float hipMinAngle = 0; // Min angle of hip joint in radians.
-   float hipMaxAngle = 0; // Max angle of knee joint in radians.
-   float kneeMinAngle = _45degreesInRadians; // Min angle of knee joint in radians.
-   float kneeMaxAngle = _135degreesInRadians; // Max angle of knee joint in radians.
-   float ankleMinAngle = _45degreesInRadians; // Min angle of ankle joint in radians.
-   float ankleMaxAngle = _135degreesInRadians; // Max angle of ankle joint in radians.
-   float toeMinAngle = 0; // Min angle of toe in radians.
-   float toeMaxAngle = 0; // Max angle of toe in radians.
-   Link hip, knee, ankle, toe; // Declare key points along leg as links.
-   knee.init(kneeJointDist, kneeMinAngle, kneeMaxAngle); // Init knee joint.
-   ankle.init(ankleJointDist, ankleMinAngle, ankleMaxAngle); // Init ankle joint.
-   toe.init(toeJointDist, toeMinAngle, toeMaxAngle); // Init toe joint.
-   InverseK.attach(hip, knee, ankle, toe); // Attach links to kinematic model.
-} // initLeg()
+   Serial.println("<initleg> Define reverse kinematic model for legs.");
+   for(int8_t driverNum = 0; driverNum < 2; driverNum++) // Loop through drivers
+   {
+      Serial.print("<initleg> Driver number "); Serial.println(driverNum);
+      for(int8_t legNum = 0; legNum < 3; legNum++) // Loop through motors
+      {
+         Serial.print("<initleg> ... Leg number "); Serial.println(legNum);
+
+         leg[driverNum][legNum].knee.init(leg[driverNum][legNum].kneeJointDist, 
+                                          leg[driverNum][legNum].kneeMinAngle, 
+                                          leg[driverNum][legNum].kneeMaxAngle); // Init knee joint. 
+         leg[driverNum][legNum].ankle.init(leg[driverNum][legNum].ankleJointDist, 
+                                           leg[driverNum][legNum].ankleMinAngle, 
+                                           leg[driverNum][legNum].ankleMaxAngle); // Init ankle joint.
+         leg[driverNum][legNum].toe.init(leg[driverNum][legNum].toeJointDist, 
+                                         leg[driverNum][legNum].toeMinAngle, 
+                                         leg[driverNum][legNum].toeMaxAngle); // Init toe joint.
+         Serial.print("<initleg> ...... Knee distance = "); 
+         Serial.println(leg[driverNum][legNum].kneeJointDist);
+         Serial.print("<initleg> ...... Ankle distance = "); 
+         Serial.println(leg[driverNum][legNum].ankleJointDist);
+         Serial.print("<initleg> ...... Toe distance = "); 
+         Serial.println(leg[driverNum][legNum].toeJointDist);
+      } // for
+   } // for   
+} // initLegs()
 
 /**
- * @brief Calculate angles for leg joints.
+ * @brief Calculate angles for the leg joint in order to move toe to target 
+ *        coordinates in a 3 axis cartesian grid.
+ * @param driverNum is the number referring to which servo motor driver 
+ *                  controls the current leg. Valid values are 0 or 1.
+ * @param legNum is the number referring to which leg we are currently working 
+ *               on. Valid leg numbers are 0-2.
+ * @param _x_ is the target x coordinate we want to move to.
+ * @param _y_ is the target y coordinate we want to move to.
+ * @param _z_ is the target z coordinate we want to move to.
+ * @return TRUE if there is a valid solution or FALSE if there is not.
  * ==========================================================================*/
-void calcAngles()
+bool calcAngles(int8_t driverNum, int8_t legNum, float _x_, float _y_, float _z_)
 {
+   InverseK.attach(leg[driverNum][legNum].hip, 
+                     leg[driverNum][legNum].knee, 
+                     leg[driverNum][legNum].ankle, 
+                     leg[driverNum][legNum].toe); // Attach links to kinematic model.
+   return InverseK.solve(_x_, 
+                  _y_, 
+                  _z_, 
+                  hipAngle, 
+                  kneeAngle, 
+                  ankleAngle, 
+                  toeAngle); // this returns TRUE or FALSE
+} // calcAngles()
+
+/**
+ * @brief Move specified leg to specified coordinates.
+ * @param driverNum is the number referring to which servo motor driver 
+ *                  controls the current leg. Valid values are 0 or 1.
+ * @param legNum is the number referring to which leg we are currently working 
+ *               on. Valid leg numbers are 0-2.
+ * @param _x_ is the target x coordinate we want to move to.
+ * @param _y_ is the target y coordinate we want to move to.
+ * @param _z_ is the target z coordinate we want to move to.
+ * @return TRUE if leg moves and FALSE if it does not.
+ * ==========================================================================*/
+bool moveLeg(int8_t driverNum, int8_t legNum, float _x_, float _y_, float _z_)
+{
+   bool x = calcAngles(driverNum, legNum, _x_, _y_, _z_); 
+   if(x == true)
+   {
+      Serial.print("<moveLeg> Moving leg ");
+      Serial.print(legNum);
+      Serial.print(" on driver ");
+      Serial.print(driverNum);
+      Serial.print(" to x = ");
+      Serial.print(_x_);
+      Serial.print(", y = ");
+      Serial.print(_y_);
+      Serial.print(", z = ");
+      Serial.println(_z_);
+   } // if
+   else
+   {
+      Serial.print("<moveLeg> Leg ");
+      Serial.print(legNum);
+      Serial.print(" on driver ");
+      Serial.print(driverNum);
+      Serial.print(" cannot move to x = ");
+      Serial.print(_x_);
+      Serial.print(", y = ");
+      Serial.print(_y_);
+      Serial.print(", z = ");
+      Serial.println(_z_);
+   } //else
+   return x;
 } // calcAngles()
 
 #endif // End of precompiler protected code block
