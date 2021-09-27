@@ -45,9 +45,9 @@ void identifyDevice(int deviceAddress);
 void scanBus0(); // ID devices connected to I2C bus0.
 void scanBus1(); //  ID devices connected to I2C bus1.
 void initServo(); // Initialize serv motor control.
-void updatePhase();  // Basic test routing for servo motors.
 void initOled(); // Set up OLED.
-void checkOledButtons(); // Check oled buttons. 
+void checkOledButtons(); // Check oled buttons to see if they have been pressed. 
+void displayLegScreen(); // Display what legs are doing on oled.
 void setup(); // Arduino mandatory function #1. Runs once at boot. 
 void loop(); // Arduino mandatory function #2. Runs continually.
 

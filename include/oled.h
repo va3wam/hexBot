@@ -79,7 +79,6 @@ void placeTextHcentre(String msg, uint8_t fontSize, uint16_t fontColour)
  * ==========================================================================*/
 void displaySplashScreen() 
 {
-   
    display.clearDisplay(); // Clear the buffer.
    display.display(); // Display cleared buffer.
    display.setRotation(1); // Not sure what this does but its in the example.
@@ -88,6 +87,30 @@ void displaySplashScreen()
    yield(); // Not sure what this does but was in example.     
    display.display(); // Actually display all of the above
 } // displaySplashScreen()
+
+/**
+ * @brief Display what the legs are doing.
+ * ==========================================================================*/
+void displayLegScreen() 
+{
+   display.clearDisplay();
+   display.setCursor(0, 0);
+   placeTextHcentre("Leg Tracking", 1, SH110X_WHITE);
+   display.print("\nStatus: ");
+   if(legStatus == true)
+   {
+      display.println("OK");
+   } // if
+   else
+   {
+      display.println("ERR");
+   } // else
+   display.print("Goal: ");
+   display.println(legDirExpl[legDirIndex]);
+   delay(10);
+   yield();      
+   display.display(); // actually display all of the above   
+} // displayLegScreen()
 
 /**
  * @brief Check to see if any of the OLED buttons have been pressed.
@@ -111,14 +134,7 @@ void checkOledButtons()
    if(buttonB_flag == true)
    {
       buttonB_flag = false; 
-      display.clearDisplay();
-      display.setCursor(0, 0);
-      placeTextHcentre("Leg Tracking", 1, SH110X_WHITE);
-      display.print("\nGoal: ");
-      display.print(legDirExpl[legDirIndex]);
-      delay(10);
-      yield();      
-      display.display(); // actually display all of the above   
+      displayLegScreen();
    } // if
    if(buttonC_flag == true)
    {
