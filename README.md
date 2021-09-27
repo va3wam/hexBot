@@ -17,12 +17,6 @@ Here is an index of links to helpful documents found in this repository.
 * Hexbot [assembly instructions](/docs/hexbotAssembly.md).
 * How to [wire the motors](/docs/wireMotors.md).
 
-## Development Software Stack
-* How to [clone](/docs/cloneRepository.md) the Hexbot gitHub repository.
-* Sample [platformio.ini](AA/platformIO-MAC-example.txt) template.
-* Set up [PlatformIO](https://github.com/va3wam/hexBot/blob/main/docs/cloneRepository.md#set-up-platformio).
-* Recommended Visual Studio Code [plugins](https://github.com/va3wam/hexBot/blob/main/docs/cloneRepository.md#visual-studio-code-plugins).
-
 ## Hexbot User Guides
 * Hexbot's [Web interface](/docs/hexbotWebInterface.md).
 * How to [configure NVRAM remotely](/docs/hexbotWebInterface.md#config-updater-screen).
@@ -40,6 +34,13 @@ In order to make use of the code in this repository you will require the followi
 * The [Hexbot custom PCB](/docs/hexbotCircuit.md).
 * An [MQTT broker](/docs/MQTTbroker.md) used by the robot's [MQTT web interface](/docs/hexbotWebInterface.md).  
 * A [clone](/docs/cloneRepository.md) of the Hexbot gitHub repository into your own local Git repository.
+
+### Development Software Stack
+
+* How to [clone](/docs/cloneRepository.md) the Hexbot gitHub repository.
+* Sample [platformio.ini](AA/platformIO-MAC-example.txt) template.
+* Set up [PlatformIO](https://github.com/va3wam/hexBot/blob/main/docs/cloneRepository.md#set-up-platformio).
+* Recommended Visual Studio Code [plugins](https://github.com/va3wam/hexBot/blob/main/docs/cloneRepository.md#visual-studio-code-plugins).
 
 ### Code Compatability
 
@@ -78,6 +79,10 @@ of conduct, and the process for submitting pull requests to us.
 ### Versioning
 
 We use [Semantic Versioning](http://semver.org/) in naming the [releases](https://github.com/va3wam/hexaBot/releases) of this code base. 
+
+# Kinematic Model
+
+Hexbot uses an inverse kinematic model to manipulate it's legs. To learn more about our implementation of an inverse kinematic model look <a href="/docs/kinematicModel.md">here</a>.
 
 # Authors
 
