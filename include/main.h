@@ -15,9 +15,10 @@
 #include <aaFlash.h> // Use Flash memory to store values that persist past reboot.
 #include <aaMqtt.h> // Use MQTT for remote management and monitoring.
 #include <known_networks.h> // String arrays of known Access Points and their passwords.
-#include <InverseK.h> // https://github.com/cgxeiji/CGx-InverseK
-#include <Wire.h> // Required for I2C communication
+#include <InverseK.h> // https://github.com/cgxeiji/CGx-InverseK.
+#include <Wire.h> // Required for I2C communication.
 #include <Adafruit_PWMServoDriver.h> // https://github.com/adafruit/Adafruit-PWM-Servo-Driver-Library.
+#include <ArduinoLog.h> // https://github.com/thijse/Arduino-Log.
 /*******************************************************************************
  * @section codeModules Functions put into files according to function.
  * @details Order functions here in a way that ensures that variables get 

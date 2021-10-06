@@ -148,9 +148,9 @@ void checkOledButtons()
  * ==========================================================================*/
 void initOled() 
 {
-   Serial.println("<initOled> 128x64 OLED FeatherWing test");
+   Log.verboseln("<initOled> 128x64 OLED FeatherWing test");
    display.begin(0x3C, true); // Address 0x3C default
-   Serial.println("<initOled> OLED begun");
+   Log.verboseln("<initOled> OLED begun");
    pinMode(BUTTON_A, INPUT_PULLUP); // Make button A pin input with weak pullup.
    pinMode(BUTTON_B, INPUT_PULLUP); // Make button B pin input with weak pullup.
    pinMode(BUTTON_C, INPUT_PULLUP); // Make button C pin input with weak pullup.
