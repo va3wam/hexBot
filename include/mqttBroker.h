@@ -3,7 +3,9 @@
 #define connectToMqttBroker_h // Precompiler macro used for precompiler check.
 
 #include <main.h> // Header file for all libraries needed by this program.
-#include <showCfgDetails.h> // Wifi functions. 
+#include <configDetails.h> // Wifi functions. 
+#include <aaStringQueue.h> // Required for string buffer to hold incoming commands.
+#include <aaFormat.h> //
 
 aaFlash flash; // Non-volatile memory management. 
 aaMqtt mqtt; // Publish and subscribe to MQTT broker. 
@@ -72,6 +74,41 @@ bool connectToMqttBroker(aaNetwork &network)
    return true;
 } //connectToMqttBroker()
 
+/**
+ * @brief Process the incoming command.
+ * =================================================================================*/
+bool processCmd(String payload)
+{
+   aaFormat format;
+   String ucPayload = format.stringToUpper(payload);
+   const int8_t maxArg = 20; // Allow 1 cmd and up to 19 args in an MQTT message.
+   String arg[maxArg]; // arg[0] = cmd, arg[1] = 1st argument, arg[2] = second ...
+   int argN = 0; // argument number that we're working on
+   int argStart = 0; // character number where current argument starts
+   int argEnd = ucPayload.indexOf(",",argStart);  // position of comma at end of cmd
+   // Parse comma delimited message into array elements 
+   while(argEnd >= 0) // .indexOf returns -1 if no string found
+   {  arg[argN] = ucPayload.substring(argStart,argEnd);  // extract the current argument
+      argN ++ ; // advance the argument counter
+      argStart = argEnd + 1; // next arg starts after previous arg's delimiting comma
+      argEnd = ucPayload.indexOf(",",argStart); // find next arg's delimiting comma
+   } // while            
+   arg[argN] = ucPayload.substring(argStart,argEnd); // last argument has no comma 
+                                                     // delimiter. argN ends up as a 
+                                                     // count of the number of 
+                                                     // arguments, excluding the command
+
+   String cmd = arg[0]; // first comma separated value in payload is the command
+   if(cmd == "TEST")
+   {
+      Serial.println("<processCmd> Recieved test command."); 
+      return true;
+   }  // if 
+
+   Serial.println("<processCmd> Warning - unrecognized command."); 
+   return false;
+} // processCmd()
+
 /** 
  * @brief Return the MQTT broker IP address.
  * =================================================================================*/
@@ -79,5 +116,27 @@ IPAddress getMqttBrokerIP()
 {
    return brokerIP;
 } // getMqttBrokerIP()
+
+/** 
+ * @brief Check to see if any MQTT commands have come in from the broker.
+ * =================================================================================*/
+void checkMqtt()
+{
+   String cmd = mqtt.getCmd();
+   if(cmd != "")
+   {
+      Serial.print("<checkMqtt> cmd = ");
+      Serial.println(cmd);
+      bool allIsWell = processCmd(cmd);
+      if(allIsWell)
+      {
+         Serial.println("<checkMqtt> All went well.");
+      } // if 
+      else
+      {
+         Serial.println("<checkMqtt> Something went wrong.");
+      } // if 
+   } // if   
+} // checkMqtt()
 
 #endif // End of precompiler protected code block

@@ -40,6 +40,7 @@
  * IN THE SOFTWARE.  
  *****************************************************************************/
 #include <aaMqtt.h> // Header file for linking.
+#include <aaStringQueue.h> // Required for string buffer to hold incoming commands.
 
 /************************************************************************************
  * @section mqttGlobalVariables Define global variables. Redo like below. 
@@ -52,6 +53,7 @@ static AsyncMqttClient mqttClient; // Instantiate MQTT object.
 static const char*  cmdTopicMQTT = "NOTHING"; // Full path to incoming command topic from MQTT broker.
 static uint8_t MQTT_QOS = 1; // use Quality of Service level 1 or 0? (0 has less overhead).
 static bool _mqttConnected;
+aaStringQueue cmdQueue; // Instantiate the command queue.
 
 /************************************************************************************
  * @section mqttDefineConstants Define constants. 
@@ -252,7 +254,36 @@ void aaMqtt::onMqttMessage(char *topic, char *payload, AsyncMqttClientMessagePro
    String tmp = String(payload).substring(0, len);
    Serial.print("<onMqttMessage> Message to process = ");
    Serial.println(tmp);
+   char msg[30]; // Used to hold message converted from const.
+   strcpy(msg, tmp.c_str()); // Convert const char* to char*;
+   Serial.print("<onMqttMessage> msg = ");
+   Serial.println(msg);
+   cmdQueue.push(msg); // Push message onto FIFO buffer stack.
+   cmdQueue.dumpBuffer();
 } // aaMqtt::onMqttMessage()
+
+/**
+ * @brief Event handler for the ACK from a published message.
+ * @param uint16_t Packet Id of message that was published.
+ =============================================================================*/
+String aaMqtt::getCmd()
+{
+   if(cmdQueue.isEmpty())
+   {
+      return "";
+   } // if
+   else
+   {
+      int8_t strSize = cmdQueue.getMaxBufferSize();
+      char str[strSize];
+      cmdQueue.pop(str);
+      Serial.print("<aaMqtt::getCmd> Size of string = ");
+      Serial.println(strSize);
+      Serial.print("<aaMqtt::getCmd> Command pulled from buffer = ");
+      Serial.println(String(str));
+      return String(str);
+   } // else
+} // aaMqtt::getCmd()
 
 /**
  * @brief Event handler for the ACK from a published message.

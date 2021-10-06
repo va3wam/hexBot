@@ -40,6 +40,7 @@ class aaMqtt // Indicate that we are extending LiquidCrystal_I2C class with our 
       static void publishEvent(int evtId, int evtSev, String evtMsg);
       static void onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total);
       static void onMqttPublish(uint16_t packetId);
+      static String getCmd(); // Checks if there is a command in the queue returns the command or "" is there is not.
    private: 
 }; //class aaMqtt
 

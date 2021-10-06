@@ -107,4 +107,5 @@ void loop()
 {
    monitorWebServer(); // Handle any pending web client requests. 
    checkOledButtons();
+   checkMqtt();
 } // loop()  
