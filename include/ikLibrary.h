@@ -6,7 +6,7 @@
 #include <Wire.h> // I2C communication.
 #include <Adafruit_PWMServoDriver.h> // https://github.com/adafruit/Adafruit-PWM-Servo-Driver-Library.
 #include <main.h> // Header file for all libraries needed by this program.
-#include <InverseK.h> // Leg movement algorithms.
+#include <InverseK.h> // Inverse kinematic library for leg movement algorithms.
 
 #define SERVO_FREQ 50 // Analog servos run at ~50 Hz updates.
 #define servoMiddlePWM 300 // 90 degree or center position of servo motor.
