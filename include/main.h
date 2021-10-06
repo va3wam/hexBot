@@ -26,12 +26,12 @@
 #include <huzzah32_gpio_pins.h> // Map pins on Adafruit Huzzah32 dev board to friendly names.
 #include <hexbot_gpio_pins.h> // Map Hexbot specific pin naming to generic development board pin names. 
 #include <setupSerial.h> // Serial port initialization.
-#include <showCfgDetails.h> // Show the environment details of this application.
+#include <configDetails.h> // Show the environment details of this application.
 #include <startWebServer.h> // Start up the web server service. 
-#include <connectToMqttBroker.h> // Establish connect to the the MQTT broker.
+#include <mqttBroker.h> // Establish connect to the the MQTT broker.
 #include <monitorWebServer.h> // Monitor the web server service.
 #include <i2c.h> // Scan I2C buses to see what devices are present.
-#include <servo.h> // Control servo motors.
+#include <ikLibrary.h> // Control servo motors using InverseK.h.
 #include <oled.h> // Control OLED.
 /************************************************************************************
  * @section mainDeclare Declare functions.
