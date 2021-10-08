@@ -20,51 +20,51 @@ int8_t displayPage = 1;
  * =================================================================================*/
 void showCfgDetails()
 {
-   Serial.println("<showCfgDetails> Robot Configuration Report");
-   Serial.println("<showCfgDetails> ==========================");
+   Log.verboseln("<showCfgDetails> Robot Configuration Report");
+   Log.verboseln("<showCfgDetails> ==========================");
    appCpu.cfgToConsole(); // Display core0 information on the console.
    if(networkConnected == true)
    {
-      Serial.println("<showCfgDetails> Network connection status = TRUE");
+      Log.verboseln("<showCfgDetails> Network connection status = TRUE");
       network.cfgToConsole(); // Display network information on the console.
       if(mqttBrokerConnected == true)
       {
-         Serial.println("<showCfgDetails> MQTT broker connection status = TRUE");
-         Serial.print("<showCfgDetails> MQTT broker IP address = ");
-         Serial.println(getMqttBrokerIP());
+         Log.verboseln("<showCfgDetails> MQTT broker connection status = TRUE");
+         Log.verbose("<showCfgDetails> MQTT broker IP address = ");
+         Log.verboseln(getMqttBrokerIP());
       } // if
       else
       {
-         Serial.println("<showCfgDetails> MQTT broker connection status = FALSE");
+         Log.verboseln("<showCfgDetails> MQTT broker connection status = FALSE");
       } // else
    } // if
    else
    {
-      Serial.println("<showCfgDetails> Network connection status = FALSE");
+      Log.verboseln("<showCfgDetails> Network connection status = FALSE");
    } // else
    if(oledConnected == true)
    {
-      Serial.println("<showCfgDetails> OLED connection status = TRUE.");
+      Log.verboseln("<showCfgDetails> OLED connection status = TRUE.");
    } // if
    else
    {
-      Serial.println("<showCfgDetails> OLED connection status = FALSE.");
+      Log.verboseln("<showCfgDetails> OLED connection status = FALSE.");
    } // else
    if(motorController1Connected == true)
    {
-      Serial.println("<showCfgDetails> Left servo driver connection status = TRUE.");
+      Log.verboseln("<showCfgDetails> Left servo driver connection status = TRUE.");
    } // if
    else
    {
-      Serial.println("<showCfgDetails> Left servo driver connection status = FALSE.");
+      Log.verboseln("<showCfgDetails> Left servo driver connection status = FALSE.");
    } // else
    if(motorController2Connected == true)
    {
-      Serial.println("<showCfgDetails> Right servo driver connection status = TRUE.");
+      Log.verboseln("<showCfgDetails> Right servo driver connection status = TRUE.");
    } // if
    else
    {
-      Serial.println("<showCfgDetails> Right servo driver connection status = FALSE.");
+      Log.verboseln("<showCfgDetails> Right servo driver connection status = FALSE.");
    } // else
 } //showCfgDetails()
 
@@ -78,15 +78,14 @@ void displayCfgDetails(int8_t menuToShow)
    switch (menuToShow) 
    {
       case 2:
-         Serial.println("<displayCfgDetails> Display second menu.");
+         Log.verboseln("<displayCfgDetails> Display second menu.");
          break;
       case 3:
-         Serial.println("<displayCfgDetails> Display third menu.");
+         Log.verboseln("<displayCfgDetails> Display third menu.");
          break;
       default:
-         Serial.println("<displayCfgDetails> Display first menu.");
+         Log.verboseln("<displayCfgDetails> Display first menu.");
          break;
    } // switch
-
 } // displayCfgDetails()
 #endif // End of precompiler protected code block

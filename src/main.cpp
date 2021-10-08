@@ -40,64 +40,65 @@
  *****************************************************************************/
 #include <main.h> // Header file for all libraries needed by this program.
 unsigned long timer; // Milli count for next action.
-
+// TODO #23 Convert all serial print code to  use Arduino Log library. 
 /**
  * @brief Standard Arduino initialization routine.
  * ==========================================================================*/
 void setup() 
 {
    setupSerial(); // Set serial baud rate. 
-   Serial.println("<setup> Start of setup.");  
+   Log.begin(LOG_LEVEL_VERBOSE, &Serial);
+   Log.traceln("<setup> Start of setup.");  
    Wire.begin(I2C_bus0_SDA, I2C_bus0_SCL, I2C_bus0_speed); // Init I2C bus0.
    network.connect(); // Start WiFi connection.
    if(network.areWeConnected() == true) // If we are on the WiFi network.
    {
       networkConnected = true;
-      Serial.println("<setup> Connection to network successfully estabished.");
+      Log.noticeln("<setup> Connection to network successfully estabished.");
       startWebServer(); // Start up web server.
       bool tmp = connectToMqttBroker(network); // Connect to MQTT broker.
       if(tmp == true) // If we found an MQTT broker.
       {
          mqttBrokerConnected = true;
-         Serial.println("<setup> Connection to MQTT broker successfully established.");
+         Log.noticeln("<setup> Connection to MQTT broker successfully established.");
       } // if
       else // If we did not find a valid MQTT broker.
       {
          mqttBrokerConnected = false;
-         Serial.println("<setup> Connected to MQTT broker failed.");
+         Log.warningln("<setup> Connected to MQTT broker failed.");
       } // else
    } // if
    else // If we are NOT on the WiFi network.
    {
       networkConnected = false;
-      Serial.println("<setup> Not connencted to the network. No MQTT or web interface.");
+      Log.warningln("<setup> Not connencted to the network. No MQTT or web interface.");
    } // else
    scanBus0(); // Scan bus0 and show connected devices.
    if(oledConnected == true) // If an OLED was found on the I2C bus.
    {
-      Serial.println("<setup> Initialize OLED.");
+      Log.noticeln("<setup> Initialize OLED.");
       initOled();
    } // if
    else // If an OLED was NOT found on the I2C bus.
    {
-      Serial.println("<setup> OLED not connencted to I2C bus. No OLED messages to be issued.");
+      Log.warningln("<setup> OLED not connencted to I2C bus. No OLED messages to be issued.");
    } //else
    if(motorController1Connected == true && motorController2Connected == true) // If servo drivers found on I2C bus.
    {
-      Serial.println("<setup> Initialize servo drivers.");
+      Log.noticeln("<setup> Initialize servo drivers.");
       legStatus = true; 
-      initServos(); // Put servos into starting position.  
-      initLegs(); // Initilize inverse kinetic model of legs.
+      initServos(); // Put servos into starting position. May replace with Doug's stuff. 
+      initLegs(); // Initilize inverse kinetic model of legs. May replace with Doug's stuff.
    } // if
    else // If servo drivers found on I2C bus.
    {
-      Serial.println("<setup> One or more servo drivers not connencted to I2C bus. No motion is possible.");
+      Log.warningln("<setup> One or more servo drivers not connencted to I2C bus. No motion is possible.");
       legStatus = false;
    } //else
    showCfgDetails(); // Show all configuration details in one summary.
-   moveLeg(0, 0, 120, 0, 70); // drive, leg, x, y, z
+//   moveLeg(0, 0, 120, 0, 70); // drive, leg, x, y, z
    timer = millis(); // Timer for motor driver signalling.
-   Serial.println("<setup> End of setup."); 
+   Log.traceln("<setup> End of setup."); 
 } // setup()
 
 /**
@@ -106,6 +107,6 @@ void setup()
 void loop() 
 {
    monitorWebServer(); // Handle any pending web client requests. 
-   checkOledButtons();
-   checkMqtt();
+   checkOledButtons(); // Check if an OLED button has been pressed.
+   checkMqtt(); // Check the MQTT message queue for incoming commands.
 } // loop()  
