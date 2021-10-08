@@ -40,7 +40,7 @@
  *****************************************************************************/
 #include <main.h> // Header file for all libraries needed by this program.
 unsigned long timer; // Milli count for next action.
-
+// TODO #23 Convert all serial print code to  use Arduino Log library. 
 /**
  * @brief Standard Arduino initialization routine.
  * ==========================================================================*/
