@@ -34,6 +34,7 @@
 #include <i2c.h> // Scan I2C buses to see what devices are present.
 #include <ikLibrary.h> // Control servo motors using InverseK.h.
 #include <oled.h> // Control OLED.
+#include <daeIK.h> // Doug's inverted kinetics functions. 
 /************************************************************************************
  * @section mainDeclare Declare functions.
  ************************************************************************************/
