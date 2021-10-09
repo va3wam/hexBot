@@ -40,7 +40,7 @@
  *****************************************************************************/
 #include <main.h> // Header file for all libraries needed by this program.
 unsigned long timer; // Milli count for next action.
-// TODO #23 Convert all serial print code to  use Arduino Log library. 
+// TODO #25 Add Doug's routines for Inverse Kinematics
 /**
  * @brief Standard Arduino initialization routine.
  * ==========================================================================*/
@@ -96,7 +96,8 @@ void setup()
       legStatus = false;
    } //else
    showCfgDetails(); // Show all configuration details in one summary.
-//   moveLeg(0, 0, 120, 0, 70); // drive, leg, x, y, z
+//   moveLeg(0, 0, 120, 0, 70); // Arduino IK routines.
+   testDaeIKFunctions(); // Doug's IK routines.
    timer = millis(); // Timer for motor driver signalling.
    Log.traceln("<setup> End of setup."); 
 } // setup()
