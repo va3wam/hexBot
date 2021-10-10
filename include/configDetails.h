@@ -4,7 +4,6 @@
 
 #include <main.h> // Header file for all libraries needed by this program.
 #include <mqttBroker.h> // MQTT broker functions.
-//#include <i2c.h> // Scan I2C buses to see what devices are present.
 const char* HOST_NAME_PREFIX = "Hexbot"; // Prefix for our unique network name.
 aaChip appCpu; // Access information about the ESP32 application microprocessor (Core1).
 aaNetwork network(HOST_NAME_PREFIX); // WiFi session management.
