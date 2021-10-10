@@ -21,11 +21,11 @@ float const _135degreesInRadians = 0.235619449; // 135 degrees in radians.
 float hipAngle, kneeAngle, ankleAngle, toeAngle; // Holds results of last calcAngles.
 typedef struct
 {
-      String description; 
+      String description = "01234567890abcdefghi"; 
       int8_t driverAdd;
       int8_t hipPinNum;
       int8_t kneePinNum;
-      int8_t toePinNum;
+      int8_t anklePinNum;
       int16_t maxUp;
       int16_t maxDown;
       int16_t maxFront;
@@ -50,6 +50,13 @@ typedef struct
 legStruct leg[numDrivers][numLegs];
 int8_t legDirIndex = 0; // What the legs are currently doing.
 int8_t const legDirCnt = 10; // Number of things legs know how to do.
+#define HOME_POSITION 0 // Stance 0 = home position. 
+#define STAND_POSITION 1 // Stance 1 = stand position.
+#define CROUCH_POSITION 2 // Stance 2 = crouch position.
+#define LEAN_LEFT 3 // Stance 3 = lean left position.
+#define LEAN_RIGHT 4 // Stance 4 = lean right position.
+#define LEAN_FORWARD 5 // Stance 5 = lean forward position.
+#define LEAN_BACKWARD 6 // Stance 6 = lean backwrd position.
 String legDirExpl[legDirCnt]; // Explanation of what each directive means.
 bool legStatus = false; 
 
@@ -67,14 +74,14 @@ bool legStatus = false;
 void startPositionLegs(int8_t driverNum, int8_t legNum) 
 {
    Log.noticeln("<startPositionLeftLegs> Put %s leg into starting position.", leg[driverNum][legNum].description);
-   Log.noticeln("...Move knee.");
+   Log.noticeln("<startPositionLeftLegs> ...Move knee.");
    pwmDriver[driverNum].setPWM(leg[driverNum][legNum].kneePinNum, pwmClkStart, leg[driverNum][legNum].maxUp);
    delay(100);
-   Log.noticeln("...Move hip.");
+   Log.noticeln("<startPositionLeftLegs> ...Move hip.");
    pwmDriver[driverNum].setPWM(leg[driverNum][legNum].hipPinNum, pwmClkStart, servoMiddlePWM);
    delay(100);
-   Log.noticeln("...Move toe.");
-   pwmDriver[driverNum].setPWM(leg[driverNum][legNum].toePinNum, pwmClkStart, servoMiddlePWM);
+   Log.noticeln("<startPositionLeftLegs> ...Move toe.");
+   pwmDriver[driverNum].setPWM(leg[driverNum][legNum].anklePinNum, pwmClkStart, servoMiddlePWM);
    delay(100);
    legDirIndex = 0; // Indicate that legs are currently in home position.
 } // startRightLeg()
@@ -82,47 +89,57 @@ void startPositionLegs(int8_t driverNum, int8_t legNum)
 /**
  * @brief Initialize serv motor control.
  * ==========================================================================*/
+// TODO #29 leg array description field in function initServos() corrupted.
 void initServos() 
 {
    int8_t driver; // Left or right driver number
    int8_t legNum; // Front, middle or back leg on specific side
 
    Log.traceln("<initServo> Set up Explanation for each motor directive.");
-   legDirExpl[0] = "home position";
-   legDirExpl[1] = "stand position";
-   legDirExpl[3] = "crouch position";
-   legDirExpl[4] = "lean left";
-   legDirExpl[5] = "lean right";
-   legDirExpl[6] = "lean forward";
-   legDirExpl[7] = "lean backward";
+   legDirExpl[HOME_POSITION] = "home position";
+   legDirExpl[STAND_POSITION] = "stand position";
+   legDirExpl[CROUCH_POSITION] = "crouch position";
+   legDirExpl[LEAN_LEFT] = "lean left";
+   legDirExpl[LEAN_RIGHT] = "lean right";
+   legDirExpl[LEAN_FORWARD] = "lean forward";
+   legDirExpl[LEAN_BACKWARD] = "lean backward";
    Log.traceln("<initServo> Set up motor definitions for each leg on right driver.");
    driver = 0; // Right servo motor driver
    legNum = 0; // First leg on right side
    leg[driver][legNum].description = "right front";
+   Log.noticeln("<initServo> Driver = %d, Motor Num = %d, Desc = %s.", driver, legNum, leg[driver][legNum].description);
    leg[driver][legNum].driverAdd = PCA9685ServoDriver1;
+   Log.noticeln("<initServo> Driver address = %X.", leg[driver][legNum].driverAdd);
    leg[driver][legNum].hipPinNum = 0;
    leg[driver][legNum].kneePinNum = 1;
-   leg[driver][legNum].toePinNum = 2;
+   leg[driver][legNum].anklePinNum = 2;
+   Log.noticeln("<initServo> Hip = %d, knee = %d, toe = %d.", leg[driver][legNum].hipPinNum, leg[driver][legNum].kneePinNum, leg[driver][legNum].anklePinNum);
    leg[driver][legNum].maxUp = servoMiddlePWM - servoUpDownSwing;
    leg[driver][legNum].maxDown = servoMiddlePWM + servoUpDownSwing;
    leg[driver][legNum].maxFront = servoMiddlePWM + servoFrontBackSwing;
    leg[driver][legNum].maxBack = servoMiddlePWM - servoFrontBackSwing;
    legNum ++; // Middle leg on right side
    leg[driver][legNum].description = "right middle";
+   Log.noticeln("<initServo> Driver = %d, Motor Num = %d, Desc = %s.", driver, legNum, leg[driver][legNum].description);
    leg[driver][legNum].driverAdd = PCA9685ServoDriver1;
+   Log.noticeln("<initServo> Driver address = %X.", leg[driver][legNum].driverAdd);
    leg[driver][legNum].hipPinNum = 3;
    leg[driver][legNum].kneePinNum = 4;
-   leg[driver][legNum].toePinNum = 5;
+   leg[driver][legNum].anklePinNum = 5;
+   Log.noticeln("<initServo> Hip = %d, knee = %d, toe = %d.", leg[driver][legNum].hipPinNum, leg[driver][legNum].kneePinNum, leg[driver][legNum].anklePinNum);
    leg[driver][legNum].maxUp = servoMiddlePWM - servoUpDownSwing;
    leg[driver][legNum].maxDown = servoMiddlePWM + servoUpDownSwing;
    leg[driver][legNum].maxFront = servoMiddlePWM + servoFrontBackSwing;
    leg[driver][legNum].maxBack = servoMiddlePWM - servoFrontBackSwing;
    legNum ++; // Back leg on right side
    leg[driver][legNum].description = "right back";
+   Log.noticeln("<initServo> Driver = %d, Motor Num = %d, Desc = %s.", driver, legNum, leg[driver][legNum].description);
    leg[driver][legNum].driverAdd = PCA9685ServoDriver1;
+   Log.noticeln("<initServo> Driver address = %X.", leg[driver][legNum].driverAdd);
    leg[driver][legNum].hipPinNum = 6;
    leg[driver][legNum].kneePinNum = 7;
-   leg[driver][legNum].toePinNum = 8;
+   leg[driver][legNum].anklePinNum = 8;
+   Log.noticeln("<initServo> Hip = %d, knee = %d, toe = %d.", leg[driver][legNum].hipPinNum, leg[driver][legNum].kneePinNum, leg[driver][legNum].anklePinNum);
    leg[driver][legNum].maxUp = servoMiddlePWM - servoUpDownSwing;
    leg[driver][legNum].maxDown = servoMiddlePWM + servoUpDownSwing;
    leg[driver][legNum].maxFront = servoMiddlePWM + servoFrontBackSwing;
@@ -134,7 +151,7 @@ void initServos()
    leg[driver][legNum].driverAdd = PCA9685ServoDriver2;
    leg[driver][legNum].hipPinNum = 0;
    leg[driver][legNum].kneePinNum = 1;
-   leg[driver][legNum].toePinNum = 2;
+   leg[driver][legNum].anklePinNum = 2;
    leg[driver][legNum].maxUp = servoMiddlePWM + servoUpDownSwing;
    leg[driver][legNum].maxDown = servoMiddlePWM - servoUpDownSwing;
    leg[driver][legNum].maxFront = servoMiddlePWM + servoFrontBackSwing;
@@ -144,7 +161,7 @@ void initServos()
    leg[driver][legNum].driverAdd = PCA9685ServoDriver2;
    leg[driver][legNum].hipPinNum = 3;
    leg[driver][legNum].kneePinNum = 4;
-   leg[driver][legNum].toePinNum = 5;
+   leg[driver][legNum].anklePinNum = 5;
    leg[driver][legNum].maxUp = servoMiddlePWM + servoUpDownSwing;
    leg[driver][legNum].maxDown = servoMiddlePWM - servoUpDownSwing;
    leg[driver][legNum].maxFront = servoMiddlePWM + servoFrontBackSwing;
@@ -154,7 +171,7 @@ void initServos()
    leg[driver][legNum].driverAdd = PCA9685ServoDriver2;
    leg[driver][legNum].hipPinNum = 6;
    leg[driver][legNum].kneePinNum = 7;
-   leg[driver][legNum].toePinNum = 8;
+   leg[driver][legNum].anklePinNum = 8;
    leg[driver][legNum].maxUp = servoMiddlePWM + servoUpDownSwing;
    leg[driver][legNum].maxDown = servoMiddlePWM - servoUpDownSwing;
    leg[driver][legNum].maxFront = servoMiddlePWM + servoFrontBackSwing;
@@ -195,13 +212,13 @@ void initServos()
  * ==========================================================================*/
 void initLegs()
 {
-   Log.traceln("<initleg> Define reverse kinematic model for legs.");
+   Log.traceln("<initlegs> Define reverse kinematic model for legs.");
    for(int8_t driverNum = 0; driverNum < 2; driverNum++) // Loop through drivers
    {
-      Log.noticeln("<initleg> Driver number %d", driverNum);// Serial.println(driverNum);
+      Log.noticeln("<initlegs> Driver number %d.", driverNum);// Serial.println(driverNum);
       for(int8_t legNum = 0; legNum < 3; legNum++) // Loop through motors
       {
-         Log.noticeln("<initleg> ... Leg number %d", legNum);// Serial.println(legNum);
+         Log.noticeln("<initlegs> ... Leg number %d.", legNum);// Serial.println(legNum);
 
          leg[driverNum][legNum].knee.init(leg[driverNum][legNum].kneeJointDist, 
                                           leg[driverNum][legNum].kneeMinAngle, 
@@ -212,9 +229,9 @@ void initLegs()
          leg[driverNum][legNum].toe.init(leg[driverNum][legNum].toeJointDist, 
                                          leg[driverNum][legNum].toeMinAngle, 
                                          leg[driverNum][legNum].toeMaxAngle); // Init toe joint.
-         Log.noticeln("<initleg> ...... Knee distance = %F", leg[driverNum][legNum].kneeJointDist); 
-         Log.noticeln("<initleg> ...... Ankle distance = %F", leg[driverNum][legNum].ankleJointDist); 
-         Log.noticeln("<initleg> ...... Toe distance = %F", leg[driverNum][legNum].toeJointDist); 
+         Log.noticeln("<initlegs> ...... Knee distance = %F.", leg[driverNum][legNum].kneeJointDist); 
+         Log.noticeln("<initlegs> ...... Ankle distance = %F.", leg[driverNum][legNum].ankleJointDist); 
+         Log.noticeln("<initlegs> ...... Toe distance = %F.", leg[driverNum][legNum].toeJointDist); 
       } // for
    } // for   
 } // initLegs()
@@ -233,6 +250,7 @@ void initLegs()
 bool moveLeg(int8_t driverNum, int8_t legNum, float _x_, float _y_, float _z_)
 {
    // TODO incorporate both Doug and Arduno functions here to move legs.
+   // TODO create functions for each movement type, ie crouch, lean, walk, run etc.
 
    // This is the Arduino IK library version. Not getting vaid values yet.
    bool x = calcAngles(driverNum, legNum, _x_, _y_, _z_); 
