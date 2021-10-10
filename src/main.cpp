@@ -40,14 +40,14 @@
  *****************************************************************************/
 #include <main.h> // Header file for all libraries needed by this program.
 unsigned long timer; // Milli count for next action.
-// TODO #25 Add Doug's routines for Inverse Kinematics
+
 /**
  * @brief Standard Arduino initialization routine.
  * ==========================================================================*/
 void setup() 
 {
    setupSerial(); // Set serial baud rate. 
-   Log.begin(LOG_LEVEL_VERBOSE, &Serial);
+   Log.begin(LOG_LEVEL_VERBOSE, &Serial, true);
    Log.traceln("<setup> Start of setup.");  
    Wire.begin(I2C_bus0_SDA, I2C_bus0_SCL, I2C_bus0_speed); // Init I2C bus0.
    network.connect(); // Start WiFi connection.
@@ -65,18 +65,18 @@ void setup()
       else // If we did not find a valid MQTT broker.
       {
          mqttBrokerConnected = false;
-         Log.warningln("<setup> Connected to MQTT broker failed.");
+         Log.errorln("<setup> Connected to MQTT broker failed.");
       } // else
    } // if
    else // If we are NOT on the WiFi network.
    {
       networkConnected = false;
-      Log.warningln("<setup> Not connencted to the network. No MQTT or web interface.");
+      Log.errorln("<setup> Not connencted to the network. No MQTT or web interface.");
    } // else
    scanBus0(); // Scan bus0 and show connected devices.
    if(oledConnected == true) // If an OLED was found on the I2C bus.
    {
-      Log.noticeln("<setup> Initialize OLED.");
+      Log.traceln("<setup> Initialize OLED.");
       initOled();
    } // if
    else // If an OLED was NOT found on the I2C bus.
@@ -85,19 +85,19 @@ void setup()
    } //else
    if(motorController1Connected == true && motorController2Connected == true) // If servo drivers found on I2C bus.
    {
-      Log.noticeln("<setup> Initialize servo drivers.");
+      Log.traceln("<setup> Initialize servo drivers.");
       legStatus = true; 
       initServos(); // Put servos into starting position. May replace with Doug's stuff. 
       initLegs(); // Initilize inverse kinetic model of legs. May replace with Doug's stuff.
    } // if
    else // If servo drivers found on I2C bus.
    {
-      Log.warningln("<setup> One or more servo drivers not connencted to I2C bus. No motion is possible.");
+      Log.errorln("<setup> One or more servo drivers not connencted to I2C bus. No motion is possible.");
       legStatus = false;
    } //else
    showCfgDetails(); // Show all configuration details in one summary.
-//   moveLeg(0, 0, 120, 0, 70); // Arduino IK routines.
    testDaeIKFunctions(); // Doug's IK routines.
+//   moveLeg(0, 0, 120, 0, 70); // Routine that moves legs.   
    timer = millis(); // Timer for motor driver signalling.
    Log.traceln("<setup> End of setup."); 
 } // setup()

@@ -17,16 +17,15 @@ void startWebServer()
    char uniqueName[HOST_NAME_SIZE]; // Contain unique name for Wifi network purposes. 
    char *uniqueNamePtr = &uniqueName[0]; // Pointer to starting address of name. 
    network.getUniqueName(uniqueNamePtr); // Get unique name. 
-   Serial.print("<startWebServer> Unique Name: "); Serial.println(uniqueName);
-   Serial.print("<startWebServer> Name length: "); Serial.println(strlen(uniqueName));
+   Log.noticeln("<startWebServer> Unique Name: %s (Length of %d).", uniqueName, strlen(uniqueName));
    isWebServer = localWebService.start(uniqueNamePtr); // Start web server and track result.
    if(isWebServer)
    {
-      Serial.println("<startWebServer> Web server successfully started.");
+      Log.noticeln("<startWebServer> Web server successfully started.");
    } //if
    else
    {
-      Serial.println("<startWebServer> Web server failed to start.");
+      Log.errorln("<startWebServer> Web server failed to start.");
    } //else
 } //startWebServer()
 

@@ -7,6 +7,11 @@
 #define daeIK_h // Precompiler macro used for precompiler check.
 
 /*******************************************************************************
+ * @section daeIKIncludes Included libraries.
+ *******************************************************************************/
+#include <main.h> // Includes used by  this project.
+
+/*******************************************************************************
  * @section daeGlobalVars Global variables.
  *******************************************************************************/
 const uint8_t footLen = 11; // Distance from ankle to toe (foot) is 11cm. 
@@ -14,11 +19,6 @@ const uint8_t shinLen = 7.5; // Distance from knee to ankle (shin) is 7.5cm.
 const uint8_t toeOffset = 17; // Angle that toe is offset from 90deg of ankle joint is 17 degrees.
 const uint8_t origXOffset = 2.92; // Distance the knee is offset from the origin along the x axis.
    
-/*******************************************************************************
- * @section daeIKIncludes Included libraries.
- *******************************************************************************/
-#include <main.h> // Includes used by  this project.
-
 /**
  * @brief Convert target degrees to a PWM value.
  * @details Translate a desired servo position expressed in degrees to a PWM 
