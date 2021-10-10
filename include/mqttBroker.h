@@ -27,36 +27,20 @@ String result[2] = {"false","true"}; // Provide english lables for true and flas
 bool connectToMqttBroker(aaNetwork &network)
 {
    network.getUniqueName(uniqueNamePtr); // Puts unique name value into uniqueName[]
-   Log.noticeln("<connectToMqttBroker> Hexbot unique network name = %s", uniqueName);
-//   Serial.print("<connectToMqttBroker> Hexbot unique network name = ");
-//   Serial.println(uniqueName);
-
-   Serial.print("<connectToMqttBroker> Health topic = ");
-   Serial.println(HEALTH_MQTT_TOPIC);
-
+   Log.noticeln("<connectToMqttBroker> Hexbot unique network name = %s.", uniqueName);
+   Log.noticeln("<connectToMqttBroker> Health topic = %s.", HEALTH_MQTT_TOPIC);
    strcpy(healthTopicTree, uniqueName);
    strcat(healthTopicTree, HEALTH_MQTT_TOPIC);
-
-   Serial.print("<connectToMqttBroker> Full health topic tree = ");
-   Serial.println(healthTopicTree);
-
-   Serial.print("<connectToMqttBroker> Length of health topic tree = ");
-   Serial.println(strlen(healthTopicTree));
+   Log.noticeln("<connectToMqttBroker> Full health topic tree = %s (length = %d).", healthTopicTree, strlen(healthTopicTree));
 
    brokerIP = flash.readBrokerIP(); // Retrieve MQTT broker IP address from NV-RAM.
-   Serial.print("<connectToMqttBroker> MQTT broker IP believed to be ");
-   Serial.println(brokerIP);
+   Log.noticeln("<connectToMqttBroker> MQTT broker IP believed to be %p.", brokerIP);
 
    bool tmpPingResult = network.pingIP(brokerIP, 5);
    String tmpResult[2];
    tmpResult[0] = "Not found - invalid address";
    tmpResult[1] = "Found - valid address";
-   Serial.print("<connectToMqttBroker> Ping of broker at "); Serial.print(brokerIP);
-   Serial.print(" resulted in ");
-   Serial.print(tmpPingResult);
-   Serial.print(" (");
-   Serial.print(tmpResult[tmpPingResult]);
-   Serial.println(")");
+   Log.noticeln("<connectToMqttBroker> Ping of broker at %p resulted in %T.", brokerIP, tmpPingResult);
    if(tmpPingResult == true)
    {
       mqtt.connect(brokerIP, uniqueName);
@@ -69,7 +53,7 @@ bool connectToMqttBroker(aaNetwork &network)
    } //if
    else
    {
-      Serial.println("<connectToMqttBroker> Cannot reach MQTT broker. Boot halting.");
+      Log.errorln("<connectToMqttBroker> Cannot reach MQTT broker.");
       return false; 
    } //else
    return true;
@@ -102,11 +86,11 @@ bool processCmd(String payload)
    String cmd = arg[0]; // first comma separated value in payload is the command
    if(cmd == "TEST")
    {
-      Serial.println("<processCmd> Recieved test command."); 
+      Log.noticeln("<processCmd> Recieved test command."); 
       return true;
    }  // if 
 
-   Serial.println("<processCmd> Warning - unrecognized command."); 
+   Log.warningln("<processCmd> Warning - unrecognized command."); 
    return false;
 } // processCmd()
 
@@ -126,16 +110,15 @@ void checkMqtt()
    String cmd = mqtt.getCmd();
    if(cmd != "")
    {
-      Serial.print("<checkMqtt> cmd = ");
-      Serial.println(cmd);
+      Log.noticeln("<checkMqtt> cmd = %s.", cmd);
       bool allIsWell = processCmd(cmd);
       if(allIsWell)
       {
-         Serial.println("<checkMqtt> All went well.");
+         Log.noticeln("<checkMqtt> All went well.");
       } // if 
       else
       {
-         Serial.println("<checkMqtt> Something went wrong.");
+         Log.warningln("<checkMqtt> Something went wrong.");
       } // if 
    } // if   
 } // checkMqtt()
