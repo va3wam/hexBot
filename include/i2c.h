@@ -49,57 +49,52 @@
  *************************************************************************************************************************************/
 void identifyDevice(int deviceAddress)
 {
-  Serial.print ("<identifyDevice> Device with I2C address ");
-  Serial.print (deviceAddress, DEC);
-  Serial.print (" (0x");
-  Serial.print (deviceAddress, HEX);
-  Serial.print (") ");
   switch (deviceAddress) 
   {
     case rightOLED_I2C_ADD:    
-      Serial.println(" identified as Right OLED");
+      Log.noticeln("<identifyDevice> Device with I2C address %d (%X) identified as Right OLED", deviceAddress, deviceAddress);
       oledConnected = true;
       break;
     case leftOLED_I2C_ADD:    
-      Serial.println(" identified as Left OLED");
+      Log.noticeln("<identifyDevice> Device with I2C address %d (%X) identified as Left OLED", deviceAddress, deviceAddress);
       break;
     case dcMotorController:    
-      Serial.println(" identified as MD25 motor controller");
+      Log.noticeln("<identifyDevice> Device with I2C address %d (%X) identified as MD25 motor controller", deviceAddress, deviceAddress);
       break;
     case MPU6050_I2C_ADD:
-      Serial.println(" identified as MPU6050");
+      Log.noticeln("<identifyDevice> Device with I2C address %d (%X) identified as MPU6050", deviceAddress, deviceAddress);
       break;
     case LCD16x2:
-      Serial.println(" identified as 16x2 LCD screen");
+      Log.noticeln("<identifyDevice> Device with I2C address %d (%X) identified as 16x2 LCD screen", deviceAddress, deviceAddress);
       break;
     case PCA9685ServoDriverAllCall:
-      Serial.println(" identified as PCA9685 16-channel 12-bit servo motor driver ALL CALL");
+      Log.noticeln("<identifyDevice> Device with I2C address %d (%X) identified as PCA9685 16-channel 12-bit servo motor driver ALL CALL", deviceAddress, deviceAddress);
       break;
     case PCA9685ServoDriver1:
       motorController1Connected = true;
-      Serial.println(" identified as PCA9685 16-channel 12-bit servo motor driver 1");
+      Log.noticeln("<identifyDevice> Device with I2C address %d (%X) identified as PCA9685 16-channel 12-bit servo motor driver 1", deviceAddress, deviceAddress);
       break;
     case PCA9685ServoDriver2:
       motorController2Connected = true;
-      Serial.println(" identified as PCA9685 16-channel 12-bit servo motor driver 2");
+      Log.noticeln("<identifyDevice> Device with I2C address %d (%X) identified as PCA9685 16-channel 12-bit servo motor driver 2", deviceAddress, deviceAddress);
       break;
     case PCA9685ServoDriver3:
-      Serial.println(" identified as PCA9685 16-channel 12-bit servo motor driver 3");
+      Log.noticeln("<identifyDevice> Device with I2C address %d (%X) identified as PCA9685 16-channel 12-bit servo motor driver 3", deviceAddress, deviceAddress);
       break;
     case PCA9685ServoDriver4:
-      Serial.println(" identified as PCA9685 16-channel 12-bit servo motor driver 4");
+      Log.noticeln("<identifyDevice> Device with I2C address %d (%X) identified as PCA9685 16-channel 12-bit servo motor driver 4", deviceAddress, deviceAddress);
       break;
     case PCA9685ServoDriver5:
-      Serial.println(" identified as PCA9685 16-channel 12-bit servo motor driver 5");
+      Log.noticeln("<identifyDevice> Device with I2C address %d (%X) identified as PCA9685 16-channel 12-bit servo motor driver 5", deviceAddress, deviceAddress);
       break;
     case PCA9685ServoDriver6:
-      Serial.println(" identified as PCA9685 16-channel 12-bit servo motor driver 6");
+      Log.noticeln("<identifyDevice> Device with I2C address %d (%X) identified as PCA9685 16-channel 12-bit servo motor driver 6", deviceAddress, deviceAddress);
       break;
     case PCA9685ServoDriver7:
-      Serial.println(" identified as PCA9685 16-channel 12-bit servo motor driver 7");
+      Log.noticeln("<identifyDevice> Device with I2C address %d (%X) identified as PCA9685 16-channel 12-bit servo motor driver 7", deviceAddress, deviceAddress);
       break;
     default: 
-      Serial.println("Identified as UKNOWN");
+      Log.noticeln("<identifyDevice> Device with I2C address %d (%X) Identified as UKNOWN");
       break;
   } //switch
 } //identifyDevice()
@@ -109,27 +104,20 @@ void identifyDevice(int deviceAddress)
  *************************************************************************************************************************************/
 void scanBus0()
 {
-  Serial.println ("<scanBus0> Scan I2C bus 0 looking for devices...");
-  byte count = 0;
-  for (byte i = 8; i < 120; i++)
-  { 
-    Wire.beginTransmission (i);
-    if (Wire.endTransmission () == 0)
-    {
-      Serial.print ("<scanBus0> Found address: ");
-      Serial.print (i, DEC);
-      Serial.print (" (0x");
-      Serial.print (i, HEX);
-      Serial.println (")");
-      count++;
-      identifyDevice(i); // Identify what device has been found 
-      delay (1);
-    } // end of good response
-  } // end of for loop
-  Serial.println ("<scanBus0> Done.");
-  Serial.print ("<scanBus0> Found ");
-  Serial.print (count, DEC);
-  Serial.println (" device(s).");
+   Log.noticeln("<scanBus0> Scan I2C bus 0 looking for devices...");
+   byte count = 0;
+   for (byte i = 8; i < 120; i++)
+   { 
+      Wire.beginTransmission (i);
+      if (Wire.endTransmission () == 0)
+      {
+         Log.noticeln("<scanBus0> Found address: %d (%X).", i, i);
+         count++;
+         identifyDevice(i); // Identify what device has been found 
+         delay(1);
+      } // if
+   } // for
+   Log.noticeln("<scanBus0> Done. Found %d device(s).", count);
 } //scanBus0()
 
 /*************************************************************************************************************************************
@@ -137,26 +125,19 @@ void scanBus0()
  *************************************************************************************************************************************/
 void scanBus1()
 {
-  Serial.println ("<scanBus1> Scan I2C bus 1 looking for devices...");
-  byte count = 0;
-  for (byte i = 8; i < 120; i++)
-  { 
-    Wire1.beginTransmission (i);
-    if (Wire1.endTransmission () == 0)
-    {
-      Serial.print ("<scanBus1> Found address: ");
-      Serial.print (i, DEC);
-      Serial.print (" (0x");
-      Serial.print (i, HEX);
-      Serial.println (")");
-      count++;
-      identifyDevice(i); // Identify what device has been found 
-      delay(1);
-    } // end of good response
-  } // end of for loop
-  Serial.println ("<scanBus1> Done.");
-  Serial.print ("<scanBus1> Found ");
-  Serial.print (count, DEC);
-  Serial.println (" device(s).");
+   Log.noticeln("<scanBus1> Scan I2C bus 1 looking for devices...");
+   byte count = 0;
+   for (byte i = 8; i < 120; i++)
+   { 
+      Wire1.beginTransmission (i);
+      if (Wire1.endTransmission () == 0)
+      {
+         Log.noticeln("<scanBus1> Found address: %d (%X).", i, i);
+         count++;
+         identifyDevice(i); // Identify what device has been found 
+         delay(1);
+      } // if
+   } // for
+   Log.noticeln("<scanBus0> Done. Found %d device(s).", count);
 } //scanBus1()
 #endif // End of precompiler protected code block

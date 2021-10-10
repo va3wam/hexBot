@@ -27,8 +27,9 @@ String result[2] = {"false","true"}; // Provide english lables for true and flas
 bool connectToMqttBroker(aaNetwork &network)
 {
    network.getUniqueName(uniqueNamePtr); // Puts unique name value into uniqueName[]
-   Serial.print("<connectToMqttBroker> Hexbot unique network name = ");
-   Serial.println(uniqueName);
+   Log.noticeln("<connectToMqttBroker> Hexbot unique network name = %s", uniqueName);
+//   Serial.print("<connectToMqttBroker> Hexbot unique network name = ");
+//   Serial.println(uniqueName);
 
    Serial.print("<connectToMqttBroker> Health topic = ");
    Serial.println(HEALTH_MQTT_TOPIC);

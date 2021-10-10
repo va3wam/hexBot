@@ -18,13 +18,10 @@ void monitorWebServer()
       if(localWebService.checkForClientRequest()) // New binary or broker IP?
       {
          IPAddress tmpIP = localWebService.getBrokerIP(); // Get awaiting IP address.
-         Log.notice("<monitorWebServer> Set broker IP to "); 
-         Log.noticeln(tmpIP);
+         Log.noticeln("<monitorWebServer> Set broker IP to %p", tmpIP); 
          flash.writeBrokerIP(tmpIP); // Write address to flash.
-
          brokerIP = flash.readBrokerIP(); // Retrieve MQTT broker IP address from NV-RAM.
-         Log.notice("<setup> MQTT broker IP believed to be ");
-         Log.noticeln(brokerIP);
+         Log.noticeln("<setup> MQTT broker IP believed to be %p", brokerIP);
       } //if
    } //if     
 } //monitorWebServer()
