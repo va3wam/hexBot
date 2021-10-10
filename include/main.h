@@ -32,7 +32,8 @@
 #include <mqttBroker.h> // Establish connect to the the MQTT broker.
 #include <monitorWebServer.h> // Monitor the web server service.
 #include <i2c.h> // Scan I2C buses to see what devices are present.
-#include <ikLibrary.h> // Control servo motors using InverseK.h.
+#include <ikLibrary.h> // InverseK.h inverted kinematic functions.
+#include <servoLegs.h> // Control leg servos.
 #include <oled.h> // Control OLED.
 #include <daeIK.h> // Doug's inverted kinetics functions. 
 /************************************************************************************
