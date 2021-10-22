@@ -12,6 +12,7 @@ bool mqttBrokerConnected = false;
 bool oledConnected = false;
 bool motorController1Connected = false;
 bool motorController2Connected = false;
+bool mobilityStatus = false;
 int8_t displayPage = 1;
 
 /** 
