@@ -19,6 +19,10 @@
 #include <Wire.h> // Required for I2C communication.
 #include <Adafruit_PWMServoDriver.h> // https://github.com/adafruit/Adafruit-PWM-Servo-Driver-Library.
 #include <ArduinoLog.h> // https://github.com/thijse/Arduino-Log.
+#include <Adafruit_GFX.h> // OLED graphics
+#include <Adafruit_SH110X.h> // OLED text
+#include <hexbot_gpio_pins.h> // GPIO pin uses
+
 /*******************************************************************************
  * @section codeModules Functions put into files according to function.
  * @details Order functions here in a way that ensures that variables get 
@@ -36,6 +40,7 @@
 #include <servoLegs.h> // Control leg servos.
 #include <oled.h> // Control OLED.
 #include <daeIK.h> // Doug's inverted kinetics functions. 
+#include <statusLED.h> // Control status LEDs.
 /************************************************************************************
  * @section mainDeclare Declare functions.
  ************************************************************************************/
