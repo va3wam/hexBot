@@ -2,10 +2,7 @@
 
 #define oled_h // Precompiler macro used for precompiler check.
 
-#include <Wire.h> // I2C
-#include <Adafruit_GFX.h> // OLED graphics
-#include <Adafruit_SH110X.h> // OLED text
-#include <hexbot_gpio_pins.h> // GPIO pin uses
+#include <main.h> // Header file for all libraries needed by this program.
 
 Adafruit_SH1107 display = Adafruit_SH1107(64, 128, &Wire);
 bool buttonA_flag = false; // Flag used by hardware ISR for button A.
@@ -76,15 +73,23 @@ void placeTextHcentre(String msg, uint8_t fontSize, uint16_t fontColour)
 
 /**
  * @brief Display the splash screen.
+ * @details Clear the OLED display, set the orientation then display the 
+ * splash screen. Note that the the setRotation() function orients the content
+ * displayed on the OLED screen using a 1 byte parameter which has does the 
+ * following:
+ * 0 sets the orietation so that the top is where the buttons are.  
+ * 1 rotates the top of the display 90 degrees clockwise from position 0. 
+ * 2 rotates the top of the display 180 degrees clockwise from position 0. 
+ * 3 rotates the top of the display 270 degrees clockwise from position 0. 
  * ==========================================================================*/
 void displaySplashScreen() 
 {
    display.clearDisplay(); // Clear the buffer.
    display.display(); // Display cleared buffer.
-   display.setRotation(1); // Not sure what this does but its in the example.
+   display.setRotation(3); // Orient screen content. See details above.
    placeTextVHcentre("HEXBOT", 3, SH110X_WHITE); // Place logo on screen.
    delay(10); // Wait for buffer.
-   yield(); // Not sure what this does but was in example.     
+   yield(); // Periodic yield call to avoid watchdog reset.     
    display.display(); // Actually display all of the above
 } // displaySplashScreen()
 
@@ -97,7 +102,8 @@ void displayLegScreen()
    display.setCursor(0, 0);
    placeTextHcentre("Leg Tracking", 1, SH110X_WHITE);
    display.print("\nStatus: ");
-   if(legStatus == true)
+   //todo #31 Make a subroutine call in configDetails.h for boot and other status checks.
+   if(networkConnected == true && mqttBrokerConnected == true && oledConnected == true && mobilityStatus == true)
    {
       display.println("OK");
    } // if
