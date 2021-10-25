@@ -3,9 +3,7 @@
 #define connectToMqttBroker_h // Precompiler macro used for precompiler check.
 
 #include <main.h> // Header file for all libraries needed by this program.
-#include <configDetails.h> // Wifi functions. 
-#include <aaStringQueue.h> // Required for string buffer to hold incoming commands.
-#include <aaFormat.h> //
+#include <statusLED.h> // Control status LEDs.
 
 aaFlash flash; // Non-volatile memory management. 
 aaMqtt mqtt; // Publish and subscribe to MQTT broker. 
@@ -60,7 +58,82 @@ bool connectToMqttBroker(aaNetwork &network)
 } //connectToMqttBroker()
 
 /**
+ * @brief Check is a string variable is a valid number.
+ * @return true if it is a valid number and false if it is not.
+ * =================================================================================*/
+boolean isValidNumber(String str)
+{
+   for(byte i=0;i<str.length();i++)
+   {
+      if(!isDigit(str.charAt(i))) 
+      {
+         return false;
+      } //if
+   } // for
+   return true;
+} // isValidNumber()
+
+/**
+ * @brief Converts a string variable to a unit32_t variable.
+ * @param var is the string to be converted.
+ * @return The convereted value. 
+ * =================================================================================*/
+uint32_t convertStrToUint32_t(String var)
+{
+   unsigned long numToConvert = strtoul(var.c_str(), NULL, 10); 
+   return (uint32_t) numToConvert;  
+} // convertStrToUint32_t()
+
+/**
+ * @brief Converts a string variable to a unit8_t variable.
+ * @param var is the string to be converted.
+ * @return The convereted value. 
+ * =================================================================================*/
+uint8_t convertStrToUint8_t(String var)
+{
+   unsigned long numToConvert = strtoul(var.c_str(), NULL, 10); 
+   return (uint8_t) numToConvert;  
+} // convertStrToUint32_t()
+
+/**
+ * @brief Check if command arguments are valid numbers.
+ * @param numArgumentsRequired how many numbers are expected.
+ * @param argN number of arguments passed by command.
+ * @param *arg pointer to array containing the arguments to be checked.
+ * @return true if there are the right number of arguments and they are all numbers,
+ * false if the number of arguments is wrong or if one of the arguments is not a 
+ * number. 
+ * =================================================================================*/
+bool checkNumArg(int8_t numArgumentsRequired, int argN, String *arg)
+{
+   if(argN == numArgumentsRequired) // Right number of arguments?
+   {
+      Log.verboseln("<checkNumArg> Correct number of arguments recieved."); 
+      for(int8_t i = 1; i <= numArgumentsRequired; i ++) // Are the three arguments valid numbers. 
+      {
+         if(isValidNumber(arg[i])) // If current argument is a valid number.
+         {
+            Log.verboseln("<checkNumArg> arg[%d] = %s and is a valid number.", i, arg[i]); 
+         } // if
+         else //  If current argument is not a valid number.
+         {
+            Log.warningln("<checkNumArg> Ignoring command. arg[%d] = %s and is not a valid number.", i, arg[i]);
+            return false; 
+         } // if
+      } // for 
+   } // if
+   else // Wrong number of arguments
+   {
+      Log.warningln("<checkNumArg> Ignoring command. SET_CUST_RGB_CLR requires %d arguments but recieved %i.", numArgumentsRequired, argN); 
+      return false;
+   } // else
+   return true;   
+} // checkNumArg()
+
+/**
  * @brief Process the incoming command.
+ * @param payload Command recieved from MQTT broker.
+ * @return True is the command is known. False if the cmmand is unknown.
  * =================================================================================*/
 bool processCmd(String payload)
 {
@@ -73,7 +146,8 @@ bool processCmd(String payload)
    int argEnd = ucPayload.indexOf(",",argStart);  // position of comma at end of cmd
    // Parse comma delimited message into array elements 
    while(argEnd >= 0) // .indexOf returns -1 if no string found
-   {  arg[argN] = ucPayload.substring(argStart,argEnd);  // extract the current argument
+   {  
+      arg[argN] = ucPayload.substring(argStart,argEnd);  // extract the current argument
       argN ++ ; // advance the argument counter
       argStart = argEnd + 1; // next arg starts after previous arg's delimiting comma
       argEnd = ucPayload.indexOf(",",argStart); // find next arg's delimiting comma
@@ -82,14 +156,46 @@ bool processCmd(String payload)
                                                      // delimiter. argN ends up as a 
                                                      // count of the number of 
                                                      // arguments, excluding the command
-
    String cmd = arg[0]; // first comma separated value in payload is the command
+   // TEST command.
    if(cmd == "TEST")
    {
       Log.noticeln("<processCmd> Recieved test command."); 
       return true;
    }  // if 
-
+   // SET_CUST_RGB_CLR command.
+   if(cmd == "SET_CUST_RGB_CLR")
+   {
+      const int8_t numArgumentsRequired = 3; // How many arguments expected?
+      if(checkNumArg(numArgumentsRequired, argN, &arg[0]))
+      {
+         uint32_t red = convertStrToUint32_t(arg[1]);
+         uint32_t green = convertStrToUint32_t(arg[2]); 
+         uint32_t blue = convertStrToUint32_t(arg[3]);
+         Log.noticeln("<processCmd> Set RGB LED values R = %u, G = %u, B = %u.", red, green, blue); 
+         setCustRgbColour(red, green, blue);
+         return true;
+      } // if
+      else
+      {
+         return false;
+      } // else            
+   }  // if 
+   // SET_STD_RGB_CLR command.
+   if(cmd == "SET_STD_RGB_CLR")
+   {   
+      const int8_t numArgumentsRequired = 1; // How many arguments expected?
+      if(checkNumArg(numArgumentsRequired, argN, &arg[0]))
+      {
+         uint8_t colour = convertStrToUint8_t(arg[1]);
+         setStdRgbColour(colour);
+         return true;
+      } // if
+      else
+      {
+         return false;
+      } // else       
+   } // if
    Log.warningln("<processCmd> Warning - unrecognized command."); 
    return false;
 } // processCmd()
@@ -110,7 +216,7 @@ void checkMqtt()
    String cmd = mqtt.getCmd();
    if(cmd != "")
    {
-      Log.noticeln("<checkMqtt> cmd = %s.", cmd);
+      Log.noticeln("<checkMqtt> cmd = %s.", cmd.c_str());
       bool allIsWell = processCmd(cmd);
       if(allIsWell)
       {
