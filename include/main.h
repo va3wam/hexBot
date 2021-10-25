@@ -33,6 +33,7 @@
 #include <setupSerial.h> // Serial port initialization.
 #include <configDetails.h> // Show the environment details of this application.
 #include <startWebServer.h> // Start up the web server service. 
+#include <statusLED.h> // Control status LEDs.
 #include <mqttBroker.h> // Establish connect to the the MQTT broker.
 #include <monitorWebServer.h> // Monitor the web server service.
 #include <i2c.h> // Scan I2C buses to see what devices are present.
@@ -40,7 +41,7 @@
 #include <servoLegs.h> // Control leg servos.
 #include <oled.h> // Control OLED.
 #include <daeIK.h> // Doug's inverted kinetics functions. 
-#include <statusLED.h> // Control status LEDs.
+
 /************************************************************************************
  * @section mainDeclare Declare functions.
  ************************************************************************************/
