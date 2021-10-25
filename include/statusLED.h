@@ -4,16 +4,17 @@
 
 #include <main.h> // Header file for all libraries needed by this program.
 
-const uint8_t numColoursSupported = 8; // Number of colours LED can be set to.
+const uint8_t numColoursSupported = 9; // Number of colours LED can be set to.
 const bool commonAnode = true; // Set to true if RGB LED has a common anode, false for common cathode.
 const uint8_t RED = 0; // Reset button LED red. 
 const uint8_t GREEN = 1; // Reset button LED green. 
 const uint8_t BLUE = 2; // Reset button LED blue. 
 const uint8_t YELLOW = 3; // Reset button LED YELLOW. 
-const uint8_t PINK = 4; // Reset button LED PINK.
-const uint8_t AQUA = 5; // Reset button LED aqua. 
-const uint8_t WHITE = 6; // Reset button LED white. 
-const uint8_t BLACK = 7; // Reset button LED white. 
+const uint8_t ORANGE = 4; // Reset button LED PINK.
+const uint8_t PINK = 5; // Reset button LED PINK.
+const uint8_t AQUA = 6; // Reset button LED aqua. 
+const uint8_t WHITE = 7; // Reset button LED white. 
+const uint8_t BLACK = 8; // Reset button LED white. 
 
 const double_t PWM_FREQ = 500; // 500Hz.
 const uint8_t PWM_RESOLUTION = 8; // ESP32 can go up to 8 bit PWM resolution.
@@ -72,6 +73,12 @@ void createPredefinedColours()
    statusColour[YELLOW].greenDutyCycle = 256;
    statusColour[YELLOW].blueDutyCycle = 0;
    Log.verboseln("<createPredefinedColours> YELLOW (%d) settings  - red = %d, green = %d, blue = %d.", YELLOW, statusColour[YELLOW].redDutyCycle, statusColour[YELLOW].greenDutyCycle, statusColour[YELLOW].blueDutyCycle);
+
+   statusColour[ORANGE].name = "ORANGE";
+   statusColour[ORANGE].redDutyCycle = 200;
+   statusColour[ORANGE].greenDutyCycle = 256;
+   statusColour[ORANGE].blueDutyCycle = 0;
+   Log.verboseln("<createPredefinedColours> ORANGE (%d) settings  - red = %d, green = %d, blue = %d.", ORANGE, statusColour[ORANGE].redDutyCycle, statusColour[ORANGE].greenDutyCycle, statusColour[ORANGE].blueDutyCycle);
 
    statusColour[PINK].name = "PINK";
    statusColour[PINK].redDutyCycle = 128;
@@ -140,9 +147,10 @@ void setCustRgbColour(uint32_t red, uint32_t green, uint32_t blue)
    uint32_t blueDC;
    if(commonAnode) // RGB LED has commmon anode. 
    {
-   redDC = 256 -  red; // Invert bits.
-   greenDC = 256 - green; // Invert bits.
-   blueDC = 256 - blue; // Invert bits.
+      Log.verboseln("<setStdRgbColour> RGB LED has common anode. Inverting duty cycle values.");
+      redDC = 256 -  red; // Invert bits.
+      greenDC = 256 - green; // Invert bits.
+      blueDC = 256 - blue; // Invert bits.
    } //if
    else // RGB LED has commmon cathode.
    {
@@ -158,16 +166,18 @@ void setCustRgbColour(uint32_t red, uint32_t green, uint32_t blue)
 
 /**
  * @brief Set status LED to one of the pre-defined colours we have set up.
+ * @param ledColour a value assigned to a predefined colour (i.e. 0 = red). 
  * ==========================================================================*/
 void setStdRgbColour(uint8_t ledColour)
 {
    uint32_t redDC;
    uint32_t greenDC;
    uint32_t blueDC;
-   if(ledColour - 1 > numColoursSupported) // 8 predefined colours (7 and below valid).
+   if(numColoursSupported <= ledColour) // 8 predefined colours (7 and below valid).
    {
-      ledColour = GREEN;
-      Log.warningln("<setStdRgbColour> Requested colour %d unknown. Setting RGB LED to %s.", statusColour[ledColour].name.c_str());
+      uint8_t subColour = YELLOW;
+      Log.warningln("<setStdRgbColour> Requested colour %d unknown. Setting RGB LED to %s.", ledColour, statusColour[subColour].name.c_str());
+      ledColour = subColour;
    } // if
    else
    {
