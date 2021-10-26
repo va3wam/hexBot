@@ -48,56 +48,24 @@ void setup()
 {
    setupSerial(); // Set serial baud rate. 
    Log.begin(LOG_LEVEL_VERBOSE, &Serial, true);
-   Log.traceln("<setup> Start of setup.");  
+   Log.traceln("<setup> Start of setup."); 
+   Log.verboseln("<setup> Initialize I2C buses.");  
    Wire.begin(I2C_bus0_SDA, I2C_bus0_SCL, I2C_bus0_speed); // Init I2C bus0.
-   network.connect(); // Start WiFi connection.
-   if(network.areWeConnected() == true) // If we are on the WiFi network.
-   {
-      networkConnected = true;
-      Log.noticeln("<setup> Connection to network successfully estabished.");
-      startWebServer(); // Start up web server.
-      bool tmp = connectToMqttBroker(network); // Connect to MQTT broker.
-      if(tmp == true) // If we found an MQTT broker.
-      {
-         mqttBrokerConnected = true;
-         Log.noticeln("<setup> Connection to MQTT broker successfully established.");
-      } // if
-      else // If we did not find a valid MQTT broker.
-      {
-         mqttBrokerConnected = false;
-         Log.errorln("<setup> Connected to MQTT broker failed.");
-      } // else
-   } // if
-   else // If we are NOT on the WiFi network.
-   {
-      networkConnected = false;
-      Log.errorln("<setup> Not connencted to the network. No MQTT or web interface.");
-   } // else
    scanBus0(); // Scan bus0 and show connected devices.
-   if(oledConnected == true) // If an OLED was found on the I2C bus.
-   {
-      Log.traceln("<setup> Initialize OLED.");
-      initOled();
-   } // if
-   else // If an OLED was NOT found on the I2C bus.
-   {
-      Log.warningln("<setup> OLED not connencted to I2C bus. No OLED messages to be issued.");
-   } //else
-   if(motorController1Connected == true && motorController2Connected == true) // If servo drivers found on I2C bus.
-   {
-      Log.traceln("<setup> Initialize servo drivers.");
-      legStatus = true; 
-      initServos(); // Put servos into starting position. May replace with Doug's stuff. 
-      initLegs(); // Initilize inverse kinetic model of legs. May replace with Doug's stuff.
-   } // if
-   else // If servo drivers found on I2C bus.
-   {
-      Log.errorln("<setup> One or more servo drivers not connencted to I2C bus. No motion is possible.");
-      legStatus = false;
-   } //else
+   Log.traceln("<setup> Initialize OLED.");
+   initOled();
+   Log.verboseln("<setup> Initialize status RGB LED."); 
+   setupStatusLed(); // Configure the status LED on the reset button.
+   setStdRgbColour(WHITE); // Indicates that boot up is in progress.
+   Log.verboseln("<setup> Set up wifi connection."); 
+   setupNetwork();
+   Log.traceln("<setup> Initialize servo drivers.");
+   setupMobility();
+   Log.verboseln("<setup> Display robot configuration in console trace."); 
    showCfgDetails(); // Show all configuration details in one summary.
    testDaeIKFunctions(); // Doug's IK routines.
-//   moveLeg(0, 0, 120, 0, 70); // Routine that moves legs.   
+   Log.verboseln("<setup> Review status flags to see how boot sequence went."); 
+   checkBoot();   
    timer = millis(); // Timer for motor driver signalling.
    Log.traceln("<setup> End of setup."); 
 } // setup()

@@ -12,6 +12,7 @@ bool mqttBrokerConnected = false;
 bool oledConnected = false;
 bool motorController1Connected = false;
 bool motorController2Connected = false;
+bool mobilityStatus = false;
 int8_t displayPage = 1;
 
 /** 
@@ -69,7 +70,6 @@ void showCfgDetails()
 
 /** 
  * @brief Show the environment details of this application on OLED.
- * 
  * @details Uses menu system to show different information as needed.
  * =================================================================================*/
 void displayCfgDetails(int8_t menuToShow)
@@ -87,4 +87,23 @@ void displayCfgDetails(int8_t menuToShow)
          break;
    } // switch
 } // displayCfgDetails()
+
+/** 
+ * @brief Check to see how the boot up process went.
+ * =================================================================================*/
+void checkBoot()
+{
+   Log.traceln("<checkBoot> Checking boot status flags."); 
+   if(networkConnected == true && mqttBrokerConnected == true && oledConnected == true && mobilityStatus == true)
+   {
+      Log.verboseln("<checkBoot> Bootup was normal. Set RGB LED to normal colour."); 
+      setStdRgbColour(GREEN); // Indicates that bootup was normal.
+   } // if
+   else
+   {
+      Log.verboseln("<checkBoot> Bootup had an issue. Set RGB LED to warning colour."); 
+      setStdRgbColour(YELLOW); // Indicates that there was a bootup issue.
+   } // else
+} // checkBoot
+
 #endif // End of precompiler protected code block

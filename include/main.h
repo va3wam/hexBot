@@ -19,6 +19,18 @@
 #include <Wire.h> // Required for I2C communication.
 #include <Adafruit_PWMServoDriver.h> // https://github.com/adafruit/Adafruit-PWM-Servo-Driver-Library.
 #include <ArduinoLog.h> // https://github.com/thijse/Arduino-Log.
+#include <Adafruit_GFX.h> // OLED graphics
+#include <Adafruit_SH110X.h> // OLED text
+#include <hexbot_gpio_pins.h> // GPIO pin uses
+
+/************************************************************************************
+ * @section funDeclare Declare functions found in the include files.
+ * @details In order to get rid of "error: 'xxx' was not declared in this scope"
+ * compiler errors list a function from any of the include filles here. 
+ ************************************************************************************/
+void rotateDisplay(int8_t); 
+void displaySplashScreen(String);
+
 /*******************************************************************************
  * @section codeModules Functions put into files according to function.
  * @details Order functions here in a way that ensures that variables get 
@@ -26,31 +38,22 @@
  *******************************************************************************/
 #include <huzzah32_gpio_pins.h> // Map pins on Adafruit Huzzah32 dev board to friendly names.
 #include <hexbot_gpio_pins.h> // Map Hexbot specific pin naming to generic development board pin names. 
-#include <setupSerial.h> // Serial port initialization.
+#include <terminal.h> // Serial port management.
 #include <configDetails.h> // Show the environment details of this application.
-#include <startWebServer.h> // Start up the web server service. 
+#include <web.h> // Manage locally hosted web service. 
+#include <rgbLed.h> // Control status LEDs.
+#include <network.h> // Control networking activities.
 #include <mqttBroker.h> // Establish connect to the the MQTT broker.
-#include <monitorWebServer.h> // Monitor the web server service.
 #include <i2c.h> // Scan I2C buses to see what devices are present.
 #include <ikLibrary.h> // InverseK.h inverted kinematic functions.
 #include <servoLegs.h> // Control leg servos.
 #include <oled.h> // Control OLED.
 #include <daeIK.h> // Doug's inverted kinetics functions. 
+
 /************************************************************************************
- * @section mainDeclare Declare functions.
+ * @section mainDeclare Declare functions in main.cpp.
  ************************************************************************************/
-void setupSerial(); // Initialize the serial output.
-void showCfgDetails(); // Show the environment details of this application.
-void startWebServer(); // Start up the local web server service.
-void monitorWebServer(); // Look after pending web server requests.
-bool connectToMqttBroker(); // Establish connect to the the MQTT broker. 
-void identifyDevice(int deviceAddress);
-void scanBus0(); // ID devices connected to I2C bus0.
-void scanBus1(); //  ID devices connected to I2C bus1.
-void initServo(); // Initialize serv motor control.
-void initOled(); // Set up OLED.
-void checkOledButtons(); // Check oled buttons to see if they have been pressed. 
-void displayLegScreen(); // Display what legs are doing on oled.
+
 void setup(); // Arduino mandatory function #1. Runs once at boot. 
 void loop(); // Arduino mandatory function #2. Runs continually.
 

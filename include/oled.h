@@ -2,20 +2,17 @@
 
 #define oled_h // Precompiler macro used for precompiler check.
 
-#include <Wire.h> // I2C
-#include <Adafruit_GFX.h> // OLED graphics
-#include <Adafruit_SH110X.h> // OLED text
-#include <hexbot_gpio_pins.h> // GPIO pin uses
+#include <main.h> // Header file for all libraries needed by this program.
 
 Adafruit_SH1107 display = Adafruit_SH1107(64, 128, &Wire);
 bool buttonA_flag = false; // Flag used by hardware ISR for button A.
 bool buttonB_flag = false; // Flag used by hardware ISR for button B.
 bool buttonC_flag = false; // Flag used by hardware ISR for button C.
-
 uint8_t oledX = 128; // Screen width in pixels.
 uint8_t oledY = 64; // Screen height in pixels.
 uint8_t textBaseX = 6; // Smallest font width in pixels.
 uint8_t textBaseY = 8; // Smallest font height in pixels.
+uint8_t oledOrientation = 3; // Orientation of OLED. 
 
 /**
  * @brief Hardware Interrupt Service Routine for Button A on OLED display.
@@ -75,29 +72,99 @@ void placeTextHcentre(String msg, uint8_t fontSize, uint16_t fontColour)
 } // placeTextHcentre()
 
 /**
- * @brief Display the splash screen.
+ * @brief Rotate the display.
+ * @details Does not rotate the current screen content but will affect all
+ * new content sent t the OLED. Note that the the setRotation() function 
+ * orients the content displayed on the OLED screen using a 1 byte parameter 
+ * which has does the following:
+ * 0 sets the orietation so that the top is where the buttons are.  
+ * 1 rotates the top of the display 90 degrees clockwise from position 0. 
+ * 2 rotates the top of the display 180 degrees clockwise from position 0. 
+ * 3 rotates the top of the display 270 degrees clockwise from position 0. 
+ * @param newOrientation which of the 4 valid orientations to use.
  * ==========================================================================*/
-void displaySplashScreen() 
+void rotateDisplay(int8_t newOrientation) 
 {
+   switch(newOrientation)
+   {
+      case 0:
+         Log.verboseln("<rotateDisplay> OLED top is now where the buttons are.");
+         oledOrientation = newOrientation;
+         display.setRotation(oledOrientation); // Orient screen content. 
+         break;
+      case 1:
+         Log.verboseln("<rotateDisplay> OLED top is now 90 degrees clockwise from where the buttons are.");
+         oledOrientation = newOrientation;
+         display.setRotation(oledOrientation); // Orient screen content. 
+         break;
+      case 2:
+         Log.verboseln("<rotateDisplay> OLED top is now 180 degrees clockwise from where the buttons are.");
+         oledOrientation = newOrientation;
+         display.setRotation(oledOrientation); // Orient screen content. 
+         break;
+      case 3:
+         Log.verboseln("<rotateDisplay> OLED top is now 270 degrees clockwise from where the buttons are.");
+         oledOrientation = newOrientation;
+         display.setRotation(oledOrientation); // Orient screen content. 
+         break;
+      default:
+         Log.errorln("<rotateDisplay> Invalid OLED orientation request of %d. Only values 0-3 are allowed.", newOrientation);
+         break;
+   } // switch
+} // rotateDisplay()
+
+/**
+ * @brief Display the splash screen.
+ * @details Clear the OLED display, set the orientation then display the 
+ * splash screen. Note that the the setRotation() function orients the content
+ * displayed on the OLED screen using a 1 byte parameter which has does the 
+ * following:
+ * 0 sets the orietation so that the top is where the buttons are.  
+ * 1 rotates the top of the display 90 degrees clockwise from position 0. 
+ * 2 rotates the top of the display 180 degrees clockwise from position 0. 
+ * 3 rotates the top of the display 270 degrees clockwise from position 0. 
+ * @param msg Text message to add as tag line to splash screen.
+ * ==========================================================================*/
+void displaySplashScreen(String msg) 
+{
+   if(oledConnected == false)
+   {
+      Log.warningln("<displaySplashScreen> OLED missing. Message suppressed.");
+      return;
+   } // if
+   int8_t headingSize = 3;
+   int8_t subMsgSize = 1;
    display.clearDisplay(); // Clear the buffer.
-   display.display(); // Display cleared buffer.
-   display.setRotation(1); // Not sure what this does but its in the example.
-   placeTextVHcentre("HEXBOT", 3, SH110X_WHITE); // Place logo on screen.
+   if(msg == "") // No sub heading message
+   {
+      placeTextVHcentre("HEXBOT", headingSize, SH110X_WHITE); 
+   } // if
+   else
+   {
+      placeTextVHcentre("HEXBOT", headingSize, SH110X_WHITE); 
+      placeTextHcentre(msg, subMsgSize, SH110X_WHITE); 
+   } // else
    delay(10); // Wait for buffer.
-   yield(); // Not sure what this does but was in example.     
+   yield(); // Periodic yield call to avoid watchdog reset.     
    display.display(); // Actually display all of the above
 } // displaySplashScreen()
 
 /**
  * @brief Display what the legs are doing.
  * ==========================================================================*/
-void displayLegScreen() 
+void displayStatusScreen() 
 {
+   if(oledConnected == false)
+   {
+      Log.warningln("<displayStatusScreen> OLED missing. Message suppressed.");
+      return;
+   } // if
    display.clearDisplay();
    display.setCursor(0, 0);
-   placeTextHcentre("Leg Tracking", 1, SH110X_WHITE);
-   display.print("\nStatus: ");
-   if(legStatus == true)
+   placeTextHcentre("Robot Status", 1, SH110X_WHITE);
+   display.print("\nWifi: ");
+   // Wifi status.
+   if(networkConnected == true)
    {
       display.println("OK");
    } // if
@@ -105,12 +172,33 @@ void displayLegScreen()
    {
       display.println("ERR");
    } // else
+   // MQTT broker connection status.
+   display.print("MQTT: ");
+   if(mqttBrokerConnected == true)
+   {
+      display.println("OK");
+   } // if
+   else
+   {
+      display.println("ERR");
+   } // else
+   // Mobility status (if leg servo controllers are detected on I2C).
+   display.print("Legs: ");
+   if(mobilityStatus == true)
+   {
+      display.println("OK");
+   } // if
+   else
+   {
+      display.println("ERR");
+   } // else
+   // Current robot goal.
    display.print("Goal: ");
    display.println(legDirExpl[legDirIndex]);
    delay(10);
    yield();      
    display.display(); // actually display all of the above   
-} // displayLegScreen()
+} // displayStatusScreen()
 
 /**
  * @brief Check to see if any of the OLED buttons have been pressed.
@@ -134,12 +222,12 @@ void checkOledButtons()
    if(buttonB_flag == true)
    {
       buttonB_flag = false; 
-      displayLegScreen();
+      displayStatusScreen();
    } // if
    if(buttonC_flag == true)
    {
       buttonC_flag = false; 
-      displaySplashScreen();
+      displaySplashScreen("");
    } // if
 } // loop()
 
@@ -148,16 +236,22 @@ void checkOledButtons()
  * ==========================================================================*/
 void initOled() 
 {
-   Log.verboseln("<initOled> 128x64 OLED FeatherWing test");
+   if(oledConnected == false)
+   {
+      Log.warningln("<initOled> OLED missing. Skipping initialization.");
+      return;
+   } // if
+   Log.verboseln("<initOled> 128x64 OLED FeatherWing setup.");
    display.begin(0x3C, true); // Address 0x3C default
-   Log.verboseln("<initOled> OLED begun");
+   Log.verboseln("<initOled> OLED begun.");
    pinMode(BUTTON_A, INPUT_PULLUP); // Make button A pin input with weak pullup.
    pinMode(BUTTON_B, INPUT_PULLUP); // Make button B pin input with weak pullup.
    pinMode(BUTTON_C, INPUT_PULLUP); // Make button C pin input with weak pullup.
    attachInterrupt(BUTTON_A, ButtonA_ISR, RISING); // Assign ISR for button A.
    attachInterrupt(BUTTON_B, ButtonB_ISR, RISING); // Assign ISR for button B.
    attachInterrupt(BUTTON_C, ButtonC_ISR, RISING); // Assign ISR for button C.
-   displaySplashScreen();
+   rotateDisplay(oledOrientation); // Orient OLED text.
+   displaySplashScreen("");
 } // setup()
 
 #endif // End of precompiler protected code block

@@ -2,9 +2,6 @@
 
 #define servoLegs_h // Precompiler macro used for precompiler check.
 
-#include <Arduino.h> // Arduino Core for ESP32. Comes with Platform.io
-#include <Wire.h> // I2C communication.
-#include <Adafruit_PWMServoDriver.h> // https://github.com/adafruit/Adafruit-PWM-Servo-Driver-Library.
 #include <main.h> // Header file for all libraries needed by this program.
 
 #define SERVO_FREQ 50 // Analog servos run at ~50 Hz updates.
@@ -58,7 +55,6 @@ int8_t const legDirCnt = 10; // Number of things legs know how to do.
 #define LEAN_FORWARD 5 // Stance 5 = lean forward position.
 #define LEAN_BACKWARD 6 // Stance 6 = lean backwrd position.
 String legDirExpl[legDirCnt]; // Explanation of what each directive means.
-bool legStatus = false; 
 
 /**
  * @brief Put leg in neutral position.
@@ -73,7 +69,7 @@ bool legStatus = false;
  * ==========================================================================*/
 void startPositionLegs(int8_t driverNum, int8_t legNum) 
 {
-   Log.noticeln("<startPositionLeftLegs> Put %s leg into starting position.", leg[driverNum][legNum].description);
+   Log.noticeln("<startPositionLeftLegs> Put %s leg into starting position.", leg[driverNum][legNum].description.c_str());
    Log.noticeln("<startPositionLeftLegs> ...Move knee.");
    pwmDriver[driverNum].setPWM(leg[driverNum][legNum].kneePinNum, pwmClkStart, leg[driverNum][legNum].maxUp);
    delay(100);
@@ -107,7 +103,7 @@ void initServos()
    driver = 0; // Right servo motor driver
    legNum = 0; // First leg on right side
    leg[driver][legNum].description = "right front";
-   Log.noticeln("<initServo> Driver = %d, Motor Num = %d, Desc = %s.", driver, legNum, leg[driver][legNum].description);
+   Log.noticeln("<initServo> Driver = %d, Motor Num = %d, Desc = %s.", driver, legNum, leg[driver][legNum].description.c_str());
    leg[driver][legNum].driverAdd = PCA9685ServoDriver1;
    Log.noticeln("<initServo> Driver address = %X.", leg[driver][legNum].driverAdd);
    leg[driver][legNum].hipPinNum = 0;
@@ -120,7 +116,7 @@ void initServos()
    leg[driver][legNum].maxBack = servoMiddlePWM - servoFrontBackSwing;
    legNum ++; // Middle leg on right side
    leg[driver][legNum].description = "right middle";
-   Log.noticeln("<initServo> Driver = %d, Motor Num = %d, Desc = %s.", driver, legNum, leg[driver][legNum].description);
+   Log.noticeln("<initServo> Driver = %d, Motor Num = %d, Desc = %s.", driver, legNum, leg[driver][legNum].description.c_str());
    leg[driver][legNum].driverAdd = PCA9685ServoDriver1;
    Log.noticeln("<initServo> Driver address = %X.", leg[driver][legNum].driverAdd);
    leg[driver][legNum].hipPinNum = 3;
@@ -133,7 +129,7 @@ void initServos()
    leg[driver][legNum].maxBack = servoMiddlePWM - servoFrontBackSwing;
    legNum ++; // Back leg on right side
    leg[driver][legNum].description = "right back";
-   Log.noticeln("<initServo> Driver = %d, Motor Num = %d, Desc = %s.", driver, legNum, leg[driver][legNum].description);
+   Log.noticeln("<initServo> Driver = %d, Motor Num = %d, Desc = %s.", driver, legNum, leg[driver][legNum].description.c_str());
    leg[driver][legNum].driverAdd = PCA9685ServoDriver1;
    Log.noticeln("<initServo> Driver address = %X.", leg[driver][legNum].driverAdd);
    leg[driver][legNum].hipPinNum = 6;
@@ -264,5 +260,24 @@ bool moveLeg(int8_t driverNum, int8_t legNum, float _x_, float _y_, float _z_)
    } //else
    return x;
 } // calcAngles()
+
+/**
+ * @brief Initiaize all the servo motors used to control the robot's legs.
+ * ==========================================================================*/
+void setupMobility()
+{
+   if(motorController1Connected == true && motorController2Connected == true) // If servo drivers found on I2C bus.
+   {
+      Log.traceln("<setupMobility> Initialize servo drivers and leg configurations.");
+      mobilityStatus = true; 
+      initServos(); // Put servos into starting position. May replace with Doug's stuff. 
+      initLegs(); // Initilize inverse kinetic model of legs. May replace with Doug's stuff.
+   } // if
+   else // If servo drivers found on I2C bus.
+   {
+      Log.errorln("<setupMobility> One or more servo drivers not connencted to I2C bus. No motion is possible.");
+      mobilityStatus = false;
+   } //else
+} // setupMobility()
 
 #endif // End of precompiler protected code block

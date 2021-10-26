@@ -14,5 +14,8 @@ const int8_t I2C_BUS1_SCL = PIN_LBL_21; // Serial Clock Line (SCL) for I2C bus 1
 const int8_t BUTTON_A = PIN_LBL_15; // Button A on OLED featherboard, physical pin 21
 const int8_t BUTTON_B = PIN_LBL_32; // Button B on OLED featherboard, physical pin 20
 const int8_t BUTTON_C = PIN_LBL_14; // Button C on OLED featherboard, physical pin 19
+const int8_t resetRedLED = PIN_LBL_27; // Red LED in reset button, physical pin 23
+const int8_t resetBlueLED = PIN_LBL_33; // Blue LED in reset button, physical pin 22
+const int8_t resetGreenLED = PIN_LBL_MO; // Green LED in reset button, physical pin 12
 
 #endif // End of conditional preprocessor code
