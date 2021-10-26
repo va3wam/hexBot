@@ -23,6 +23,14 @@
 #include <Adafruit_SH110X.h> // OLED text
 #include <hexbot_gpio_pins.h> // GPIO pin uses
 
+/************************************************************************************
+ * @section funDeclare Declare functions found in the include files.
+ * @details In order to get rid of "error: 'xxx' was not declared in this scope"
+ * compiler errors list a function from any of the include filles here. 
+ ************************************************************************************/
+void rotateDisplay(int8_t); 
+void displaySplashScreen(String);
+
 /*******************************************************************************
  * @section codeModules Functions put into files according to function.
  * @details Order functions here in a way that ensures that variables get 
@@ -45,6 +53,7 @@
 /************************************************************************************
  * @section mainDeclare Declare functions in main.cpp.
  ************************************************************************************/
+
 void setup(); // Arduino mandatory function #1. Runs once at boot. 
 void loop(); // Arduino mandatory function #2. Runs continually.
 
