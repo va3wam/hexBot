@@ -1,6 +1,6 @@
-#ifndef statusLEDs_h // Start of precompiler check to avoid dupicate inclusion of this code block.
+#ifndef rgbLed_h // Start of precompiler check to avoid dupicate inclusion of this code block.
 
-#define statusLEDs_h // Precompiler macro used for precompiler check.
+#define rgbLed_h // Precompiler macro used for precompiler check.
 
 #include <main.h> // Header file for all libraries needed by this program.
 
