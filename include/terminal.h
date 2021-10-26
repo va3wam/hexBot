@@ -1,6 +1,6 @@
-#ifndef setupSerial_h // Start of precompiler check to avoid dupicate inclusion of this code block.
+#ifndef terminal_h // Start of precompiler check to avoid dupicate inclusion of this code block.
 
-#define setupSerial_h // Precompiler macro used for precompiler check.
+#define terminal_h // Precompiler macro used for precompiler check.
 
 #include <main.h> // Header file for all libraries needed by this program.
 unsigned long serialBaudRate = 115200; // Serial terminal baud rate.
