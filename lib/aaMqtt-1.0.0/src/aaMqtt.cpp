@@ -60,6 +60,7 @@ aaStringQueue cmdQueue; // Instantiate the command queue.
  ************************************************************************************/
 const char* TOP_OF_TREE = "agingApprentice/"; // Define top of MQTT topic tree.
 const char* HEALTH_MQTT_TOPIC = "/health"; // Define MQTT health topic.
+const char* HELP_MQTT_TOPIC = "/help"; // Define MQTT health topic.
 const char* CHECKIN_MQTT_TOPIC = "checkin"; // Define MQTT health topic.
  
 /**
