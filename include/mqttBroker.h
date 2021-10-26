@@ -11,6 +11,7 @@ IPAddress brokerIP; // IP address of the MQTT broker.
 char uniqueName[HOST_NAME_SIZE]; // Character array that holds unique name for Wifi network purposes. 
 char *uniqueNamePtr = &uniqueName[0]; // Pointer to first address position of unique name character array.
 char healthTopicTree[50] = ""; // Char array to hold full health topic tree name.
+char helpTopicTree[50] = ""; // Char array to hold full health topic tree name.
 String result[2] = {"false","true"}; // Provide english lables for true and flase return codes.
 
 // TODO #7 : A pingable but non MQTT IP address crash loops code.
@@ -30,10 +31,12 @@ bool connectToMqttBroker(aaNetwork &network)
    strcpy(healthTopicTree, uniqueName);
    strcat(healthTopicTree, HEALTH_MQTT_TOPIC);
    Log.noticeln("<connectToMqttBroker> Full health topic tree = %s (length = %d).", healthTopicTree, strlen(healthTopicTree));
-
+   Log.noticeln("<connectToMqttBroker> Help topic = %s.", HELP_MQTT_TOPIC);
+   strcpy(helpTopicTree, uniqueName);
+   strcat(helpTopicTree, HELP_MQTT_TOPIC);
+   Log.noticeln("<connectToMqttBroker> Full help topic tree = %s (length = %d).", helpTopicTree, strlen(helpTopicTree));
    brokerIP = flash.readBrokerIP(); // Retrieve MQTT broker IP address from NV-RAM.
    Log.noticeln("<connectToMqttBroker> MQTT broker IP believed to be %p.", brokerIP);
-
    bool tmpPingResult = network.pingIP(brokerIP, 5);
    String tmpResult[2];
    tmpResult[0] = "Not found - invalid address";
@@ -85,7 +88,7 @@ uint32_t convertStrToUint32_t(String var)
 } // convertStrToUint32_t()
 
 /**
- * @brief Converts a string variable to a unit8_t variable.
+ * @brief Converts a string variable to a uint8_t variable.
  * @param var is the string to be converted.
  * @return The convereted value. 
  * =================================================================================*/
@@ -93,7 +96,18 @@ uint8_t convertStrToUint8_t(String var)
 {
    unsigned long numToConvert = strtoul(var.c_str(), NULL, 10); 
    return (uint8_t) numToConvert;  
-} // convertStrToUint32_t()
+} // convertStrToUint8_t()
+
+/**
+ * @brief Converts a string variable to a int8_t variable.
+ * @param var is the string to be converted.
+ * @return The convereted value. 
+ * =================================================================================*/
+int8_t convertStrToInt8_t(String var)
+{
+   unsigned long numToConvert = strtoul(var.c_str(), NULL, 10); 
+   return (int8_t) numToConvert;  
+} // convertStrToInt8_t()
 
 /**
  * @brief Check if command arguments are valid numbers.
@@ -163,6 +177,43 @@ bool processCmd(String payload)
       Log.noticeln("<processCmd> Recieved test command."); 
       return true;
    }  // if 
+   // HELP command.
+   if(cmd == "HELP")
+   {
+      Log.noticeln("<processCmd> Recieved help command."); 
+      bool x = false;
+      while(x == false)
+      {
+         x = mqtt.publishMQTT(helpTopicTree, "TEST - Issues test message to terminal.");
+         delay(1);
+      } //while        
+      x = false;
+      while(x == false)
+      {
+         x = mqtt.publishMQTT(helpTopicTree, "HELP - Lists valid commands to help topic tree.");
+         delay(1);
+      } //while        
+      x = false;
+      while(x == false)
+      {
+         x = mqtt.publishMQTT(helpTopicTree, "SET_CUST_RGB_CLR,red,green,blue - Custom colour for RGB LED. (arg values 0-256).");
+         delay(1);
+      } //while        
+      x = false;
+      while(x == false)
+      {
+         x = mqtt.publishMQTT(helpTopicTree, "SET_STD_RGB_CLR,colour - Standard colour for RGB LED. (arg values 0-8).");
+         delay(1);
+      } //while        
+      x = false;
+      while(x == false)
+      {
+         x = mqtt.publishMQTT(helpTopicTree, "ROTATE_OLED,orientation - Orient text on OLED. (arg values 0-3).");
+         delay(1);
+      } //while        
+      Log.noticeln("<processCmd> List of valid MQTT commands sent to MQTT broker."); 
+      return true;
+   }  // if 
    // SET_CUST_RGB_CLR command.
    if(cmd == "SET_CUST_RGB_CLR")
    {
@@ -189,6 +240,22 @@ bool processCmd(String payload)
       {
          uint8_t colour = convertStrToUint8_t(arg[1]);
          setStdRgbColour(colour);
+         return true;
+      } // if
+      else
+      {
+         return false;
+      } // else       
+   } // if
+   // ROTATE_OLED command.
+   if(cmd == "ROTATE_OLED")
+   {   
+      const int8_t numArgumentsRequired = 1; // How many arguments expected?
+      if(checkNumArg(numArgumentsRequired, argN, &arg[0]))
+      {
+         int8_t tmp = convertStrToInt8_t(arg[1]);
+         rotateDisplay(tmp);
+         displaySplashScreen("");
          return true;
       } // if
       else
