@@ -46,7 +46,6 @@ struct_Colour memColour; // Used to switch back RGB LED colour when it is tempor
  * meaning that you turn them on by pulling them low, as opposed to common 
  * cathode RGB LEDs which you turn on by pulling them high. 
  * ==========================================================================*/
-// TODO - use colour wheel routine: https://github.com/espressif/arduino-esp32/blob/master/libraries/ESP32/examples/AnalogOut/ledcWrite_RGB/ledcWrite_RGB.ino
 void createPredefinedColours()
 {
    Log.traceln("<createPredefinedColours> Creating array of colours.");
