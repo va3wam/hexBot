@@ -3,7 +3,7 @@
 #define connectToMqttBroker_h // Precompiler macro used for precompiler check.
 
 #include <main.h> // Header file for all libraries needed by this program.
-#include <statusLED.h> // Control status LEDs.
+#include <rgbLed.h> // Control status LEDs.
 
 aaFlash flash; // Non-volatile memory management. 
 aaMqtt mqtt; // Publish and subscribe to MQTT broker. 
