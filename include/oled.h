@@ -81,6 +81,7 @@ void placeTextHcentre(String msg, uint8_t fontSize, uint16_t fontColour)
  * 1 rotates the top of the display 90 degrees clockwise from position 0. 
  * 2 rotates the top of the display 180 degrees clockwise from position 0. 
  * 3 rotates the top of the display 270 degrees clockwise from position 0. 
+ * @param newOrientation which of the 4 valid orientations to use.
  * ==========================================================================*/
 void rotateDisplay(int8_t newOrientation) 
 {
