@@ -261,4 +261,23 @@ bool moveLeg(int8_t driverNum, int8_t legNum, float _x_, float _y_, float _z_)
    return x;
 } // calcAngles()
 
+/**
+ * @brief Initiaize all the servo motors used to control the robot's legs.
+ * ==========================================================================*/
+void setupMobility()
+{
+   if(motorController1Connected == true && motorController2Connected == true) // If servo drivers found on I2C bus.
+   {
+      Log.traceln("<setupMobility> Initialize servo drivers and leg configurations.");
+      mobilityStatus = true; 
+      initServos(); // Put servos into starting position. May replace with Doug's stuff. 
+      initLegs(); // Initilize inverse kinetic model of legs. May replace with Doug's stuff.
+   } // if
+   else // If servo drivers found on I2C bus.
+   {
+      Log.errorln("<setupMobility> One or more servo drivers not connencted to I2C bus. No motion is possible.");
+      mobilityStatus = false;
+   } //else
+} // setupMobility()
+
 #endif // End of precompiler protected code block
