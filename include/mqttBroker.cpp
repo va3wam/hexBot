@@ -1,20 +1,12 @@
+/*******************************************************************************
+ * @file mqttBroker.cpp  
+ * @brief File containing all MQTT functions.
+ *******************************************************************************/
 #ifndef connectToMqttBroker_h // Start of precompiler check to avoid dupicate inclusion of this code block.
 
 #define connectToMqttBroker_h // Precompiler macro used for precompiler check.
 
 #include <main.h> // Header file for all libraries needed by this program.
-//#include <rgbLed.cpp> // Control status LEDs.
-
-/*
-aaFlash flash; // Non-volatile memory management. 
-aaMqtt mqtt; // Publish and subscribe to MQTT broker. 
-IPAddress brokerIP; // IP address of the MQTT broker.
-char uniqueName[HOST_NAME_SIZE]; // Character array that holds unique name for Wifi network purposes. 
-char *uniqueNamePtr = &uniqueName[0]; // Pointer to first address position of unique name character array.
-char healthTopicTree[50] = ""; // Char array to hold full health topic tree name.
-char helpTopicTree[50] = ""; // Char array to hold full health topic tree name.
-String result[2] = {"false","true"}; // Provide english lables for true and flase return codes.
-*/
 
 // TODO #7 : A pingable but non MQTT IP address crash loops code.
 /** 

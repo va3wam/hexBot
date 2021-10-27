@@ -1,39 +1,12 @@
-#ifndef rgbLed_h // Start of precompiler check to avoid dupicate inclusion of this code block.
+/*******************************************************************************
+ * @file rgbLed.cpp  
+ * @brief File containing all reset button RGB LED functions.
+ *******************************************************************************/
+#ifndef rgbLed_cpp // Start of precompiler check to avoid dupicate inclusion of this code block.
 
-#define rgbLed_h // Precompiler macro used for precompiler check.
+#define rgbLed_cpp // Precompiler macro used for precompiler check.
 
 #include <main.h> // Header file for all libraries needed by this program.
-
-/*
-const uint8_t numColoursSupported = 9; // Number of colours LED can be set to.
-const bool commonAnode = true; // Set to true if RGB LED has a common anode, false for common cathode.
-const uint8_t RED = 0; // Reset button LED red. 
-const uint8_t GREEN = 1; // Reset button LED green. 
-const uint8_t BLUE = 2; // Reset button LED blue. 
-const uint8_t YELLOW = 3; // Reset button LED YELLOW. 
-const uint8_t ORANGE = 4; // Reset button LED PINK.
-const uint8_t PINK = 5; // Reset button LED PINK.
-const uint8_t AQUA = 6; // Reset button LED aqua. 
-const uint8_t WHITE = 7; // Reset button LED white. 
-const uint8_t BLACK = 8; // Reset button LED white. 
-
-const double_t PWM_FREQ = 500; // 500Hz.
-const uint8_t PWM_RESOLUTION = 8; // ESP32 can go up to 8 bit PWM resolution.
-#define PWM_RED_CHANNEL 0 // ESP32 has 16 channels which can generate 16 independent waveforms. Use 0 for RGB red.
-#define PWM_GREEN_CHANNEL 1 // ESP32 has 16 channels which can generate 16 independent waveforms. Use 1 for RGB green.
-#define PWM_BLUE_CHANNEL 2 // ESP32 has 16 channels which can generate 16 independent waveforms. Use 2 for RGB blue.
-*/
-
-// Define structure for LCD colours 
-typedef struct
-{
-   String name; // Name associated with colour properties
-   uint32_t redDutyCycle; // Up time of the PWM signal. Ranges from 0-256. 127 is a 50% duty cycle for example.
-   uint32_t greenDutyCycle; // Up time of the PWM signal. Ranges from 0-256. 127 is a 50% duty cycle for example.
-   uint32_t blueDutyCycle; // Up time of the PWM signal. Ranges from 0-256. 127 is a 50% duty cycle for example.
-}struct_Colour; 
-struct_Colour statusColour[numColoursSupported]; // Array of colours.
-struct_Colour memColour; // Used to switch back RGB LED colour when it is temporarily changed.
 
 /**
  * @brief Set up a structure array of pre-defined colours for RGB LED.

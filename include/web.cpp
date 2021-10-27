@@ -1,12 +1,12 @@
-#ifndef webServer_h // Start of precompiler check to avoid dupicate inclusion of this code block.
+/*******************************************************************************
+ * @file web.cpp  
+ * @brief File containing all local web server functions.
+ *******************************************************************************/
+#ifndef web_cpp // Start of precompiler check to avoid dupicate inclusion of this code block.
 
-#define webServer_h // Precompiler macro used for precompiler check.
+#define web_cpp // Precompiler macro used for precompiler check.
 
 #include <main.h> // Header file for all libraries needed by this program.
-
-bool isWebServer; // True is web server running.
-const char* WEB_APP_TITLE = "Hexbot"; // App name for web page titles.
-aaWebService localWebService(WEB_APP_TITLE); // Webserver hosted by microcontroller.
 
 /**
  * @brief Monitor local web service to see if there are any client requests.

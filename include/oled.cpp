@@ -1,18 +1,12 @@
-#ifndef oled_h // Start of precompiler check to avoid dupicate inclusion of this code block.
+/*******************************************************************************
+ * @file oled.cpp  
+ * @brief File containing all OLED functions.
+ *******************************************************************************/
+#ifndef oled_cpp // Start of precompiler check to avoid dupicate inclusion of this code block.
 
-#define oled_h // Precompiler macro used for precompiler check.
+#define oled_cpp // Precompiler macro used for precompiler check.
 
 #include <main.h> // Header file for all libraries needed by this program.
-
-Adafruit_SH1107 display = Adafruit_SH1107(64, 128, &Wire);
-bool buttonA_flag = false; // Flag used by hardware ISR for button A.
-bool buttonB_flag = false; // Flag used by hardware ISR for button B.
-bool buttonC_flag = false; // Flag used by hardware ISR for button C.
-uint8_t oledX = 128; // Screen width in pixels.
-uint8_t oledY = 64; // Screen height in pixels.
-uint8_t textBaseX = 6; // Smallest font width in pixels.
-uint8_t textBaseY = 8; // Smallest font height in pixels.
-uint8_t oledOrientation = 3; // Orientation of OLED. 
 
 /**
  * @brief Hardware Interrupt Service Routine for Button A on OLED display.
