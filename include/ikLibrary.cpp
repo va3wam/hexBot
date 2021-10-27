@@ -1,3 +1,7 @@
+/*******************************************************************************
+ * @file ikLibrary.cpp  
+ * @brief File containing all ikLibrary inverse kinematic functions.
+ *******************************************************************************/
 #ifndef ikLibrary_h // Start of precompiler check to avoid dupicate inclusion of this code block.
 
 #define ikLibrary_h // Precompiler macro used for precompiler check.

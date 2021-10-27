@@ -1,60 +1,12 @@
-#ifndef servoLegs_h // Start of precompiler check to avoid dupicate inclusion of this code block.
+/*******************************************************************************
+ * @file servoLegs.cpp  
+ * @brief File containing all reset button RGB LED functions.
+ *******************************************************************************/
+#ifndef servoLegs_cpp // Start of precompiler check to avoid dupicate inclusion of this code block.
 
-#define servoLegs_h // Precompiler macro used for precompiler check.
+#define servoLegs_cpp // Precompiler macro used for precompiler check.
 
 #include <main.h> // Header file for all libraries needed by this program.
-
-#define SERVO_FREQ 50 // Analog servos run at ~50 Hz updates.
-#define servoMiddlePWM 300 // 90 degree or center position of servo motor.
-#define servoUpDownSwing 100 // Up and down PWM range for leg. 
-#define servoFrontBackSwing 100 // Up and down PWM range for leg. 
-#define numLegs 6 // Number of legs robot has.
-#define numDrivers 2 // Number of servo motor drivers robot has.
-Adafruit_PWMServoDriver pwmDriver[numDrivers]; // Servo driver object.
-uint16_t pwmClkStart = 0; // Start value of count-up PWM high signal.
-uint32_t oscFreq = 27000000; // Frequency of oscilator on motor driver. 
-float const _45degreesInRadians = 0.785398163; // 45 degrees in radians.
-float const _135degreesInRadians = 0.235619449; // 135 degrees in radians.
-float hipAngle, kneeAngle, ankleAngle, toeAngle; // Holds results of last calcAngles.
-typedef struct
-{
-      String description = "01234567890abcdefghi"; 
-      int8_t driverAdd;
-      int8_t hipPinNum;
-      int8_t kneePinNum;
-      int8_t anklePinNum;
-      int16_t maxUp;
-      int16_t maxDown;
-      int16_t maxFront;
-      int16_t maxBack;
-      float const hipJointDist = 0; // Hip joint is origin so distance is 0mm.
-      float const kneeJointDist = 0; // Knee joint is also origin so distance is 0mm.
-      float const ankleJointDist = 76.19977; // Ankle joint to origin in mm.
-      float const toeJointDist = 110.67793; // Toe joint to origin in mm.
-      float const hipMinAngle = 0; // Min angle of hip joint in radians.
-      float const hipMaxAngle = 0; // Max angle of knee joint in radians.
-      float const kneeMinAngle = _45degreesInRadians; // Min angle of knee joint in radians.
-      float const kneeMaxAngle = _135degreesInRadians; // Max angle of knee joint in radians.
-      float const ankleMinAngle = _45degreesInRadians; // Min angle of ankle joint in radians.
-      float const ankleMaxAngle = _135degreesInRadians; // Max angle of ankle joint in radians.
-      float const toeMinAngle = 0; // Min angle of toe in radians.
-      float const toeMaxAngle = 0; // Max angle of toe in radians.
-      Link hip; // Declare hip as key link point along leg. 
-      Link knee; // Declare knee as key link point along leg.
-      Link ankle; // Declare ankle as key link point along leg.
-      Link toe; // Declare toe as key link point along leg.
-}legStruct;
-legStruct leg[numDrivers][numLegs];
-int8_t legDirIndex = 0; // What the legs are currently doing.
-int8_t const legDirCnt = 10; // Number of things legs know how to do.
-#define HOME_POSITION 0 // Stance 0 = home position. 
-#define STAND_POSITION 1 // Stance 1 = stand position.
-#define CROUCH_POSITION 2 // Stance 2 = crouch position.
-#define LEAN_LEFT 3 // Stance 3 = lean left position.
-#define LEAN_RIGHT 4 // Stance 4 = lean right position.
-#define LEAN_FORWARD 5 // Stance 5 = lean forward position.
-#define LEAN_BACKWARD 6 // Stance 6 = lean backwrd position.
-String legDirExpl[legDirCnt]; // Explanation of what each directive means.
 
 /**
  * @brief Put leg in neutral position.

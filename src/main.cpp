@@ -50,7 +50,7 @@ void setup()
    Log.begin(LOG_LEVEL_VERBOSE, &Serial, true);
    Log.traceln("<setup> Start of setup."); 
    Log.verboseln("<setup> Initialize I2C buses.");  
-   Wire.begin(I2C_bus0_SDA, I2C_bus0_SCL, I2C_bus0_speed); // Init I2C bus0.
+   Wire.begin(G_I2C_BUS0_SDA, G_I2C_BUS0_SCL, I2C_BUS0_SPEED); // Init I2C bus0.
    scanBus0(); // Scan bus0 and show connected devices.
    Log.traceln("<setup> Initialize OLED.");
    initOled();

@@ -1,23 +1,16 @@
-#ifndef showCfgDetails_h // Start of precompiler check to avoid dupicate inclusion of this code block.
+/*******************************************************************************
+ * @file daeIK.cpp  
+ * @brief File containing all of Doug's inverse kinematic functions.
+ *******************************************************************************/
+#ifndef showCfgDetails_cpp // Start of precompiler check to avoid dupicate inclusion of this code block.
 
-#define showCfgDetails_h // Precompiler macro used for precompiler check.
+#define showCfgDetails_cpp // Precompiler macro used for precompiler check.
 
 #include <main.h> // Header file for all libraries needed by this program.
-//#include <mqttBroker.h> // MQTT broker functions.
-const char* HOST_NAME_PREFIX = "Hexbot"; // Prefix for our unique network name.
-aaChip appCpu; // Access information about the ESP32 application microprocessor (Core1).
-aaNetwork network(HOST_NAME_PREFIX); // WiFi session management.
-bool networkConnected = false;
-bool mqttBrokerConnected = false;
-bool oledConnected = false;
-bool motorController1Connected = false;
-bool motorController2Connected = false;
-bool mobilityStatus = false;
-int8_t displayPage = 1;
 
 /** 
  * @brief Show the environment details of this application on console.
- * =================================================================================*/
+ * ============================================================================*/
 void showCfgDetails()
 {
    Log.verboseln("<showCfgDetails> Robot Configuration Report");
@@ -71,7 +64,7 @@ void showCfgDetails()
 /** 
  * @brief Show the environment details of this application on OLED.
  * @details Uses menu system to show different information as needed.
- * =================================================================================*/
+ * ============================================================================*/
 void displayCfgDetails(int8_t menuToShow)
 {
    switch (menuToShow) 
@@ -90,7 +83,7 @@ void displayCfgDetails(int8_t menuToShow)
 
 /** 
  * @brief Check to see how the boot up process went.
- * =================================================================================*/
+ * ============================================================================*/
 void checkBoot()
 {
    Log.traceln("<checkBoot> Checking boot status flags."); 
