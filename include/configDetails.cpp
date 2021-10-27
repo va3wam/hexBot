@@ -1,12 +1,16 @@
-#ifndef showCfgDetails_h // Start of precompiler check to avoid dupicate inclusion of this code block.
+/*******************************************************************************
+ * @file daeIK.cpp  
+ * @brief File containing all of Doug's inverse kinematic functions.
+ *******************************************************************************/
+#ifndef showCfgDetails_cpp // Start of precompiler check to avoid dupicate inclusion of this code block.
 
-#define showCfgDetails_h // Precompiler macro used for precompiler check.
+#define showCfgDetails_cpp // Precompiler macro used for precompiler check.
 
 #include <main.h> // Header file for all libraries needed by this program.
 
 /** 
  * @brief Show the environment details of this application on console.
- * =================================================================================*/
+ * ============================================================================*/
 void showCfgDetails()
 {
    Log.verboseln("<showCfgDetails> Robot Configuration Report");
@@ -60,7 +64,7 @@ void showCfgDetails()
 /** 
  * @brief Show the environment details of this application on OLED.
  * @details Uses menu system to show different information as needed.
- * =================================================================================*/
+ * ============================================================================*/
 void displayCfgDetails(int8_t menuToShow)
 {
    switch (menuToShow) 
@@ -79,7 +83,7 @@ void displayCfgDetails(int8_t menuToShow)
 
 /** 
  * @brief Check to see how the boot up process went.
- * =================================================================================*/
+ * ============================================================================*/
 void checkBoot()
 {
    Log.traceln("<checkBoot> Checking boot status flags."); 

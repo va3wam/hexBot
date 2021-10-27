@@ -1,3 +1,7 @@
+/*******************************************************************************
+ * @file network.cpp  
+ * @brief File containing all wifi functions.
+ *******************************************************************************/
 #ifndef network_h // Start of precompiler check to avoid dupicate inclusion of this code block.
 
 #define network_h // Precompiler macro used for precompiler check.
