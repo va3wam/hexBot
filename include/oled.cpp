@@ -238,12 +238,12 @@ void initOled()
    Log.verboseln("<initOled> 128x64 OLED FeatherWing setup.");
    display.begin(0x3C, true); // Address 0x3C default
    Log.verboseln("<initOled> OLED begun.");
-   pinMode(BUTTON_A, INPUT_PULLUP); // Make button A pin input with weak pullup.
-   pinMode(BUTTON_B, INPUT_PULLUP); // Make button B pin input with weak pullup.
-   pinMode(BUTTON_C, INPUT_PULLUP); // Make button C pin input with weak pullup.
-   attachInterrupt(BUTTON_A, ButtonA_ISR, RISING); // Assign ISR for button A.
-   attachInterrupt(BUTTON_B, ButtonB_ISR, RISING); // Assign ISR for button B.
-   attachInterrupt(BUTTON_C, ButtonC_ISR, RISING); // Assign ISR for button C.
+   pinMode(G_BUTTON_A, INPUT_PULLUP); // Make button A pin input with weak pullup.
+   pinMode(G_BUTTON_B, INPUT_PULLUP); // Make button B pin input with weak pullup.
+   pinMode(G_BUTTON_C, INPUT_PULLUP); // Make button C pin input with weak pullup.
+   attachInterrupt(G_BUTTON_A, ButtonA_ISR, RISING); // Assign ISR for button A.
+   attachInterrupt(G_BUTTON_B, ButtonB_ISR, RISING); // Assign ISR for button B.
+   attachInterrupt(G_BUTTON_C, ButtonC_ISR, RISING); // Assign ISR for button C.
    rotateDisplay(oledOrientation); // Orient OLED text.
    displaySplashScreen("");
 } // setup()

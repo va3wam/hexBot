@@ -187,15 +187,15 @@ void setupStatusLed()
 {
    createPredefinedColours(); // Create predefined colour settings.
    Log.traceln("<setupStatusLed> Initialize status RGB LED on reset button.");
-   pinMode(resetRedLED, OUTPUT); // Set GPIO pin connected to red LED inside of the reset button RGB LED to output.
-   pinMode(resetBlueLED, OUTPUT); // Set GPIO pin connected to green LED inside of the reset button RGB LED to output.
-   pinMode(resetGreenLED, OUTPUT); // Set GPIO pin connected to blue LED inside of the reset button RGB LED to output.
+   pinMode(G_RESET_RED_LED, OUTPUT); // Set GPIO pin connected to red LED inside of the reset button RGB LED to output.
+   pinMode(G_RESET_GREEN_LED, OUTPUT); // Set GPIO pin connected to green LED inside of the reset button RGB LED to output.
+   pinMode(G_RESET_BLUE_LED, OUTPUT); // Set GPIO pin connected to blue LED inside of the reset button RGB LED to output.
    ledcSetup(PWM_RED_CHANNEL, PWM_FREQ, PWM_RESOLUTION); // Configure red LED PWM properties.
-   ledcAttachPin(resetRedLED, PWM_RED_CHANNEL); // Attach PWM channel to pin connected to red LED on reset button.
+   ledcAttachPin(G_RESET_RED_LED, PWM_RED_CHANNEL); // Attach PWM channel to pin connected to red LED on reset button.
    ledcSetup(PWM_GREEN_CHANNEL, PWM_FREQ, PWM_RESOLUTION); // Configure green LED PWM properties.
-   ledcAttachPin(resetGreenLED, PWM_GREEN_CHANNEL); // Attach PWM channel to pin connected to green LED on reset button.
+   ledcAttachPin(G_RESET_GREEN_LED, PWM_GREEN_CHANNEL); // Attach PWM channel to pin connected to green LED on reset button.
    ledcSetup(PWM_BLUE_CHANNEL, PWM_FREQ, PWM_RESOLUTION); // Configure blue LED PWM properties.
-   ledcAttachPin(resetBlueLED, PWM_BLUE_CHANNEL); // Attach PWM channel to pin connected to blue LED on reset button.
+   ledcAttachPin(G_RESET_BLUE_LED, PWM_BLUE_CHANNEL); // Attach PWM channel to pin connected to blue LED on reset button.
 } //setupStatusLed()
 
 #endif // End of precompiler protected code block

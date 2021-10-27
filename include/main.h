@@ -80,12 +80,8 @@ const uint8_t shinLen = 7.5; // Distance from knee to ankle (shin) is 7.5cm.
 const uint8_t toeOffset = 17; // Angle that toe is offset from 90deg of ankle joint is 17 degrees.
 const uint8_t origXOffset = 2.92; // Distance the knee is offset from the origin along the x axis.
 // I2C related variables.
-#define I2C_bus0_speed 400000 // Define speed of I2C bus 2. Note 400KHz is the upper speed limit for ESP32 I2C
-#define I2C_bus0_SDA 23 // Define pin on the board used for Serial Data Line (SDA) for I2C bus 0
-#define I2C_bus0_SCL 22 // Define pin on the board used for Serial Clock Line (SCL) for I2C bus 0
-#define I2C_bus1_speed 100000 // Define speed of I2C bus 2. Note 100KHz is the upper speed limit for ESP32 I2C
-#define I2C_bus1_SDA 17 // Define pin on the board used for Serial Data Line (SDA) for I2C bus 1
-#define I2C_bus1_SCL 21 // Define pin on the board used for Serial Clock Line (SCL) for I2C bus 1
+#define I2C_BUS0_SPEED 400000 // Define speed of I2C bus 2. Note 400KHz is the upper speed limit for ESP32 I2C
+#define I2C_BUS1_SPEED 100000 // Define speed of I2C bus 2. Note 100KHz is the upper speed limit for ESP32 I2C
 #define MPU6050_I2C_ADD 0x68 // GY521 I2C address.
 #define leftOLED_I2C_ADD 0x3D // OLED used for robot's left eye I2C adddress.
 #define rightOLED_I2C_ADD 0x3C // OLED used for robot' right eye I2C address.
