@@ -29,24 +29,20 @@
  * @param centreDeg Mid point of motor movement range.
  * @return PWM value.
  * ==========================================================================*/
-int32_t mapDegToPWM(float *degrees, float *centerDeg)
+int32_t mapDegToPWM(float degrees, float centerDeg)
 {
-   const int8_t offset = 90; // Angle offset of motor in neutral position?
+   const float offset = 90; // Angle offset of motor in neutral position?
    // TODO #26 create constants for all magic numbers in this function. 
-   if(*degrees < *centerDeg - offset) // range check the desired degrees value
-   {
-      *degrees = *centerDeg - offset;
-   } // if
-   if(*degrees > *centerDeg + offset) // range check the desired degrees value
-   {
-      *degrees = *centerDeg + offset;
-   } // if
+   // range check the desired degrees value
+   float fixup = 0;       // assume degrees is within range defined by offset
+   if(degrees < centerDeg - offset)  { fixup = offset - degrees; } 
+   if(degrees > centerDeg + offset)  { fixup = offset - degrees; }
    // formula fits a line to two measured data points (x=degrees, y=PWM) with 
    // the points selected to minimize overall errors: (24,160) (166,460)
    // formula is based on y = M * x + b where M is the slope, 
-   // (delta Y)/(delta X) for 2 selected points b is the y intercept, derived 
+   // (delta Y)/(delta X) for 2 selected points, b is the y intercept, derived 
    // by substituting a selected point into above formula after slope is known.
-   return (*degrees - (*centerDeg - offset)) * 300 / 142 + 109.3;
+   return (degrees - (centerDeg - offset + fixup)) * 300 / 142 + 109.3;
 } // mapDegToPWM()
 
 /**
@@ -191,7 +187,7 @@ void testDaeIKFunctions()
    float degrees = 90;
    float centerDeg = 90;
    Log.noticeln("<testDaeIKFunctions> ... Example call to mapDegToPWM(%F, %F).", degrees, centerDeg);
-   int32_t pwm = mapDegToPWM(&degrees, &centerDeg);
+   int32_t pwm = mapDegToPWM(degrees, centerDeg);
    Log.noticeln("<testDaeIKFunctions> ...... PWM for %F degrees with a center of %F = %D", degrees, centerDeg, pwm);
   
    float x = 7; // Toe target x position.

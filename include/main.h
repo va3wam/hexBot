@@ -22,6 +22,7 @@
 #include <Adafruit_GFX.h> // OLED graphics
 #include <Adafruit_SH110X.h> // OLED text
 #include <hexbot_gpio_pins.h> // GPIO pin uses
+#include <flows.h>      // parameter definitions and global storage for flows that define leg movement
 
 /*******************************************************************************
  * @section mainVars Global variable definitions.
@@ -241,6 +242,7 @@ void startWebServer();
 #include <servoLegs.cpp> // Control leg servos.
 #include <oled.cpp> // Control OLED.
 #include <daeIK.cpp> // Doug's inverted kinetics functions. 
+#include <flows.cpp>          // routines relates to leg movements
 
 /************************************************************************************
  * @section mainDeclare Declare functions in main.cpp.
