@@ -64,6 +64,8 @@ void setup()
    Log.verboseln("<setup> Display robot configuration in console trace."); 
    showCfgDetails(); // Show all configuration details in one summary.
    testDaeIKFunctions(); // Doug's IK routines.
+   Log.verboseln("<setup> Initialize flows.");
+   setupFlows();
    Log.verboseln("<setup> Review status flags to see how boot sequence went."); 
    checkBoot();   
    timer = millis(); // Timer for motor driver signalling.
@@ -75,7 +77,27 @@ void setup()
  * ==========================================================================*/
 void loop() 
 {
+// check for hi priority 20msec loop first. Should serialize other tasks too,
+//  so at most one of them is done per loop()
+// ==== track how well we're doing at running the 20msec on time.   
+   if(f_flowing == true)  // are we executing a predefined flow between positions?
+  {
+     do_flow();           // yes. caclulate and do next servo commands. It's in flow.cpp module
+  }  
    monitorWebServer(); // Handle any pending web client requests. 
    checkOledButtons(); // Check if an OLED button has been pressed.
    checkMqtt(); // Check the MQTT message queue for incoming commands.
+   float gx, gy, gz ;//lx, ly,lz;    // quick test data
+//   gx = 8.87489;
+//   gy = -5.0475;
+//   gz = 0;
+   gx = 18.61918;
+   gy = -14.79179;
+   gz = -10.59549;
+   globCoordsToLocal(1, gx, gy, gz, &lx, &ly, &lz);
+//   Serial.print( "gctl input: ");
+//   Serial.print( gx);Serial.print(" "); Serial.print( gy);Serial.print(" "); Serial.print( gz); Serial.print("    ");
+//   Serial.print(" local: ");   
+//   Serial.print(lx); Serial.print(" "); Serial.print(ly); Serial.print(" "); Serial.println(lz);
+//   delay(3000);
 } // loop()  
