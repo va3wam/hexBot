@@ -8,6 +8,19 @@
 
 #include <main.h> // Header file for all libraries needed by this program.
 
+// quick and dirty easily typed debug commands
+   #define sp1(_y) Serial.print(_y);
+//   #define sp1l(_a) Serial.println(_a);
+   #define sp1l(_z) Serial.println(_z);
+   #define sp1s(_b) Serial.print(_b); Serial.print(" ");
+   #define sp2(x,y) Serial.print(x); Serial.print(y);
+   #define sp2s(x,y) Serial.print(x); Serial.print(" ");Serial.print(y);
+   #define sp2l(x,y) Serial.print(x); Serial.println(y);
+   #define sp2sl(x,y) Serial.print(x); Serial.print(" ");Serial.println(y);
+   #define sp Serial.print(" ");
+   #define nl Serial.println();
+
+
 // TODO #7 : A pingable but non MQTT IP address crash loops code.
 /** 
  * @brief Establish connect to the the MQTT broker.
@@ -343,6 +356,7 @@ spr(" args: "); spr(f_tx); sp; spr(f_ty); sp; spl(f_tz);
  
       // copy position description from MQTT flow command to next flow row
       // f_count starts at 0, which we use to store first position in row 0
+sp2s("f_cunt=",f_count);      
       f_msecs[f_count] = arg[1].toInt();        // arg[0] is the FL command, arg[1] is msec time ...
       f_operation[f_count] = arg[2].toInt();   // code for operation in this row of the flow, eg fo_moveAbs
       
@@ -352,6 +366,8 @@ spr(" args: "); spr(f_tx); sp; spr(f_ty); sp; spl(f_tz);
       f_lShape4[f_count] = arg[6].toFloat();
       
       f_legX[f_count][1] = arg[7].toFloat();   // X coordinate or delta value for leg 1
+float tmpArg = arg[7].toFloat();
+sp2s("f_legX[fc][1],  arg[7]", f_legX[f_count][1]); sp2l(" ", tmpArg) ;     
       f_legY[f_count][1] = arg[8].toFloat();   // Y coordinate or delta value for leg 1
       f_legZ[f_count][1] = arg[9].toFloat();   // Z coordinate or delta value for leg 1
  

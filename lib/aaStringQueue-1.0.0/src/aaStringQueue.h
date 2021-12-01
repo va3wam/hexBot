@@ -10,7 +10,7 @@
 
 // Declare global variablles.
 extern const int8_t BUFFER_MAX_SIZE;
-extern const int8_t COMMAND_MAX_LENGTH;
+extern const int COMMAND_MAX_LENGTH;
 
 class aaStringQueue // Define aaStringQueue class 
 {
@@ -18,7 +18,7 @@ class aaStringQueue // Define aaStringQueue class
       aaStringQueue(); // Class constructor.
       bool isEmpty(); // Check if buffer is empty.
       bool isFull(); // Check if buffer is full.
-      int8_t getMaxBufferSize(); // Return max size of command buffer.
+      int getCmdMaxLength(); // Return max char count for a command buffer.
       int8_t getCount(); // Return the current count of commands buffered. 
       int8_t getLost(); // Return the number of commands that fell off the buffer. 
       void dumpBuffer(); // Sends the content of the buffer to the console.

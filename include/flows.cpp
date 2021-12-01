@@ -23,6 +23,24 @@ void setupFlows()
    legIndexHipPin[4] = 0;
    legIndexHipPin[5] = 3;
    legIndexHipPin[6] = 6;
+
+// global coords for each leg's home position
+   f_homeX[1] =  18.62 ; f_homeY[1] = -14.79 ; f_homeZ[1] = -10.60 ; 
+   f_homeX[2] =   0    ; f_homeY[2] = -20.71 ; f_homeZ[2] = -10.60 ;
+   f_homeX[3] = -18.62 ; f_homeY[3] = -14.79 ; f_homeZ[3] = -10.60 ;
+   f_homeX[4] =  18.62 ; f_homeY[4] =  14.79 ; f_homeZ[4] = -10.60 ;
+   f_homeX[5] =   0    ; f_homeY[5] =  20.71 ; f_homeZ[5] = -10.60 ;
+   f_homeX[6] = -18.62 ; f_homeY[6] =  14.79 ; f_homeZ[6] = -10.60 ;
+
+// global coords for each leg's hip position
+   f_hipX[1] = 8.87;  f_hipY[1] = -5.05;     
+   f_hipX[2] =   0 ;  f_hipY[2] = -6.94;
+   f_hipX[3] =-8.87;  f_hipY[3] = -5.05;
+   f_hipX[4] = 8.87;  f_hipY[4] =  5.05;
+   f_hipX[5] =   0 ;  f_hipY[5] =  6.94;
+   f_hipX[6] =-8.87;  f_hipY[6] =  5.05;
+
+   
 }
 // standard doxygen docs here
 float lx, ly, lz;
@@ -48,18 +66,18 @@ bool globCoordsToLocal(int legNumber, float gx, float gy, float gz, float *lx, f
         break;
       case 3:
         // Back Right leg
-        Xrt = cos_p45 * (gx+fp_frontHipX) - sin_p45 * (gy + fp_frontHipY);  // rotated (Xg,Yg)
-        Yrt = sin_p45 * (gx+fp_frontHipX) + cos_p45 * (gy + fp_frontHipY);
+        Xrt = cos_p45 * (gx + fp_frontHipX) - sin_p45 * (gy + fp_frontHipY);  // rotated (Xg,Yg)
+        Yrt = sin_p45 * (gx + fp_frontHipX) + cos_p45 * (gy + fp_frontHipY);
         *lx = -1 * Yrt;
         *lz = Xrt;        
         break;
       case 4:
         // Front Left leg
-        Xrt = cos_p45 * (gx+fp_frontHipX) - sin_p45 * (gy + fp_frontHipY);  // rotated (Xg,Yg)
-        Yrt = sin_p45 * (gx+fp_frontHipX) + cos_p45 * (gy + fp_frontHipY);
-        *lx = -1 * Yrt;
+        Xrt = cos_p45 * (gx - fp_frontHipX) - sin_p45 * (gy - fp_frontHipY);  // rotated (Xg,Yg)
+        Yrt = sin_p45 * (gx - fp_frontHipX) + cos_p45 * (gy - fp_frontHipY);
+        *lx = Yrt;
         *lz = Xrt;        
-
+          
         break;
       case 5:
         // Middle Left leg
@@ -70,7 +88,7 @@ bool globCoordsToLocal(int legNumber, float gx, float gy, float gz, float *lx, f
         // Back Left leg
         Xrt = cos_m45 * (gx + fp_frontHipX) - sin_m45 * (gy - fp_frontHipY);  // rotated (Xg,Yg)
         Yrt = sin_m45 * (gx + fp_frontHipX) + cos_m45 * (gy - fp_frontHipY);
-        *lx = -1 * Yrt;
+        *lx = Yrt;
         *lz = Xrt;        
         break;
       default:
@@ -101,19 +119,38 @@ void do_flow()          // called from loop if there's a flow executing that nee
 
 // recode from scratch
    if(f_active == 0)                // starting a new flow, so need to do some setup
-   {  for(int leg=1; leg<=6; leg++)     // copy flow coords into  working vectors
-      {  f_lastLegX[leg] = f_legX[f_active][leg];  
-         f_lastLegY[leg] = f_legY[f_active][leg]; 
-         f_lastLegZ[leg] = f_legZ[f_active][leg]; 
+   {  sp1l("--initial toe offsets--");
+      for(int l=1; l<=6; l++)     // copy flow coords into  working vectors
+      {  f_lastLegX[l] = f_legX[f_active][l];  
+         f_lastLegY[l] = f_legY[f_active][l]; 
+         f_lastLegZ[l] = f_legZ[f_active][l]; 
+         sp2s(f_lastLegX[l],f_lastLegY[l]); sp2l(" ",f_lastLegZ[l]);
       }
       // we need local coords to be able to give commands to servos
       // the operation code in f_operation[f_active] tells us what king of coords we were given
       f_goodData = true;               // assume thing will go well, & f_operation is valid
       if(f_operation[f_active] == fo_moveRelHome || f_operation[f_active] == fo_startRelHome)
-      {  // we were givin local coords in flow - already done, & LastLeg?[leg] has local coords
+      {  // we were given offsets relative to home position, so add in home coords
+         sp1l("--global toe coords including offsets--");
+         int l;
+         for(l=1; l<=6; l++)  // add offset to home's global coord, to get final global coord
+         {  f_tmpX[l] = f_lastLegX[l] + f_homeX[l];   
+            f_tmpY[l] = f_lastLegY[l] + f_homeY[l];
+            f_tmpZ[l] = f_lastLegZ[l] + f_homeZ[l];
+            sp2s(f_tmpX[l],f_tmpY[l]); sp2l(" ",f_tmpZ[l]);
+         }
+         // now convert final global coords to local coords we can feed to servos
+         sp1l("--final local coords including offsets--");
+         for(int l=1; l<=6; l++)  // add offset to home's global coord, to get final global coord
+         {  globCoordsToLocal(l,f_tmpX[l],f_tmpY[l],f_tmpZ[l],&f_lastLegX[l],&f_lastLegY[l],&f_lastLegZ[l]);
+            sp2s(f_lastLegX[l],f_lastLegY[l]); sp2l(" ",f_lastLegZ[l]);
+         }
+         
+
       }
       else if (f_operation[f_active] == fo_moveAbs || f_operation[f_active] == fo_startAbs)
       {  // we were given absolute coords, and need to convert to local coords
+         // if we're in flow start up, we're looking at flow row 0, thus [0] below
          for(int l=1; l<=6; l++)   // l stands for leg. short to avoid cobol expression syndrome
          {  globCoordsToLocal(l,f_legX[0][l],f_legY[0][l],f_legZ[0][l],&f_lastLegX[l],&f_lastLegY[l],&f_lastLegZ[l]);
          }
@@ -144,18 +181,19 @@ void do_flow()          // called from loop if there's a flow executing that nee
             //   the pin can be derived from legIndexHipPin[leg]
             //   to get pwm value, we convert local coords to angles, then from angles to pwm values
             float f_angH, f_angK, f_angA ;      // temp variables to hold servo angles
-            Log.noticeln("<do_flow> Leg %d, angH = %d, angK = %d, angA = %d",leg,f_angH,f_angK,f_angA);
+            Log.noticeln(" X: %5.2f, Y: %5.2f, Z: %5.2f",f_lastLegX[l], f_lastLegY[l], f_lastLegZ[l]);
             coordsToAngles(f_lastLegX[l], f_lastLegY[l], f_lastLegZ[l], &f_angH, &f_angK, &f_angA); 
+            Log.noticeln("<do_flow> Leg %u, angH = %.2f, angK = %.2f, angA = %.2f",l,f_angH,f_angK,f_angA);
 
             // now, one servo wihin the leg at a time, figure the pwm value, and move the servo
             // starting with the hip...
 //pwmDriver[driverNum].setPWM(leg[driverNum][legNum].hipPinNum, pwmClkStart, servoMiddlePWM);
             pwmDriver[legIndexDriver[l]].setPWM(legIndexHipPin[l],  pwmClkStart, mapDegToPWM(f_angH,0));
-            Log.noticeln("H: Driver=%d,  Pin=%d, angH=%D,  pwm=%d",legIndexDriver[l],legIndexHipPin[l],f_angH, mapDegToPWM(f_angH,0));
+            Log.noticeln("H: Driver=%d,  Pin=%d, angH=%.2f,  pwm=%.2fd",legIndexDriver[l],legIndexHipPin[l],f_angH, mapDegToPWM(f_angH,0));
             pwmDriver[legIndexDriver[l]].setPWM(legIndexHipPin[l]+1,pwmClkStart, mapDegToPWM(f_angK,0));
-            Log.noticeln("H: Driver=%d,  Pin=%d, angH=%D,  pwm=%d",legIndexDriver[l],legIndexHipPin[l]+1,f_angH, mapDegToPWM(f_angK,0));
+            Log.noticeln("H: Driver=%d,  Pin=%d, angH=%.2f,  pwm=%.2f",legIndexDriver[l],legIndexHipPin[l]+1,f_angK, mapDegToPWM(f_angK,0));
             pwmDriver[legIndexDriver[l]].setPWM(legIndexHipPin[l]+2,pwmClkStart, mapDegToPWM(f_angA,0));
-            Log.noticeln("H: Driver=%d,  Pin=%d, angH=%D,  pwm=%d",legIndexDriver[l],legIndexHipPin[l]+2,f_angH, mapDegToPWM(f_angA,0));
+            Log.noticeln("H: Driver=%d,  Pin=%d, angH=%.2f,  pwm=%.2f",legIndexDriver[l],legIndexHipPin[l]+2,f_angA, mapDegToPWM(f_angA,0));
             // ok, the 3 servos in that leg have been moved - on to the next leg
          }  // for l = 1 to 6
          f_flowing = false;            // that's all I've coded so far   

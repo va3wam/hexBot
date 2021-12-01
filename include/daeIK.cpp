@@ -80,7 +80,9 @@ void coordsToAngles(float x, float y, float z, float *f_angH, float *f_angK, flo
 {
    // TODO #27 create constants for all magic numbers in this function.
    float f_Ux, f_Uy; // toe position when rotated into xy plane.
-   *f_angH = atan(radians(z / x)); // the hip angle is the easy one.
+   *f_angH = atan2(z, x) * 180 / pi; // the hip angle is the easy one.
+float tmp1 =  atan2(z, x) * 180 / pi;  
+sp2("---- c2a: z,x,angH",z);sp;sp2sl(x,tmp1);   
 
    // now reduce to a 2D problem by rotating leg into xy plane (around y axis)
    // resulting in new x coordinate: Ux. ( Uy stays same as original y, and new Uz = 0)
@@ -114,7 +116,7 @@ void coordsToAngles(float x, float y, float z, float *f_angH, float *f_angK, flo
    f_determinant = round((f_QB * f_QB - 4 * f_QA * f_QC) * 10000) / 10000;
    if(f_determinant < 0) 
    { 
-      Log.noticeln("========= negative determinant =======");
+      Log.noticeln("========= negative determinant ======= %d", f_determinant);
    } // if
    f_AxPlus  = (-1 * f_QB + sqrt(f_determinant)) / (2 * f_QA);
    f_AxMinus = (-1 * f_QB - sqrt(f_determinant)) / (2 * f_QA);
