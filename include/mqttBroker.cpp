@@ -8,6 +8,19 @@
 
 #include <main.h> // Header file for all libraries needed by this program.
 
+// quick and dirty easily typed debug commands
+   #define sp1(_y) Serial.print(_y);
+//   #define sp1l(_a) Serial.println(_a);
+   #define sp1l(_z) Serial.println(_z);
+   #define sp1s(_b) Serial.print(_b); Serial.print(" ");
+   #define sp2(x,y) Serial.print(x); Serial.print(y);
+   #define sp2s(x,y) Serial.print(x); Serial.print(" ");Serial.print(y);
+   #define sp2l(x,y) Serial.print(x); Serial.println(y);
+   #define sp2sl(x,y) Serial.print(x); Serial.print(" ");Serial.println(y);
+   #define sp Serial.print(" ");
+   #define nl Serial.println();
+
+
 // TODO #7 : A pingable but non MQTT IP address crash loops code.
 /** 
  * @brief Establish connect to the the MQTT broker.

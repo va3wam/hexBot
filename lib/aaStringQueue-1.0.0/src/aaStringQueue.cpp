@@ -42,7 +42,7 @@
 
 // Define global variables.
 const int8_t BUFFER_MAX_SIZE = 5;
-const int8_t COMMAND_MAX_LENGTH = 20;
+const int COMMAND_MAX_LENGTH = 200;
 char mqttCommandBuffer[BUFFER_MAX_SIZE][COMMAND_MAX_LENGTH] = { "", "", "", "", ""}; // Buffer.
 
 /**
@@ -89,9 +89,9 @@ bool aaStringQueue::isFull()
  * @brief Reports the maximum size of the queue.
  * @return int8_t reports value of BUFFER_MAX_SIZE constant.   
  * ==========================================================================*/
-int8_t aaStringQueue::getMaxBufferSize() 
+int aaStringQueue::getCmdMaxLength() 
 {
-   return BUFFER_MAX_SIZE;
+   return COMMAND_MAX_LENGTH;
 } // aaStringQueue::getMaxSize()
 
 /**

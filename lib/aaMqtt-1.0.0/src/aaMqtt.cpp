@@ -276,7 +276,7 @@ String aaMqtt::getCmd()
    else
    {
 //      int8_t strSize = cmdQueue.getMaxBufferSize();
-      int strSize = cmdQueue.getMaxBufferSize();    // 8 bit integers go from -127 to +128
+      int strSize = cmdQueue.getCmdMaxLength();    // Int allows buffer sizes over 256
       char str[strSize];
       cmdQueue.pop(str);
       Serial.print("<aaMqtt::getCmd> Size of string = ");

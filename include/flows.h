@@ -7,6 +7,20 @@
 #define flows_h  // Precompiler macro used for precompiler check.
 
 #include <main.h>          // get all our header files
+/*
+// quick and dirty easily typed debug commands
+   #define sp1(x) Serial.print(x);
+   #define sp1l(_x) Serial.println(_x);
+   #define sp1s(x) Serial.print(x); Serial.print(" ");
+   #define sp2(x,y) Serial.print(x); Serial.print(y);
+   #define sp2s(x,y) Serial.print(x); Serial.print(" ");Serial.print(y);
+   #define sp2l(x,y) Serial.print(x); Serial.println(y);
+   #define sp2sl(x,y) Serial.print(x); Serial.print(" ");Serial.println(y);
+   #define sp3sl(_x,_y,_z) sp1s(_x);sp1s(_y);sp1l(_z);
+   #define sp Serial.print(" ");
+   #define nl Serial.println();
+*/
+
 //
 // A flow is a series of leg positions, as defined by a group of arrays. 
 // A specific index into these arrays ( called a "flow row") defines a position
@@ -63,6 +77,11 @@ float f_lastLegX[7] ;              // working copy of coords for each leg
 float f_lastLegY[7] ;
 float f_lastLegZ[7] ;
 
+float f_tmpX[7] ;                  // temporary coord storage for do_flow processing
+float f_tmpY[7] ;
+float f_tmpZ[7] ;
+
+
 int f_count = 0;                 // counter as we process FLOW commands, accumulating flow rows, ends up as row count
 int f_active = 0;                // what row number we're executing, after a FLOW_GO command
 bool f_flowing = false;          // set to true if we're executing a fow
@@ -71,6 +90,14 @@ int f_msecPerFrameDefault = 20;  // unless specified in the FLOW_GO command, do 
 bool f_goodData  ;               // used in flow processing do_flow() routine
 
 const float pi = 3.1415926 ;
+
+// home position of each leg, using global coords
+float f_homeX[7] ;         // X coord in global coords, for each of 6 legs
+float f_homeY[7] ;         //  initialized in setupFlows()
+float f_homeZ[7] ;
+
+float f_hipX[7];           //global X coordinate for hip, for each leg
+float f_hipY[7];           // and Y, init'd in flows.cpp setupFlows()
 
 // symbols for key x, y position coordinates for leg movements
 float fp_frontToeHomeX = 3.82739 + 20.91875 * .707107;   // 707107 is sin of 45 degrees
