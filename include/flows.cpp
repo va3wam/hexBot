@@ -145,8 +145,6 @@ void do_flow()          // called from loop if there's a flow executing that nee
          {  globCoordsToLocal(l,f_tmpX[l],f_tmpY[l],f_tmpZ[l],&f_lastLegX[l],&f_lastLegY[l],&f_lastLegZ[l]);
             sp2s(f_lastLegX[l],f_lastLegY[l]); sp2l(" ",f_lastLegZ[l]);
          }
-         
-
       }
       else if (f_operation[f_active] == fo_moveAbs || f_operation[f_active] == fo_startAbs)
       {  // we were given absolute coords, and need to convert to local coords
@@ -181,19 +179,18 @@ void do_flow()          // called from loop if there's a flow executing that nee
             //   the pin can be derived from legIndexHipPin[leg]
             //   to get pwm value, we convert local coords to angles, then from angles to pwm values
             float f_angH, f_angK, f_angA ;      // temp variables to hold servo angles
-            Log.noticeln(" X: %5.2f, Y: %5.2f, Z: %5.2f",f_lastLegX[l], f_lastLegY[l], f_lastLegZ[l]);
+            Log.noticeln(" X: %F, Y: %F, Z: %F",f_lastLegX[l], f_lastLegY[l], f_lastLegZ[l]);
             coordsToAngles(f_lastLegX[l], f_lastLegY[l], f_lastLegZ[l], &f_angH, &f_angK, &f_angA); 
-            Log.noticeln("<do_flow> Leg %u, angH = %.2f, angK = %.2f, angA = %.2f",l,f_angH,f_angK,f_angA);
+            Log.noticeln("<do_flow> Leg %u, angH = %F, angK = %F, angA = %F",l,f_angH,f_angK,f_angA);
 
             // now, one servo wihin the leg at a time, figure the pwm value, and move the servo
             // starting with the hip...
-//pwmDriver[driverNum].setPWM(leg[driverNum][legNum].hipPinNum, pwmClkStart, servoMiddlePWM);
             pwmDriver[legIndexDriver[l]].setPWM(legIndexHipPin[l],  pwmClkStart, mapDegToPWM(f_angH,0));
-            Log.noticeln("H: Driver=%d,  Pin=%d, angH=%.2f,  pwm=%.2fd",legIndexDriver[l],legIndexHipPin[l],f_angH, mapDegToPWM(f_angH,0));
+            Log.noticeln("H: Driver=%d,  Pin=%d, angH=%F,  pwm=%d",legIndexDriver[l],legIndexHipPin[l],f_angH, mapDegToPWM(f_angH,0));
             pwmDriver[legIndexDriver[l]].setPWM(legIndexHipPin[l]+1,pwmClkStart, mapDegToPWM(f_angK,0));
-            Log.noticeln("H: Driver=%d,  Pin=%d, angH=%.2f,  pwm=%.2f",legIndexDriver[l],legIndexHipPin[l]+1,f_angK, mapDegToPWM(f_angK,0));
+            Log.noticeln("K: Driver=%d,  Pin=%d, angH=%F,  pwm=%d",legIndexDriver[l],legIndexHipPin[l]+1,f_angK, mapDegToPWM(f_angK,0));
             pwmDriver[legIndexDriver[l]].setPWM(legIndexHipPin[l]+2,pwmClkStart, mapDegToPWM(f_angA,0));
-            Log.noticeln("H: Driver=%d,  Pin=%d, angH=%.2f,  pwm=%.2f",legIndexDriver[l],legIndexHipPin[l]+2,f_angA, mapDegToPWM(f_angA,0));
+            Log.noticeln("A: Driver=%d,  Pin=%d, angH=%F,  pwm=%d",legIndexDriver[l],legIndexHipPin[l]+2,f_angA, mapDegToPWM(f_angA,0));
             // ok, the 3 servos in that leg have been moved - on to the next leg
          }  // for l = 1 to 6
          f_flowing = false;            // that's all I've coded so far   

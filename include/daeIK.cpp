@@ -81,8 +81,6 @@ void coordsToAngles(float x, float y, float z, float *f_angH, float *f_angK, flo
    // TODO #27 create constants for all magic numbers in this function.
    float f_Ux, f_Uy; // toe position when rotated into xy plane.
    *f_angH = atan2(z, x) * 180 / pi; // the hip angle is the easy one.
-float tmp1 =  atan2(z, x) * 180 / pi;  
-sp2("---- c2a: z,x,angH",z);sp;sp2sl(x,tmp1);   
 
    // now reduce to a 2D problem by rotating leg into xy plane (around y axis)
    // resulting in new x coordinate: Ux. ( Uy stays same as original y, and new Uz = 0)
@@ -116,7 +114,7 @@ sp2("---- c2a: z,x,angH",z);sp;sp2sl(x,tmp1);
    f_determinant = round((f_QB * f_QB - 4 * f_QA * f_QC) * 10000) / 10000;
    if(f_determinant < 0) 
    { 
-      Log.noticeln("========= negative determinant ======= %d", f_determinant);
+      Log.noticeln("=== negative determinant in coordsToAngles === %d", f_determinant);
    } // if
    f_AxPlus  = (-1 * f_QB + sqrt(f_determinant)) / (2 * f_QA);
    f_AxMinus = (-1 * f_QB - sqrt(f_determinant)) / (2 * f_QA);
@@ -140,10 +138,6 @@ sp2("---- c2a: z,x,angH",z);sp;sp2sl(x,tmp1);
 //   }
    // there are still some unlikely edge cases needing attention, such as h=0, k=-44, a=75
 
-//spr("`AxPlus,AyPlus= "); spr(f_AxPlus); sp; spl(f_AyPlus);
-//spr("`AxMinus,AyMinus= "); spr(f_AxMinus); sp; spl(f_AyMinus);
-//spr("`Ax,Ay= "); spr(f_Ax); sp; spl(f_Ay);
-
 // think following stuff is obsolete, but keeping the formulas
    // get y by substituting x into a previous equation, again dependent on sign of y
 //    if(y>0)   {f_Ay = -1*((-71+f_Ux*f_Ux+y*y) - f_Ax*(-5+2*f_Ux))/(2*y);}
@@ -164,14 +158,16 @@ sp2("---- c2a: z,x,angH",z);sp;sp2sl(x,tmp1);
 // for cases 1 and 4
    if(f_Uy < 0)
    {
-      float f_P = asin(radians(f_Ux - f_Ax) / footLen);      // can only explain this with a diagram
+//      float f_P = asin(radians(f_Ux - f_Ax) / footLen);      // can only explain this with a diagram
+      float f_P = asin((f_Ux - f_Ax) / footLen) / PI * 180;      // can only explain this with a diagram
       *f_angA = f_P + *f_angK - toeOffset;
    }  // Uy <0
 
 // for cases 2, and impossible 3
    if(f_Uy >= 0)
    {
-      float f_R = asin(radians(f_Uy - f_Ay) / footLen);      // can only explain this with a diagram
+//      float f_R = asin(radians(f_Uy - f_Ay) / footLen);      // can only explain this with a diagram
+      float f_R = asin((f_Uy - f_Ay) / footLen) /PI * 180;      // can only explain this with a diagram
       *f_angA = f_R + 90 + *f_angK - toeOffset;
    }  // Uy <0   
 } // coordsToAngles()

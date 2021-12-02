@@ -76,10 +76,11 @@ typedef struct
 struct_Colour statusColour[numColoursSupported]; // Array of colours.
 struct_Colour memColour; // Used to switch back RGB LED colour when it is temporarily changed.
 // DAE Inverted kinematic related variables.
-const uint8_t footLen = 11; // Distance from ankle to toe (foot) is 11cm. 
-const uint8_t shinLen = 7.5; // Distance from knee to ankle (shin) is 7.5cm.
-const uint8_t toeOffset = 17; // Angle that toe is offset from 90deg of ankle joint is 17 degrees.
-const uint8_t origXOffset = 2.92; // Distance the knee is offset from the origin along the x axis.
+const float footLen = 11; // Distance from ankle to toe (foot) is 11cm. 
+const float shinLen = 7.5; // Distance from knee to ankle (shin) is 7.5cm.
+const float toeOffset = 17; // Angle that toe is offset from 90deg of ankle joint is 17 degrees.
+// const uint8_t origXOffset = 2.92; // Distance the knee is offset from the origin along the x axis.
+const float origXOffset = 2.5; // Distance the knee is offset from the origin along the x axis.
 // I2C related variables.
 #define I2C_BUS0_SPEED 400000 // Define speed of I2C bus 2. Note 400KHz is the upper speed limit for ESP32 I2C
 #define I2C_BUS1_SPEED 100000 // Define speed of I2C bus 2. Note 100KHz is the upper speed limit for ESP32 I2C
