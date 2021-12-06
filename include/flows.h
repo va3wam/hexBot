@@ -46,7 +46,7 @@
 // These are the arrays that contain the flow currently being executed
 
 #define flowLength  100          // maximum number of positions in a flow
-
+//  -----------------------------// start of flow row arrays
 int f_msecs[flowLength];         // time duration in milliseconds for movement to this location
 
 int f_operation[flowLength];     // type of operation specified for this position
@@ -72,6 +72,7 @@ float f_lShape4[flowLength];
 float f_legX[flowLength] [7];    // X coord for each of 6 legs, 2nd index is leg number. meaning varies per operation
 float f_legY[flowLength] [7];    // Y coord for each of 6 legs, 2nd index is leg number
 float f_legZ[flowLength] [7];    // size 7 means indices 0 - 6, so can number legs from 1 to 6
+//  -----------------------------// end of flow row arrays
 
 float f_lastLegX[7] ;              // working copy of coords for each leg
 float f_lastLegY[7] ;
@@ -81,13 +82,36 @@ float f_tmpX[7] ;                  // temporary coord storage for do_flow proces
 float f_tmpY[7] ;
 float f_tmpZ[7] ;
 
+float f_deltaX[7];         // distance in X direction to be travelled, in frames, in this flow row
+float f_deltaY[7];
+float f_deltaZ[7];
+
+float f_endLegX[7] ;               // local coords of end poing of line for current flow row
+float f_endLegY[7] ;               // used to calculate delta movements needed for each frame movement
+float f_endLegZ[7] ;
+
 
 int f_count = 0;                 // counter as we process FLOW commands, accumulating flow rows, ends up as row count
 int f_active = 0;                // what row number we're executing, after a FLOW_GO command
 bool f_flowing = false;          // set to true if we're executing a fow
+int f_frame = 0;                     // what frame number we're on within a flow row
 int f_msecPerFrame = 20;         // time slice length in msec for movement between positions
 int f_msecPerFrameDefault = 20;  // unless specified in the FLOW_GO command, do 20 msec time slices
+int f_framesPerPosn = 0;         // how many intermediary moves per flow row
 bool f_goodData  ;               // used in flow processing do_flow() routine
+int f_nextTime = 0;              // millis timestamp for next frame movement to be generated
+float f_angH, f_angK, f_angA ;   // temp variables to hold servo angles
+int L;                           // leg number use as a loop index in many places
+float safeXdist = 2;             // max allowed displacement on local X axis from home position
+float safeYdist = 2;             // ..checking is done after local coords are calculated in PrepNextLine()
+float safeZdist = 2;
+int toeMoveAction = 8;           // binary coded action to take when you calculated next toe position (frame) in do_flow()
+                                 // persists, but defaults to display local coords, set up in FLOW_GO MQTT command
+   const int fa_moveServos = 1;  // feed calculated PWM values to servo motors so they move
+   const int fa_dispAngles = 2;  // display the calculated servo angles (degrees) in serial monitor
+   const int fa_dispPWM    = 4;  // display the calculated PWM values
+   const int fa_dispLocal  = 8;  // display the local coordinates of toe position
+// fa_disGlobal  = 16;           // display the global coordinates of toe position <too hard to do, frames are in local coords
 
 const float pi = 3.1415926 ;
 
@@ -123,4 +147,7 @@ bool globCoordsToLocal(int legNumber, float gx, float gy, float gz, float *lx, f
    float sin_m45 = -.707107;      // sin( - 45 degrees)
    float cos_p45 = +.707107;      // cos( + 45 degrees) 
    float cos_m45 = +.707107;     // cos( - 45 degrees)
+
+// routine call templates
+bool prepNextLine();   
 #endif // End of precompiler protected code block

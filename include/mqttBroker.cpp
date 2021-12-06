@@ -429,6 +429,8 @@ spr(" args: "); spr(f_tx); sp; spr(f_ty); sp; spl(f_tz);
             f_msecPerFrame = arg[2].toInt();  // 2nd number is millis per frame
             if(f_msecPerFrame<10 || f_msecPerFrame>200) {f_msecPerFrame = f_msecPerFrameDefault;}
          }
+         if(argN>2) {toeMoveAction = arg[3].toInt();} // binary coded options for toe moves
+
       } // if action = 1
       else
       {   Serial.println("<flow_go>: invalid action in MQTT flow_go command");
