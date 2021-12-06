@@ -81,10 +81,9 @@ void loop()
 //  so at most one of them is done per loop()
 // ==== track how well we're doing at running the 20msec on time.   
    if(f_flowing == true)  // are we executing a predefined flow between positions?
-  {   do_flow();           // yes. caclulate and do next servo commands. It's in flow.cpp module
-  }  
+   {   do_flow();           // yes. caclulate and do next servo commands. It's in flow.cpp module
+   }  
    monitorWebServer(); // Handle any pending web client requests. 
    checkOledButtons(); // Check if an OLED button has been pressed.
    checkMqtt(); // Check the MQTT message queue for incoming commands.
-   float gx, gy, gz ;//lx, ly,lz;    // quick test data
 } // loop()  
