@@ -102,9 +102,13 @@ bool f_goodData  ;               // used in flow processing do_flow() routine
 int f_nextTime = 0;              // millis timestamp for next frame movement to be generated
 float f_angH, f_angK, f_angA ;   // temp variables to hold servo angles
 int L;                           // leg number use as a loop index in many places
-float safeXdist = 2;             // max allowed displacement on local X axis from home position
-float safeYdist = 2;             // ..checking is done after local coords are calculated in PrepNextLine()
-float safeZdist = 2;
+float safeMaxPosX = 6;             // max allowed displacement on local axes from home position
+float safeMaxNegX = 6;             // ..checking is done after local coords are calculated in PrepNextLine()
+float safeMaxPosY = 6;             // can argue that this should be per leg. Front legs have more room?
+float safeMaxNegY = 6;
+float safeMaxPosZ = 6;
+float safeMaxNegZ = 6;
+
 int toeMoveAction = 8;           // binary coded action to take when you calculated next toe position (frame) in do_flow()
                                  // persists, but defaults to display local coords, set up in FLOW_GO MQTT command
    const int fa_moveServos = 1;  // feed calculated PWM values to servo motors so they move
@@ -119,6 +123,10 @@ const float pi = 3.1415926 ;
 float f_homeX[7] ;         // X coord in global coords, for each of 6 legs
 float f_homeY[7] ;         //  initialized in setupFlows()
 float f_homeZ[7] ;
+
+float f_localHomeX = 13.78;   // home position in local coordinates
+float f_localHomeY = -10.60;  // (same for all legs)
+float f_localHomeZ = 0.0;
 
 float f_hipX[7];           //global X coordinate for hip, for each leg
 float f_hipY[7];           // and Y, init'd in flows.cpp setupFlows()
@@ -138,6 +146,7 @@ int legIndexDriver[7];     // for a lookup based on leg # to get driver number (
 int legIndexHipPin[7];      // for a lookup based on leg # to get pin number for hip ( could just use 3*(mod(leg-1,3))
                            // knee pin is 1 more than hip, ankle is 2 more
                            // these are initialized in flows.cpp:setupFlows()
+String legNum[7];          // lookup table to convert leg# to corresponding string
 
 // defines for routines acessed from elsewhere
 bool globCoordsToLocal(int legNumber, float gx, float gy, float gz, float *lx, float *ly, float *lz);
