@@ -40,6 +40,12 @@ void setupFlows()
    f_hipX[5] =   0 ;  f_hipY[5] =  6.94;
    f_hipX[6] =-8.87;  f_hipY[6] =  5.05;
 
+   legNum[1] = "1" ;       // crude way to convert leg numbers to strings via lookup
+   legNum[2] = "2" ;       // ..for safe toe position checking in flows.cpp:PrepNextLine()
+   legNum[3] = "3" ;
+   legNum[4] = "4" ;
+   legNum[5] = "5" ;
+   legNum[6] = "6" ;
    
 }
 // standard doxygen docs here
@@ -124,7 +130,7 @@ void do_flow()          // called from loop if there's a flow executing that nee
             //   the pin can be derived from legIndexHipPin[leg]
             //   to get pwm value, we convert local coords to angles, then from angles to pwm values
 
-            Log.noticeln(" X: %F, Y: %F, Z: %F",f_endLegX[L], f_endLegY[L], f_endLegZ[L]);
+//            Log.noticeln(" X: %F, Y: %F, Z: %F",f_endLegX[L], f_endLegY[L], f_endLegZ[L]);
             coordsToAngles(f_endLegX[L], f_endLegY[L], f_endLegZ[L], &f_angH, &f_angK, &f_angA); 
 //            Log.noticeln("<do_flow> Leg %u, angH = %F, angK = %F, angA = %F",L,f_angH,f_angK,f_angA);
 
@@ -147,7 +153,6 @@ void do_flow()          // called from loop if there's a flow executing that nee
          delay(340);             // in theory, wost case is about 120 degrees, & servo does 60 degrees in .17 sec
          // start preparing for frame by frame moves from this positon to next one in flow, i.e. [1] in flow rows
          // first, figure out local coords of that next position, like we did for initial position
-sp2l("=== count #1: ",f_count);
          if(f_count > 1 )     // is there at least one more flow row?
          {                    // yup - set up to do frames to get to it
             sp1l("--initial flow toe numbers for flow row 1--");
@@ -315,23 +320,35 @@ bool prepNextLine()
       f_goodData = false;        // bypass rest of do_flow processing
       // need to avoid falling into following code. use a flag for "good data seen" ?
    }
-   if(f_goodData && f_active != 0)     // first flow is special case with direct jump rather than frames
-   {  // first lets verify the newly calculated local coords are within our safety margins
-      // (yet to be written.) check that for new point on each leg, is:
-      //    X coord is within safeXdist of homeX
-      //    Y coord is within safeYdist of homeY
-      //    Z coord is within safeZdist of homeZ
-      // figure deltas for end points on movement lines for each leg, for each axis
-      for(int L=1; L<=6; L++)   // L stands for leg. short to avoid cobol expression syndrome
-      {  f_deltaX[L] = f_endLegX[L] - f_lastLegX[L]; //travel needed in local X direction
-         f_deltaY[L] = f_endLegY[L] - f_lastLegY[L]; //travel needed in local Y direction
-         f_deltaZ[L] = f_endLegZ[L] - f_lastLegZ[L]; //travel needed in local Z direction
-         sp2s("deltas: ",f_deltaX[L]); sp; sp2sl(f_deltaY[L],f_deltaZ[L]);
-      }
-      //f_frame = 1;          // frame number we'll do next
-      //f_framesPerPosn = int(f_msecs[1] / f_msecPerFrame + .5);  // rounded count of how many fraes fit in time)
-      sp2l("frame  = ", f_frame);
-   }
+   if(f_goodData)       // continue only if we haven't aborted due to an error
+   {
+      // get here if we've been able to calculate local coordinates for next toe position
+      // now we need to see if requested position is within "safe positions box"
+      String badLegs = "" ;   // error message identifying unsafe positions
+      for(L=1; L<=6; L++ )       // go thru all legs
+      { 
+         if(f_endLegX[L] - f_localHomeX > safeMaxPosX){ badLegs = badLegs + legNum[L] + "XP ";}
+         if(f_localHomeX - f_endLegX[L] > safeMaxNegX){ badLegs = badLegs + legNum[L] + "XN ";}
+         if(f_endLegY[L] - f_localHomeY > safeMaxPosY){ badLegs = badLegs + legNum[L] + "YP ";}
+         if(f_localHomeY - f_endLegY[L] > safeMaxPosY){ badLegs = badLegs + legNum[L] + "YN ";}
+         if(f_endLegZ[L] - f_localHomeZ > safeMaxPosZ){ badLegs = badLegs + legNum[L] + "ZP ";}
+         if(f_localHomeZ - f_endLegZ[L] > safeMaxPosZ){ badLegs = badLegs + legNum[L] + "ZN ";}
+      }  // for L=1...
+      if(badLegs != "")             // if any safety violation ocurred..
+      {  f_goodData = false;        // abort further processing of the flow row
+         f_flowing = false;         // and stop fow processing
+         sp2l("****************** toe safety violation(s) [<leg><coord><positive or negative side> : ",badLegs);
+      } // if badLegs != ""
+      else if(f_active != 0)     // first flow is special case with direct jump rather than frames
+      {  // figure deltas for end points on movement lines for each leg, for each axis
+         for(int L=1; L<=6; L++)   // L stands for leg. short to avoid cobol expression syndrome
+         {  f_deltaX[L] = f_endLegX[L] - f_lastLegX[L]; //travel needed in local X direction
+            f_deltaY[L] = f_endLegY[L] - f_lastLegY[L]; //travel needed in local Y direction
+            f_deltaZ[L] = f_endLegZ[L] - f_lastLegZ[L]; //travel needed in local Z direction
+            sp2s("deltas: ",f_deltaX[L]); sp; sp2sl(f_deltaY[L],f_deltaZ[L]);
+         } //for L=1...
+      }  // else if f_active != 0
+   } // if f_goodData
    return f_goodData;            // return, tellling called if we ran into problems
 
 }                     
