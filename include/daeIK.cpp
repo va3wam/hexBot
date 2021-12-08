@@ -69,23 +69,20 @@ void anglesToCoords(float hip, float knee, float ankle, float *toeX, float *toeY
  * @param x toe x coordinate in cm.
  * @param y toe y coordinate in cm.
  * @param z toe z coordinate in cm.
- * @param *f_angH address where hip angle (in degrees) is stored.
- * @param *f_angK address where knee angle (in degrees) is stored.
- * @param *f_angA address where ankle angle (in degrees) is stored.
  * @return converted angles for the hip, knee and ankle are written to the 
- * memory locations passed as arguments to this function and can therefore be 
+ * global variables f_angH, f_angK and f_angA and can therefore be 
  * accessed directly by the calling function.
  * ==========================================================================*/
-void coordsToAngles(float x, float y, float z, float *f_angH, float *f_angK, float *f_angA)    
+void coordsToAngles(float x, float y, float z)    
 {
    // TODO #27 create constants for all magic numbers in this function.
    float f_Ux, f_Uy; // toe position when rotated into xy plane.
-   *f_angH = atan2(z, x) * 180 / pi; // the hip angle is the easy one.
+   f_angH = atan2(z, x) * 180 / pi; // the hip angle is the easy one.
 
    // now reduce to a 2D problem by rotating leg into xy plane (around y axis)
    // resulting in new x coordinate: Ux. ( Uy stays same as original y, and new Uz = 0)
    // using standard formula for rotating a 2D vector with angle opposite to hip angle...
-   f_Ux = x * cos(radians(- *f_angH)) - z * sin(radians(- *f_angH));
+   f_Ux = x * cos(radians(- f_angH)) - z * sin(radians(- f_angH));
    f_Uy = y; // the rotation doesn't change the y value
    // spreadsheet: =(E7*COS(-I7/180*PI()) - G7*SIN(-I7/180*PI()))
 
@@ -145,7 +142,7 @@ void coordsToAngles(float x, float y, float z, float *f_angH, float *f_angK, flo
 
     // now that we know where the ankle is, we can finally work on the angles
     // the knee is easy since we defind the ankle position above
-    *f_angK = -1 * asin(radians(f_Ay / shinLen));    
+    f_angK = -1 * asin(radians(f_Ay / shinLen));    
 
 // there are 4 possible cases for ankle position, with different calculations for A angle
 // 1) Ux>origXOffset, Uy<0  // the normal case, toe below knee
@@ -160,7 +157,7 @@ void coordsToAngles(float x, float y, float z, float *f_angH, float *f_angK, flo
    {
 //      float f_P = asin(radians(f_Ux - f_Ax) / footLen);      // can only explain this with a diagram
       float f_P = asin((f_Ux - f_Ax) / footLen) / PI * 180;      // can only explain this with a diagram
-      *f_angA = f_P + *f_angK - toeOffset;
+      f_angA = f_P + f_angK - toeOffset;
    }  // Uy <0
 
 // for cases 2, and impossible 3
@@ -168,7 +165,7 @@ void coordsToAngles(float x, float y, float z, float *f_angH, float *f_angK, flo
    {
 //      float f_R = asin(radians(f_Uy - f_Ay) / footLen);      // can only explain this with a diagram
       float f_R = asin((f_Uy - f_Ay) / footLen) /PI * 180;      // can only explain this with a diagram
-      *f_angA = f_R + 90 + *f_angK - toeOffset;
+      f_angA = f_R + 90 + f_angK - toeOffset;
    }  // Uy <0   
 } // coordsToAngles()
 
@@ -180,6 +177,7 @@ void coordsToAngles(float x, float y, float z, float *f_angH, float *f_angK, flo
  * ==========================================================================*/
 void testDaeIKFunctions()
 {
+/* think this code has served it's purpose,  & doesn't need to be updated as changes are made   
    Log.noticeln("<testDaeIKFunctions> Testing Doug's IK functions.");
    
    float degrees = 90;
@@ -195,7 +193,7 @@ void testDaeIKFunctions()
    float f_angK;
    float f_angA;
    Log.noticeln("<testDaeIKFunctions> ... Example call to coordsToAngles(%F, %F, %F).", x, y, z);
-   coordsToAngles(x, y, z, &f_angH, &f_angK, &f_angA); // Maybe return True/false for valid solution?
+   coordsToAngles(x, y, z); // Maybe return True/false for valid solution?
    Log.noticeln("<testDaeIKFunctions> ...... Set hip joint to %F degrees, knee joint to %F degrees and ankle joint to %F", f_angH, f_angK, f_angA);
 
    float hip = 45.0;
@@ -207,6 +205,7 @@ void testDaeIKFunctions()
    Log.noticeln("<testDaeIKFunctions> ... Example call to anglesToCoords(%F, %F, %F).", hip, knee, ankle);
    anglesToCoords(hip, knee, ankle, &toeX, &toeY, &toeZ);
    Log.noticeln("<testDaeIKFunctions> ...... Set toeX to %F, toeY to %F and toeZ to %F", toeX, toeY, toeZ);
+*/
 } // testFunctions()
 
 #endif // End of precompiler protected code block

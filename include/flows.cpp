@@ -131,7 +131,7 @@ void do_flow()          // called from loop if there's a flow executing that nee
             //   to get pwm value, we convert local coords to angles, then from angles to pwm values
 
 //            Log.noticeln(" X: %F, Y: %F, Z: %F",f_endLegX[L], f_endLegY[L], f_endLegZ[L]);
-            coordsToAngles(f_endLegX[L], f_endLegY[L], f_endLegZ[L], &f_angH, &f_angK, &f_angA); 
+            coordsToAngles(f_endLegX[L], f_endLegY[L], f_endLegZ[L]); 
 //            Log.noticeln("<do_flow> Leg %u, angH = %F, angK = %F, angA = %F",L,f_angH,f_angK,f_angA);
 
             // now, one servo wihin the leg at a time, figure the pwm value, and move the servo
@@ -188,50 +188,35 @@ void do_flow()          // called from loop if there's a flow executing that nee
          f_nextTime = millis() + f_msecPerFrame;    // yup, quickly reset for next 20 msec interval
 //sp2("=== working frame= ",f_frame); sp2("   fPrPosn= ",f_framesPerPosn);
          for(L=1; L<=6; L++)              // use frame count to figure next frame position
-         // could f_tmpX be a scalar?
-         {  f_tmpX[L] = (float)f_frame * f_deltaX[L] / (float)f_framesPerPosn + f_lastLegX[L];
-            f_tmpY[L] = (float)f_frame * f_deltaY[L] / (float)f_framesPerPosn + f_lastLegY[L];
-            f_tmpZ[L] = (float)f_frame * f_deltaZ[L] / (float)f_framesPerPosn + f_lastLegZ[L];
-            coordsToAngles(f_tmpX[L], f_tmpY[L], f_tmpZ[L], &f_angH, &f_angK, &f_angA); 
-//            Log.noticeln("<do_flow> Frame: Leg %u, angH = %F, angK = %F, angA = %F",L,f_angH,f_angK,f_angA);
+         {  f_tmpX = (float)f_frame * f_deltaX[L] / (float)f_framesPerPosn + f_lastLegX[L];
+            f_tmpY = (float)f_frame * f_deltaY[L] / (float)f_framesPerPosn + f_lastLegY[L];
+            f_tmpZ = (float)f_frame * f_deltaZ[L] / (float)f_framesPerPosn + f_lastLegZ[L];
+            coordsToAngles(f_tmpX, f_tmpY, f_tmpZ); // creates f_angH, f_angK, f_angA
 
-            // now, one servo wihin the leg at a time, figure the pwm value, and move the servo
+            // now, one servo within the leg at a time, figure the pwm value, and move the servo
             // starting with the hip...
             if((toeMoveAction & fa_moveServos) != 0)    // did flow_go command options tell us to move servos?
             {pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L],  pwmClkStart, mapDegToPWM(f_angH,0));
             }
-//            Log.noticeln("H: Driver=%d,  Pin=%d, angH=%F,  pwm=%d",legIndexDriver[L],legIndexHipPin[L],f_angH, mapDegToPWM(f_angH,0));
             if((toeMoveAction & fa_moveServos) != 0)    // did flow_go command options tell us to move servos?
             {pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L]+1,pwmClkStart, mapDegToPWM(f_angK,0));
             }
-//            Log.noticeln("K: Driver=%d,  Pin=%d, angH=%F,  pwm=%d",legIndexDriver[L],legIndexHipPin[L]+1,f_angK, mapDegToPWM(f_angK,0));
             if((toeMoveAction & fa_moveServos) != 0)    // did flow_go command options tell us to move servos?
             {pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L]+2,pwmClkStart, mapDegToPWM(f_angA,0));
-
             }
-//            Log.noticeln("A: Driver=%d,  Pin=%d, angH=%F,  pwm=%d",legIndexDriver[L],legIndexHipPin[L]+2,f_angA, mapDegToPWM(f_angA,0));
             if((toeMoveAction & fa_dispPWM) != 0)    // if flow go command options told us to display PWM..
-            {  sp2s(mapDegToPWM(f_angH,0),mapDegToPWM(f_angK,0));sp;sp1s(mapDegToPWM(f_angA,0))
+            {  sp2s(mapDegToPWM(f_angH,0),mapDegToPWM(f_angK,0));sp;sp1s(mapDegToPWM(f_angA,0)); sp;
             }
             if((toeMoveAction & fa_dispAngles) != 0) // if flow_go command options told us to display angles..
-            {  sp2s(f_angH,f_angK); sp; sp1s(f_angA); 
+            {  sp2s(f_angH,f_angK); sp; sp1s(f_angA); sp;
             }
             if((toeMoveAction & fa_dispLocal) != 0) // if flow_go command options told us to display local coords..
-            {  sp2s(f_tmpX[L],f_tmpY[L]); sp; sp1s(f_tmpZ[L]); 
+            {  ;sp2s(f_tmpX,f_tmpY); sp; sp1s(f_tmpZ); sp; 
             }
-/*
-int toeMoveAction = 1;           // binary coded action to take when you calculated next toe position (frame) in do_flow()
-                                 // defaults to just move the servos, set up in FLOW_GO MQTT command
-   fa_moveServos = 1;            // feed calculated PWM values to servo motors so they move
-   fa_dispAngles = 2;            // display the calculated servo angles (degrees) in serial monitor
-   fa_dispPWM = 4;               // display the calculated PWM values
-   fa_dispLocal = 8;             // display the local coordinates of toe position
-   fa_disGlobal = 16;             // display the global coordinates of toe position
-*/
          }  //for L=1...
-         // output gets messy if you display more than one aatribute at a time - avoid that
+         // output gets messy if you display more than one attribute at a time - avoid that
          if((toeMoveAction & (fa_dispPWM + fa_dispAngles + fa_dispLocal)) != 0)  // if we displayed numbers
-         {  nl;                              // then ourput the final new line
+         {  nl;                              // then output the final new line
          }
          f_frame ++  ;                          // advance to next frame within the flow row
 //sp2l("=== new frame ",f_frame);
@@ -290,28 +275,30 @@ bool prepNextLine()
 
    f_goodData = true;  // initially assume all will go well
    if(f_operation[f_active] == fo_moveRelHome || f_operation[f_active] == fo_startRelHome)
-   {        // we were given offsets relative to home position, so add in home coords
+   {  // we were given offsets relative to home position, so add in home coords
 //      sp1l("--global toe coords including offsets--");
       for(L=1; L<=6; L++)  // add offset to home's global coord, to get final global coord
-      {  f_tmpX[L] = f_legX[f_active][L] + f_homeX[L];   
-         f_tmpY[L] = f_legY[f_active][L] + f_homeY[L];
-         f_tmpZ[L] = f_legZ[f_active][L] + f_homeZ[L];
-//         sp2s(f_tmpX[L],f_tmpY[L]); sp2l(" ",f_tmpZ[L]);
-      }
-      // now convert final global coords to local coords we can feed to servos
-      sp1l("--final local coords including offsets--");
-         // note we are saving this starting point for this flow row's frames in endLegX[L],...
-      for(L=1; L<=6; L++)  // convert to each legs local coord system
-      {  globCoordsToLocal(L,f_tmpX[L],f_tmpY[L],f_tmpZ[L],&f_endLegX[L],&f_endLegY[L],&f_endLegZ[L]);
-      sp2s(f_endLegX[L],f_endLegY[L]); sp2l(" ",f_endLegZ[L]);
+      {  f_tmpX = f_legX[f_active][L] + f_homeX[L];   
+         f_tmpY = f_legY[f_active][L] + f_homeY[L];
+         f_tmpZ = f_legZ[f_active][L] + f_homeZ[L];
+         // then convert global coords to local coords
+         globCoordsToLocal(L,f_tmpX,f_tmpY,f_tmpZ,&f_endLegX[L],&f_endLegY[L],&f_endLegZ[L]);
+//          sp2s(f_endLegX[L],f_endLegY[L]); sp2l(" ",f_endLegZ[L]);
       }
    }
    else if (f_operation[f_active] == fo_moveAbs || f_operation[f_active] == fo_startAbs)
    {  // we were given absolute coords, and need to convert to local coords
-      // if we're in flow start up, we're looking at flow row 0, thus [0] below
       for(L=1; L<=6; L++)   // l stands for leg. short to avoid cobol expression syndrome
       {  globCoordsToLocal(L,f_legX[f_active][L],f_legY[f_active][L],f_legZ[f_active][L],
             &f_endLegX[L],&f_endLegY[L],&f_endLegZ[L]);
+      }
+   }
+   else if (f_operation[f_active] == fo_moveLocal)   // does flow row contain local cords?
+   {  // yup, we were given the local coordinate that we need, so just copy them
+      for(L=1; L<=6; L++) 
+      { f_endLegX[L] = f_legX[f_active][L];   // get local coords right out of flow row
+        f_endLegY[L] = f_legY[f_active][L];
+        f_endLegZ[L] = f_legZ[f_active][L];
       }
    }
    else
@@ -327,6 +314,7 @@ bool prepNextLine()
       String badLegs = "" ;   // error message identifying unsafe positions
       for(L=1; L<=6; L++ )       // go thru all legs
       { 
+sp2s(f_endLegX[L],f_endLegY[L]); sp; sp1l(f_endLegZ[L]);
          if(f_endLegX[L] - f_localHomeX > safeMaxPosX){ badLegs = badLegs + legNum[L] + "XP ";}
          if(f_localHomeX - f_endLegX[L] > safeMaxNegX){ badLegs = badLegs + legNum[L] + "XN ";}
          if(f_endLegY[L] - f_localHomeY > safeMaxPosY){ badLegs = badLegs + legNum[L] + "YP ";}
