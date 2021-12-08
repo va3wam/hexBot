@@ -50,15 +50,17 @@
 int f_msecs[flowLength];         // time duration in milliseconds for movement to this location
 
 int f_operation[flowLength];     // type of operation specified for this position
-   const int fo_moveAbs = 1;     // move to absolute location, coords are in  global system
-   const int fo_moveRelHome = 2; // move to loc'n relative to home, coords = deltas relative to home position
-   const int fo_moveRelLast = 3; // move to loc'n relative to last position, coords = deltas w.r.t. last position
-   const int fo_startAbs = 4;    // start of flow - go directly to an absolute location
-   const int fo_startRelHome = 5;// start of flow - go directly to a position relative to home position
-   const int fo_startPrev = 6;   // start flow, treating end of last flow as previous position
-   const int fo_cycleByCount = 7;// repeat this flow for number of cycles in LineShape1
-   const int fo_cycleByTime = 8; // repeat this flow for number of milleseconds in LineShape1
-   const int fo_markCycle = 9;   // next repeatable cycle starts at row after this one
+   const int fo_moveAbs = 1;     // move to absolute location, coords are in global system
+   const int fo_moveLocal = 2;   // move to location given in local coords
+   const int fo_moveRelHome = 3; // move to loc'n relative to home, coords = deltas relative to home position
+   const int fo_moveRelLast = 4; // move to loc'n relative to last position, coords = deltas w.r.t. last position
+
+   const int fo_startAbs = 5;    // start of flow - go directly to an absolute location
+   const int fo_startRelHome=6;  // start of flow - go directly to a position relative to home position
+   const int fo_startPrev = 7;   // start flow, treating end of last flow as previous position
+   const int fo_cycleByCount=8;  // repeat this flow for number of cycles in LineShape1
+   const int fo_cycleByTime =9;  // repeat this flow for number of milleseconds in LineShape1
+   const int fo_markCycle = 10;  // next repeatable cycle starts at row after this one
 
 int f_lShape1[flowLength];    // description of type of line to follow between last position and this one
    const int fl_straight = 10;   // straight line
@@ -78,9 +80,9 @@ float f_lastLegX[7] ;              // working copy of coords for each leg
 float f_lastLegY[7] ;
 float f_lastLegZ[7] ;
 
-float f_tmpX[7] ;                  // temporary coord storage for do_flow processing
-float f_tmpY[7] ;
-float f_tmpZ[7] ;
+float f_tmpX ;                  // temporary coord storage for do_flow processing
+float f_tmpY ;
+float f_tmpZ ;
 
 float f_deltaX[7];         // distance in X direction to be travelled, in frames, in this flow row
 float f_deltaY[7];
@@ -150,6 +152,7 @@ String legNum[7];          // lookup table to convert leg# to corresponding stri
 
 // defines for routines acessed from elsewhere
 bool globCoordsToLocal(int legNumber, float gx, float gy, float gz, float *lx, float *ly, float *lz);
+int32_t mapDegToPWM(float degrees, float centerDeg);
 
 // precalculate the computationally expensive trig values used in coordinate translation   
    float sin_p45 = +.707107;      // sin( + 45 degrees)

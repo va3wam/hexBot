@@ -197,7 +197,7 @@ void setupStatusLed();
 // DAE Inverted kinematic related functions.
 int32_t mapDegToPWM(float *, float *);
 void anglesToCoords(float, float, float, float *, float *, float *);
-void coordsToAngles(float, float, float, float *, float *, float *);  
+void coordsToAngles(float, float, float);  
 // I2C related functions.
 void identifyDevice(int);
 void scanBus0();
