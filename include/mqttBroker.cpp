@@ -140,7 +140,7 @@ bool checkNumArg(int8_t numArgumentsRequired, int argN, String *arg)
 {
    if (argN == numArgumentsRequired) // Right number of arguments?
    {
-      Log.verboseln("<checkNumArg> Correct number of arguments recieved.");
+      Log.verboseln("<checkNumArg> Correct number of arguments received.");
       for (int8_t i = 1; i <= numArgumentsRequired; i++) // Are the three arguments valid numbers.
       {
          if (isValidNumber(arg[i])) // If current argument is a valid number.
@@ -156,7 +156,7 @@ bool checkNumArg(int8_t numArgumentsRequired, int argN, String *arg)
    }       // if
    else    // Wrong number of arguments
    {
-      Log.warningln("<checkNumArg> Ignoring command. SET_CUST_RGB_CLR requires %d arguments but recieved %i.", numArgumentsRequired, argN);
+      Log.warningln("<checkNumArg> Ignoring command. SET_CUST_RGB_CLR requires %d arguments but received %i.", numArgumentsRequired, argN);
       return false;
    } // else
    return true;
@@ -164,7 +164,7 @@ bool checkNumArg(int8_t numArgumentsRequired, int argN, String *arg)
 
 /**
  * @brief Process the incoming command.
- * @param payload Command recieved from MQTT broker.
+ * @param payload Command received from MQTT broker.
  * @return True is the command is known. False if the cmmand is unknown.
  * =================================================================================*/
 bool processCmd(String payload)
@@ -190,16 +190,22 @@ bool processCmd(String payload)
                                                          // count of the number of
                                                          // arguments, excluding the command
    String cmd = arg[0];                                  // first comma separated value in payload is the command
+   
+   // <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><> start of new command
+   
    // TEST command.
    if (cmd == "TEST")
    {
-      Log.noticeln("<processCmd> Recieved test command.");
+      Log.noticeln("<processCmd> Received test command.");
       return true;
    } // if
+   
+   // <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><> start of new command
+   
    // HELP command.
    if (cmd == "HELP")
    {
-      Log.noticeln("<processCmd> Recieved help command.");
+      Log.noticeln("<processCmd> Received help command.");
       bool x = false;
       while (x == false)
       {
@@ -233,6 +239,9 @@ bool processCmd(String payload)
       Log.noticeln("<processCmd> List of valid MQTT commands sent to MQTT broker.");
       return true;
    } // if
+ 
+   // <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><> start of new command
+   
    // SET_CUST_RGB_CLR command.
    if (cmd == "SET_CUST_RGB_CLR")
    {
@@ -251,8 +260,11 @@ bool processCmd(String payload)
          return false;
       } // else
    }    // if
+   
+   // <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><> start of new command
+   
    // SET_STD_RGB_CLR command.
-   if (cmd == "SET_STD_RGB_CLR")
+    if (cmd == "SET_STD_RGB_CLR")
    {
       const int8_t numArgumentsRequired = 1; // How many arguments expected?
       if (checkNumArg(numArgumentsRequired, argN, &arg[0]))
@@ -266,6 +278,9 @@ bool processCmd(String payload)
          return false;
       } // else
    }    // if
+   
+   // <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><> start of new command
+   
    // ROTATE_OLED command.
    if (cmd == "ROTATE_OLED")
    {
@@ -343,8 +358,10 @@ bool processCmd(String payload)
                  // it's reset by the FLOW_GO command
       return true;
    } // if cmd = flow
-
-   // FLOW_GO command to start up motion as previously defined in the flow arrays using the FLOW command
+   
+   // <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><> start of new command
+   
+      // FLOW_GO command to start up motion as previously defined in the flow arrays using the FLOW command
    // the FLOW command builds arrays describing the desired movement
    // the FLOW_GO command starts the movement and controls repetitions, resets, etc
    //
@@ -398,7 +415,10 @@ bool processCmd(String payload)
       }
       return true;
    } // if cmd = flow_go
-
+   
+   // <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><> start of new command
+   
+   // MOVE_LEG command - move leg to coordinates that can be given in various ways
    if (cmd == "MOVE_LEG" || cmd == "ML")
    { // command format: ML, f_operation, leg, X, Y, Z
       //  f_operation is one of:
@@ -483,6 +503,120 @@ bool processCmd(String payload)
          }
       } // else
    }    // if cmd = "MOVE_LEG"
+
+   // declare variables for upcoming servo test commands
+   int sr_deg, sr_pwm, sr_srv, sr_srv2;
+   bool sr_OK;
+   String sr_cause;
+
+// <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><> start of new command
+
+// SSD command = Set  Servo(s) to angle, expressed in degrees, zero is center of range
+   if(cmd == "SSD")     // set servo(s) to degrees
+   // command format: SSD, degrees, servo#, (optional end of range servo#)
+   //    -90 <= degrees <= 90
+   //    1 <= servo# <= 18
+   //    servo #1 is hip for leg 1, the front right one
+
+   {  sr_OK = true;           // optimistically assume no problems with the command
+      if(argN!=3 && argN!=4) {sr_OK = false;sr_cause="bad arg count";}         // wrong number of args for command
+      else
+      {  sr_deg = arg[1].toInt();      // first arg is angle for servo
+         if(sr_deg < -90 || sr_deg > 90 ) {sr_OK = false;sr_cause="bad degree value";}
+         else
+         {  sr_srv = arg[2].toInt();   // second arg is servo #
+            sr_srv2 = sr_srv;          // assume no 3rd arg, and its a one servo range
+            if(sr_srv < 1 || sr_srv > 18) {sr_OK = false;sr_cause="bad first servo #";}
+            else
+            {  if(argN == 4) {sr_srv2 = arg[3].toInt();}    // there was a second servo#
+               if(sr_srv2 < sr_srv || sr_srv2 > 18 ) {sr_OK = false;sr_cause="bad second servo #";}
+               else
+               {  for(int srv=sr_srv; srv<=sr_srv2; srv++)
+                  // now set the servo "srv" to an angle of sr_deg degrees
+                  //use integer division ("/") and modulus ("%") to directly calculate driver#, and pin#
+                  {  pwmDriver[(srv-1) / 9].setPWM((srv-1) % 9, pwmClkStart, mapDegToPWM(sr_deg, 0));
+                  }
+               }
+            }
+         }
+      }
+      if(sr_OK == false) { sp2sl("********* invalid SSD command: ",sr_cause);}
+      return sr_OK;
+   }  //if(cmd == "SSD") 
+
+   // <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><> start of new command
+
+   // SSP command - Set Servo(s) to PWM value
+   if(cmd == "SSP")     // set servo(s) to PWM value
+   // command format: SSP, PWM, servo#, (optional end of range servo#)
+   //    110 <= PWM <= 490
+   //    1 <= servo# <= 18
+   //    servo #1 is hip for leg 1, the front right one
+
+   {  sr_OK = true;           // optimistically assume no problems with the command
+      if(argN!=3 && argN!=4) {sr_OK = false;sr_cause="bad arg count";}         // wrong number of args for command
+      else
+      {  sr_pwm = arg[1].toInt();      // first arg is angle for servo
+         if(sr_pwm < 110 || sr_pwm > 490 ) {sr_OK = false;sr_cause="bad PWM value";}
+         else
+         {  sr_srv = arg[2].toInt();   // second arg is servo #
+            sr_srv2 = sr_srv;          // assume no 3rd arg, and its a one servo range
+            if(sr_srv < 1 || sr_srv > 18) {sr_OK = false;sr_cause="bad first servo #";}
+            else
+            {  if(argN == 4) {sr_srv2 = arg[3].toInt();}    // there was a second servo#
+               if(sr_srv2 < sr_srv || sr_srv2 > 18 ) {sr_OK = false;sr_cause="bad second servo #";}
+               else
+               {  for(int srv=sr_srv; srv<=sr_srv2; srv++)
+                  // now set the servo "srv" to PWM value in sr_pwm
+                  //use integer division ("/") and modulus ("%") to directly calculate driver#, and pin#
+                  {  pwmDriver[(srv-1) / 9].setPWM((srv-1) % 9, pwmClkStart, sr_pwm);
+                  }
+               }
+            }
+         }
+      }
+      if(sr_OK == false) { sp2sl("********* invalid SSP command: ",sr_cause);}
+      return sr_OK;
+   } // if(cmd == "SSP")
+
+// <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><> start of new command
+
+   // SSO command - Set Servo(s) to "OFF"
+   if(cmd == "SSO")     // set servo(s) to OFF, where servo goes limp and draws no current
+   // command format: SSO, servo#, (optional end of range servo#)
+   //    1 <= servo# <= 18
+   //    servo #1 is hip for leg 1, the front right one
+   {  sr_OK = true;           // optimistically assume no problems with the command
+      if(argN!=2 && argN!=3) {sr_OK = false;sr_cause="bad arg count";}         // wrong number of args for command
+      else
+      {  sr_srv = arg[1].toInt();   // first arg is servo #
+         sr_srv2 = sr_srv;          // assume no 2nd arg, and its a one servo range
+         if(sr_srv < 1 || sr_srv > 18) {sr_OK = false;sr_cause="bad first servo #";}
+         else
+         {  if(argN == 3) {sr_srv2 = arg[2].toInt();}    // there was a second servo#
+            if(sr_srv2 < sr_srv || sr_srv2 > 18 ) {sr_OK = false;sr_cause="bad second servo #";}
+            else
+            {  for(int srv=sr_srv; srv<=sr_srv2; srv++)
+               // now set the servo "srv" to OFF - servo should go to limp, and current to zero
+               //use integer division ("/") and modulus ("%") to directly calculate driver#, and pin#
+               {  pwmDriver[(srv-1) / 9].setPWM((srv-1) % 9, 4096, 0);
+               }
+            }
+         }
+         
+      }
+      if(sr_OK == false) { sp2sl("********* invalid SSO command: ",sr_cause);}
+      return sr_OK;
+   } // if(cmd == "SSO")
+
+// add new commands above this comment, in this form, with one tab before "if"
+//    if ( cmd == "COMMAND" || cmd == "SHORT-FORM")
+//    {
+//       code
+//       return false;  // command rejected
+//       code
+//       return true;   // command succeeded
+//    }    
 
       Log.warningln("<processCmd> Warning - unrecognized command.");
       return false;
