@@ -519,7 +519,7 @@ bool processCmd(String payload)
    //    servo #1 is hip for leg 1, the front right one
 
    {  sr_OK = true;           // optimistically assume no problems with the command
-      if(argN!=3 && argN!=4) {sr_OK = false;sr_cause="bad arg count";}         // wrong number of args for command
+      if(argN!=2 && argN!=3) {sr_OK = false;sr_cause="bad arg count";}         // wrong number of args for command
       else
       {  sr_deg = arg[1].toInt();      // first arg is angle for servo
          if(sr_deg < -90 || sr_deg > 90 ) {sr_OK = false;sr_cause="bad degree value";}
@@ -528,13 +528,16 @@ bool processCmd(String payload)
             sr_srv2 = sr_srv;          // assume no 3rd arg, and its a one servo range
             if(sr_srv < 1 || sr_srv > 18) {sr_OK = false;sr_cause="bad first servo #";}
             else
-            {  if(argN == 4) {sr_srv2 = arg[3].toInt();}    // there was a second servo#
+            {  if(argN == 3) {sr_srv2 = arg[3].toInt();}    // there was a second servo#
                if(sr_srv2 < sr_srv || sr_srv2 > 18 ) {sr_OK = false;sr_cause="bad second servo #";}
                else
                {  for(int srv=sr_srv; srv<=sr_srv2; srv++)
                   // now set the servo "srv" to an angle of sr_deg degrees
                   //use integer division ("/") and modulus ("%") to directly calculate driver#, and pin#
-                  {  pwmDriver[(srv-1) / 9].setPWM((srv-1) % 9, pwmClkStart, mapDegToPWM(sr_deg, 0));
+                  {  pwmDriver[(srv-1) / 9].setPWM((srv-1) % 9, pwmClkStart, mapDegToPWM(sr_deg, 0)); 
+                  sp2s("sdd, argN, srv,srv2,sr_deg, index= ",argN);sp;sp2s(sr_srv,sr_srv2);sp;sp2sl(sr_deg,srv);
+                  sp2s((srv-1)/9, (srv-1)%9);sp;sp1l(mapDegToPWM(sr_deg, 0));
+                  delay(10);     // see if giving PWM drivers some breathing room helps
                   }
                }
             }
@@ -554,7 +557,7 @@ bool processCmd(String payload)
    //    servo #1 is hip for leg 1, the front right one
 
    {  sr_OK = true;           // optimistically assume no problems with the command
-      if(argN!=3 && argN!=4) {sr_OK = false;sr_cause="bad arg count";}         // wrong number of args for command
+      if(argN!=2 && argN!=3) {sr_OK = false;sr_cause="bad arg count";}         // wrong number of args for command
       else
       {  sr_pwm = arg[1].toInt();      // first arg is angle for servo
          if(sr_pwm < 110 || sr_pwm > 490 ) {sr_OK = false;sr_cause="bad PWM value";}
@@ -563,7 +566,7 @@ bool processCmd(String payload)
             sr_srv2 = sr_srv;          // assume no 3rd arg, and its a one servo range
             if(sr_srv < 1 || sr_srv > 18) {sr_OK = false;sr_cause="bad first servo #";}
             else
-            {  if(argN == 4) {sr_srv2 = arg[3].toInt();}    // there was a second servo#
+            {  if(argN == 3) {sr_srv2 = arg[3].toInt();}    // there was a second servo#
                if(sr_srv2 < sr_srv || sr_srv2 > 18 ) {sr_OK = false;sr_cause="bad second servo #";}
                else
                {  for(int srv=sr_srv; srv<=sr_srv2; srv++)
@@ -587,13 +590,13 @@ bool processCmd(String payload)
    //    1 <= servo# <= 18
    //    servo #1 is hip for leg 1, the front right one
    {  sr_OK = true;           // optimistically assume no problems with the command
-      if(argN!=2 && argN!=3) {sr_OK = false;sr_cause="bad arg count";}         // wrong number of args for command
+      if(argN!=1 && argN!=2) {sr_OK = false;sr_cause="bad arg count";}         // wrong number of args for command
       else
       {  sr_srv = arg[1].toInt();   // first arg is servo #
          sr_srv2 = sr_srv;          // assume no 2nd arg, and its a one servo range
          if(sr_srv < 1 || sr_srv > 18) {sr_OK = false;sr_cause="bad first servo #";}
          else
-         {  if(argN == 3) {sr_srv2 = arg[2].toInt();}    // there was a second servo#
+         {  if(argN == 2) {sr_srv2 = arg[2].toInt();}    // there was a second servo#
             if(sr_srv2 < sr_srv || sr_srv2 > 18 ) {sr_OK = false;sr_cause="bad second servo #";}
             else
             {  for(int srv=sr_srv; srv<=sr_srv2; srv++)
