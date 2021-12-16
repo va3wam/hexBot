@@ -531,13 +531,13 @@ bool processCmd(String payload)
             {  if(argN == 3) {sr_srv2 = arg[3].toInt();}    // there was a second servo#
                if(sr_srv2 < sr_srv || sr_srv2 > 18 ) {sr_OK = false;sr_cause="bad second servo #";}
                else
-               {  for(int srv=sr_srv; srv<=sr_srv2; srv++)
+               {  for(int srv=sr_srv2; srv>=sr_srv; srv--)
                   // now set the servo "srv" to an angle of sr_deg degrees
                   //use integer division ("/") and modulus ("%") to directly calculate driver#, and pin#
                   {  pwmDriver[(srv-1) / 9].setPWM((srv-1) % 9, pwmClkStart, mapDegToPWM(sr_deg, 0)); 
                   sp2s("sdd, argN, srv,srv2,sr_deg, index= ",argN);sp;sp2s(sr_srv,sr_srv2);sp;sp2sl(sr_deg,srv);
                   sp2s((srv-1)/9, (srv-1)%9);sp;sp1l(mapDegToPWM(sr_deg, 0));
-                  delay(10);     // see if giving PWM drivers some breathing room helps
+                  delay(30);     // see if giving PWM drivers some breathing room helps
                   }
                }
             }
