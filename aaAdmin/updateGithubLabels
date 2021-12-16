@@ -1,0 +1,24 @@
+#!/bin/bash
+##
+# This is a bash script that sets up Github labels in your repository. The 
+# know-how and label schema came from 
+# https://seantrane.com/posts/logical-colorful-github-labels-18230/
+#==============================================================================
+if [ $# -ne 2 ]; then
+    echo "You need to provide two arguments. The target Github repo and your personal github token."
+    echo "Example: ./updateGithubLabels taregtRepoName githubPersonalToken"
+    exit 1
+fi
+#labelSource="https://git.io/fAe5i" # origional online source. We use a local file now.
+labelSource="labels.json"
+targetGithubName="va3wam"
+targetGithubRepo=$1
+githubToken=$2
+echo "Running github-label-sync using these arguments:"
+echo "- Label source = $labelSource"
+echo "- Target Github name = $targetGithubName"
+echo "- Github personal token = $githubToken"
+
+github-label-sync -a $githubToken -l $labelSource $targetGithubName/$targetGithubRepo # Does update to your target Github repository.
+
+echo "Helpful tip: Ignore the 422 error in red above. It's a known bug with the utility." 
