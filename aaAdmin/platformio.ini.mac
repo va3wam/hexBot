@@ -1,0 +1,22 @@
+; PlatformIO Project Configuration File
+;
+;   Build options: build flags, source filter
+;   Upload options: custom upload port, speed and extra flags
+;   Library options: dependencies, extra library storages
+;   Advanced options: extra scripting
+;
+; Please visit documentation for the other options and examples
+; https://docs.platformio.org/page/projectconf.html
+
+[env:featheresp32]
+platform = espressif32
+board = featheresp32
+framework = arduino
+monitor_speed = 115200
+upload_port = /dev/cu.usbserial*
+monitor_port = /dev/cu.usbserial*
+build_flags = -I include ; Prevent .cpp files in the include dir from compiling. Better not to put them in there!
+              -DCORE_DEBUG_LEVEL=5 ; Turn compile debug level to 5 
+; Huzzah32 does not have SPI RAM.            
+;              -DBOARD_HAS_PSRAM ; enables PSRAM support
+;              -mfix-esp32-psram-cache-issue ; Stop PSRAM crashing module if rev is less than 3.
