@@ -135,7 +135,7 @@ void initServos()
    pwmDriver[1].begin();
    pwmDriver[1].setOscillatorFrequency(oscFreq);
    pwmDriver[1].setPWMFreq(SERVO_FREQ);  // Analog servos run at ~50 Hz updates
-   delay(10);
+   /*delay(10);
    for(int8_t driverNum = 0; driverNum < 2; driverNum++) // Loop through drivers
    {
       for(int8_t legNum = 0; legNum < 3; legNum++) // Loop through motors
@@ -143,6 +143,7 @@ void initServos()
          startPositionLegs(driverNum, legNum); // Put leg into starting position 
       } // for
    } // for
+   */
 } // initServos()
 
 /**
@@ -223,7 +224,7 @@ void setupMobility()
       Log.traceln("<setupMobility> Initialize servo drivers and leg configurations.");
       mobilityStatus = true; 
       initServos(); // Put servos into starting position. May replace with Doug's stuff. 
-      initLegs(); // Initilize inverse kinetic model of legs. May replace with Doug's stuff.
+   //   initLegs(); // Initilize inverse kinetic model of legs. May replace with Doug's stuff.
    } // if
    else // If servo drivers found on I2C bus.
    {
