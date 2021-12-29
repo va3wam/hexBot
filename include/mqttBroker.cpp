@@ -21,7 +21,8 @@
 #define sp2s(x, y)    \
    Serial.print(x);   \
    Serial.print(" "); \
-   Serial.print(y);
+   Serial.print(y);   \
+   Serial.print(" ");
 #define sp2l(x, y)  \
    Serial.print(x); \
    Serial.println(y);
@@ -29,6 +30,20 @@
    Serial.print(x);   \
    Serial.print(" "); \
    Serial.println(y);
+#define sp3s(a,b,c)   \
+   Serial.print(a);   \
+   Serial.print(" "); \
+   Serial.print(b);   \
+   Serial.print(" "); \
+   Serial.print(c);   \
+   Serial.print(" ");
+#define sp3sl(a,b,c)   \
+   Serial.print(a);   \
+   Serial.print(" "); \
+   Serial.print(b);   \
+   Serial.print(" "); \
+   Serial.println(c);   \
+
 #define sp Serial.print(" ");
 #define nl Serial.println();
 

@@ -46,7 +46,7 @@
 // These are the arrays that contain the flow currently being executed
 
 #define flowLength  100          // maximum number of positions in a flow
-//  -----------------------------// start of flow row arrays
+//  -----------------------------// start of flow row arraysq
 int f_msecs[flowLength];         // time duration in milliseconds for movement to this location
 
 int f_operation[flowLength];     // type of operation specified for this position
@@ -120,6 +120,20 @@ int toeMoveAction = 8;           // binary coded action to take when you calcula
 // fa_disGlobal  = 16;           // display the global coordinates of toe position <too hard to do, frames are in local coords
 
 const float pi = 3.1415926 ;
+
+// coordinate system memory menmonic:
+// if direction dude is riding the bot like a bronco, 
+//     ...global X, Y, and Z follow the BLT rule:
+// Belly button points to +x
+// Left shoulder points to +y
+// Top of his head points to +z
+
+// if direction dude is standing on a leg's hip servo, facing away hexbot's center,
+//      ...local X, Y, and Z follow the BTL rule:
+// Belly button points to local +x
+// Top of head points to local +y
+// Left shoulder points to local +z
+
 
 // home position of each leg, using global coords
 float f_homeX[7] ;         // X coord in global coords, for each of 6 legs
