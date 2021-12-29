@@ -73,100 +73,63 @@ void anglesToCoords(float hip, float knee, float ankle, float *toeX, float *toeY
  * global variables f_angH, f_angK and f_angA and can therefore be 
  * accessed directly by the calling function.
  * ==========================================================================*/
-void coordsToAngles(float x, float y, float z)    
+void coordsToAngles(float Tx, float Ty, float Tz)    
 {
+   // results are returned in f_angH, f_angK and f_angA
    // TODO #27 create constants for all magic numbers in this function.
-   float f_Ux, f_Uy; // toe position when rotated into xy plane.
-   f_angH = atan2(z, x) * 180 / pi; // the hip angle is the easy one.
+   // documentation for this routine is found in the file: docs/explain-angles-from-coords.odt
+   // see also the spreadsheet formulas-angles-from-coords.ods
+
+   float Ux, Uy;        // toe position when rotated into xy plane.
+   float C1, C2;        // coefficients used to reduce algebraic complexity
+   float QA, QB, QC;    // Quadratic coefficients for Ax^2 + Bx +C =0
+   float DET;           // determinant in quadratic formula
+   float Ax, Ay;        // coordinates of ankle after rotation to local XY plane
+
+   // hexbot body measurements
+   const float BT = 2.915 ;   // thigh length (between hip and knee, horizontally)
+   const float BS = 7.620 ;   // shin length (between knee and ankle)
+   const float BF = 11.059;   // foot length (diagonal between ankle and toe)
+   const float BTOA = 17.063; // toe offset angle = angle between ankle servo vertical, and toe, in degrees
+   // const float BTOD = 3.245;  // toe offset distance. perpendicular distance from toe to ankle servo vertical line
+
+   f_angH = degrees( atan2(Tz, Tx) ) ;       // the hip angle is the easy one.
 
    // now reduce to a 2D problem by rotating leg into xy plane (around y axis)
-   // resulting in new x coordinate: Ux. ( Uy stays same as original y, and new Uz = 0)
-   // using standard formula for rotating a 2D vector with angle opposite to hip angle...
-   f_Ux = x * cos(radians(- f_angH)) - z * sin(radians(- f_angH));
-   f_Uy = y; // the rotation doesn't change the y value
-   // spreadsheet: =(E7*COS(-I7/180*PI()) - G7*SIN(-I7/180*PI()))
-
-   // next we deduce where the ankle has rotated to in the xy plane
-   // the scary math is explained in another document, but here's a summary:
-   // -ankle lies on a circle with radius 7.5 centred on knee servo
-   // -ankle also lies on a circle with radius 11, centred on the toe = (x,y,z)
-   // this provides 2 equations in 2 unknowns (Ax, Ay), but they're quadratic and have
-   // 2 solutions. (this makes sense, because those 2 circles intersect in 2 places)
-   // reformulate the equations into a single quadratic equation in one variable,
-   // apply the quadratic formula, and be clever in selecting the right solution.
-   //
-   // A quadratic equation has the form A*x^2 + B*x + C = 0
-   // the quadratic formula is: x = ( -B +/- SQRT(B*B - 4*a)) / (2*A)
-   //   (the +/- choice is what gives 2 solutions )
-   // time to calculate the quadratic coefficients A, B, and C
-   float f_QA = 1 + (25 - 20*f_Ux + 4 * f_Ux * f_Ux) / (4 * y * y);
-   float f_QB = -5 + (10 * (-71 + f_Ux * f_Ux + y * y) -4 * ((-71 + f_Ux * f_Ux + y * y) * f_Ux)) / (4 * y * y);
-   float f_QC = -50 + ((-71.0 + f_Ux * f_Ux + y * y) * (-71.0 + f_Ux * f_Ux + y * y)) / (4 * y * y);
-
-   // here comes the quadratic formula, which produces two possible solutions due to the +/-
-   //  we'll comput them both, then make a choice based on robot limitations
-   //  generally, we want the one where the ankle is the highest, maximizing Ay
-   float f_Ax, f_Ay, f_AxPlus, f_AxMinus, f_AyPlus, f_AyMinus; // coordinates of ankle, rotated into xy plane
-   float f_determinant; // detrminant in quadratic solution - must be >= 0
-   f_determinant = round((f_QB * f_QB - 4 * f_QA * f_QC) * 10000) / 10000;
-   if(f_determinant < 0) 
-   { 
-      Log.noticeln("=== negative determinant in coordsToAngles === %d", f_determinant);
-   } // if
-   f_AxPlus  = (-1 * f_QB + sqrt(f_determinant)) / (2 * f_QA);
-   f_AxMinus = (-1 * f_QB - sqrt(f_determinant)) / (2 * f_QA);
-   // substituting back in previous equation to get correcponding Ay valus
-   f_AyPlus  = ((-71 + f_Ux * f_Ux + f_Uy * f_Uy) -f_AxPlus *(-5 + 2 * f_Ux)) / (2 * y);
-   f_AyMinus = ((-71 + f_Ux * f_Ux + f_Uy * f_Uy) -f_AxMinus *(-5 +2 * f_Ux)) / (2 * y);
-   // initially, guess that we're using the (Ax,Ay) pair with the "+" in quadratic solution
-   f_Ax = f_AxPlus;
-   f_Ay = f_AyPlus;
-   // but swap if the other coordinates have a higher Y value, and the X value is on positive side of knee,
-   // .. which means knee can reach it without exceeding 90 degrees  
-   if(f_AyMinus > f_AyPlus && f_AxMinus >= origXOffset)
-   {  
-      f_Ax = f_AxMinus;
-      f_Ay = f_AyMinus;
-   } // if
-   // however, if that puts x to the -ve side of knee, where ankle can't go, pick the other case
-//   if(f_Ax < origXOffset)
-//   {  f_Ax = f_AxPlus;
-//      f_Ay = f_AyPlus;
-//   }
-   // there are still some unlikely edge cases needing attention, such as h=0, k=-44, a=75
-
-// think following stuff is obsolete, but keeping the formulas
-   // get y by substituting x into a previous equation, again dependent on sign of y
-//    if(y>0)   {f_Ay = -1*((-71+f_Ux*f_Ux+y*y) - f_Ax*(-5+2*f_Ux))/(2*y);}
-//    if(y<=0)  {f_Ay =    ((-71+f_Ux*f_Ux+y*y) - f_Ax*(-5+2*f_Ux))/(2*y);}
+   Ux = Tx * cos(radians(- f_angH)) - Tz * sin(radians(- f_angH));
+   Uy = Ty; // the rotation doesn't change the y value
+ sp3sl("Ux,Uy= ",Ux,Uy);  
+   // documentation explains the use of 2 coefficients to simplify the algebra
+   C1 = BS * BS - BF * BF + Ux * Ux + Uy * Uy - BT * BT ;
+   C2 = 2 * BT - 2 * Ux ;
+sp3sl("C1,C2= ",C1,C2);
+   // the equations of 2 intersecting circles reduces to a quadratic equation for Ax
+   // calculate the quadratic coefficients for A*x^2 + B*x +c = 0
+   QA = 1 + (C2 * C2) / (4 * Uy * Uy) ;
+   QB = (-2 * BT) + (2 * C1 * C2) / (4 * Uy * Uy);
+   QC = BT * BT + (C1 * C1) / (4 * Uy * Uy) - BS * BS;
+sp3s("QA, QB, QC = ",QA,QB);sp1l(QC);
+   // The x quadratic solution is the ankle's x coordinate, and will be referred to as Ax
+   // We'll optimistically use the plus case choice for the "plus or minus" in the quadratic solution...
+   //   x = (-B +/- SQRT( B*B - 4 * A * C) / (2 * A)
+   DET = round(( QB * QB - 4 * QA * QC) * 10000) / 10000 ;  //if roundoff error causes a tiny -Ve #, SQRT barfs
+sp2sl("determinant= ",DET);
+   if(DET < 0) {Log.noticeln("=== negative determinant in coordsToAngles === %d", DET) ; };
+   Ax = ( -QB + sqrt( DET)) / (2 * QA) ;
+   Ay = (BS*BS - BF*BF + Ux*Ux + Uy*Uy - BT*BT + Ax*(2*BT - 2*Ux)) / (2*Uy) ; // derived by substituting x in earlier equation
+   // maybe do some sanity checks to see if we should be using the minus case in the quadratic slution
+       //    if(f_AyMinus > f_AyPlus && f_AxMinus >= origXOffset)
+       //    if that puts x to the -ve side of knee, where ankle can't go, pick the other case
+       //   if(f_Ax < origXOffset)
 
     // now that we know where the ankle is, we can finally work on the angles
-    // the knee is easy since we defind the ankle position above
-    f_angK = -1 * asin(radians(f_Ay / shinLen));    
+    // the knee is easy since we defined the ankle position above
+    // could use old formula: f_angK = -1 * asin(radians(f_Ay / shinLen)) , or...
+    f_angK = degrees( atan2(-Ay,(Ax - BT)) );
 
-// there are 4 possible cases for ankle position, with different calculations for A angle
-// 1) Ux>origXOffset, Uy<0  // the normal case, toe below knee
-// 2) Ux>origXOffset, Uy>=0  // still normal, toe above knee
-// 3) Ux<origXOffset, Uy>0  // unreachable if servo angle limited to 90 degrees
-// 4) Ux<origXOffset, Uy=<0  // toe is underneath robot
-
-// should put in defenses for unreasonable angles being returned
-
-// for cases 1 and 4
-   if(f_Uy < 0)
-   {
-//      float f_P = asin(radians(f_Ux - f_Ax) / footLen);      // can only explain this with a diagram
-      float f_P = asin((f_Ux - f_Ax) / footLen) / PI * 180;      // can only explain this with a diagram
-      f_angA = f_P + f_angK - toeOffset;
-   }  // Uy <0
-
-// for cases 2, and impossible 3
-   if(f_Uy >= 0)
-   {
-//      float f_R = asin(radians(f_Uy - f_Ay) / footLen);      // can only explain this with a diagram
-      float f_R = asin((f_Uy - f_Ay) / footLen) /PI * 180;      // can only explain this with a diagram
-      f_angA = f_R + 90 + f_angK - toeOffset;
-   }  // Uy <0   
+    // the ankle angle needs to reflect the 17 degree offset within the "foot"
+    f_angA = degrees( atan2( Ux - Ax, Ay - Uy)) - BTOA ;
+   
 } // coordsToAngles()
 
 /**

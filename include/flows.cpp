@@ -49,7 +49,7 @@ void setupFlows()
    
 }
 // standard doxygen docs here
-float lx, ly, lz;
+
 bool globCoordsToLocal(int legNumber, float gx, float gy, float gz, float *lx, float *ly,float *lz)
 {
 //   leg numbers: 1=FrontRight, 2=MR, 3=BR, 4=FrontLeft, 5=ML, 6=BL
@@ -82,7 +82,7 @@ bool globCoordsToLocal(int legNumber, float gx, float gy, float gz, float *lx, f
         Xrt = cos_p45 * (gx - fp_frontHipX) - sin_p45 * (gy - fp_frontHipY);  // rotated (Xg,Yg)
         Yrt = sin_p45 * (gx - fp_frontHipX) + cos_p45 * (gy - fp_frontHipY);
         *lx = Yrt;
-        *lz = Xrt;        
+        *lz = Xrt * -1.;        
           
         break;
       case 5:
@@ -94,8 +94,9 @@ bool globCoordsToLocal(int legNumber, float gx, float gy, float gz, float *lx, f
         // Back Left leg
         Xrt = cos_m45 * (gx + fp_frontHipX) - sin_m45 * (gy - fp_frontHipY);  // rotated (Xg,Yg)
         Yrt = sin_m45 * (gx + fp_frontHipX) + cos_m45 * (gy - fp_frontHipY);
+sp2s("---Xrt, Yrt: ",Xrt); sp; sp1l(Yrt);
         *lx = Yrt;
-        *lz = Xrt;        
+        *lz = Xrt * -1.;        
         break;
       default:
         return false;
@@ -131,17 +132,20 @@ void do_flow()          // called from loop if there's a flow executing that nee
             //   to get pwm value, we convert local coords to angles, then from angles to pwm values
 
 //            Log.noticeln(" X: %F, Y: %F, Z: %F",f_endLegX[L], f_endLegY[L], f_endLegZ[L]);
+//  ==============================================================================================================
             coordsToAngles(f_endLegX[L], f_endLegY[L], f_endLegZ[L]); 
-//            Log.noticeln("<do_flow> Leg %u, angH = %F, angK = %F, angA = %F",L,f_angH,f_angK,f_angA);
+            Log.noticeln("<do_flow> Leg %u, angH = %F, angK = %F, angA = %F",L,f_angH,f_angK,f_angA);
 
             // now, one servo wihin the leg at a time, figure the pwm value, and move the servo
             // starting with the hip...
+            int legstart = micros();  // timestamp start of leg movement
             pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L],  pwmClkStart, mapDegToPWM(f_angH,0));
 //            Log.noticeln("H: Driver=%d,  Pin=%d, angH=%F,  pwm=%d",legIndexDriver[L],legIndexHipPin[L],f_angH, mapDegToPWM(f_angH,0));
             pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L]+1,pwmClkStart, mapDegToPWM(f_angK,0));
 //            Log.noticeln("K: Driver=%d,  Pin=%d, angH=%F,  pwm=%d",legIndexDriver[L],legIndexHipPin[L]+1,f_angK, mapDegToPWM(f_angK,0));
             pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L]+2,pwmClkStart, mapDegToPWM(f_angA,0));
 //            Log.noticeln("A: Driver=%d,  Pin=%d, angH=%F,  pwm=%d",legIndexDriver[L],legIndexHipPin[L]+2,f_angA, mapDegToPWM(f_angA,0));
+sp2l(" legStart time= ",micros()-legstart);
 
             f_lastLegX[L] = f_endLegX[L];   // remember this initial location as start of next line
             f_lastLegY[L] = f_endLegY[L];
@@ -167,7 +171,9 @@ void do_flow()          // called from loop if there's a flow executing that nee
             f_frame = 1 ;           // initialize frame counter
             f_framesPerPosn = int(f_msecs[1] / f_msecPerFrame + .5);  // rounded count of how many fraes fit in time)
          } // if f_count > 1
-        
+         else  // if f_count > 1. else case  means only initial position was given in flow
+         {  f_flowing = false;      // stop flow processing
+         }
       }  // if(goodData)
       else   // f_goodData was false - abort flow
       {    f_flowing = false;         // stop executing the flow
@@ -199,6 +205,9 @@ void do_flow()          // called from loop if there's a flow executing that nee
             {pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L],  pwmClkStart, mapDegToPWM(f_angH,0));
             }
             if((toeMoveAction & fa_moveServos) != 0)    // did flow_go command options tell us to move servos?
+
+
+            
             {pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L]+1,pwmClkStart, mapDegToPWM(f_angK,0));
             }
             if((toeMoveAction & fa_moveServos) != 0)    // did flow_go command options tell us to move servos?
@@ -283,7 +292,8 @@ bool prepNextLine()
          f_tmpZ = f_legZ[f_active][L] + f_homeZ[L];
          // then convert global coords to local coords
          globCoordsToLocal(L,f_tmpX,f_tmpY,f_tmpZ,&f_endLegX[L],&f_endLegY[L],&f_endLegZ[L]);
-//          sp2s(f_endLegX[L],f_endLegY[L]); sp2l(" ",f_endLegZ[L]);
+          sp1s("***tmpX: ");sp2s(f_tmpX,f_tmpY); sp2l(" ",f_tmpZ);
+          sp1s("===Lxyz: ");sp2s(f_endLegX[L],f_endLegY[L]); sp2l(" ",f_endLegZ[L]);
       }
    }
    else if (f_operation[f_active] == fo_moveAbs || f_operation[f_active] == fo_startAbs)
