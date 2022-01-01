@@ -194,10 +194,12 @@ void loadRgbColour();
 void setCustRgbColour(uint32_t, uint32_t, uint32_t);
 void setStdRgbColour(uint8_t);
 void setupStatusLed();
+
 // DAE Inverted kinematic related functions.
-int32_t mapDegToPWM(float *, float *);
-void anglesToCoords(float, float, float, float *, float *, float *);
-void coordsToAngles(float, float, float);  
+//int32_t mapDegToPWM(float *, float *);
+//void anglesToCoords(float, float, float, float *, float *, float *);
+//void coordsToAngles(float, float, float);  
+
 // I2C related functions.
 void identifyDevice(int);
 void scanBus0();
@@ -242,7 +244,7 @@ void startWebServer();
 #include <ikLibrary.cpp> // InverseK.h inverted kinematic functions.
 #include <servoLegs.cpp> // Control leg servos.
 #include <oled.cpp> // Control OLED.
-#include <daeIK.cpp> // Doug's inverted kinetics functions. 
+// #include <daeIK.cpp> // Doug's inverted kinetics functions. 
 #include <flows.cpp>          // routines relates to leg movements
 
 /************************************************************************************
