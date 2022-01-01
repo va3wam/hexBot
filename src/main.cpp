@@ -63,7 +63,6 @@ void setup()
    setupMobility();
    Log.verboseln("<setup> Display robot configuration in console trace."); 
    showCfgDetails(); // Show all configuration details in one summary.
-   testDaeIKFunctions(); // Doug's IK routines.
    Log.verboseln("<setup> Initialize flows.");
    setupFlows();
    Log.verboseln("<setup> Review status flags to see how boot sequence went."); 

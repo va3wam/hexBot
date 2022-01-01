@@ -167,6 +167,9 @@ String legNum[7];          // lookup table to convert leg# to corresponding stri
 // defines for routines acessed from elsewhere
 bool globCoordsToLocal(int legNumber, float gx, float gy, float gz, float *lx, float *ly, float *lz);
 int32_t mapDegToPWM(float degrees, float centerDeg);
+void anglesToCoords(float hip, float knee, float ankle, float *toeX, float *toeY, float *toeZ);
+void coordsToAngles(float Tx, float Ty, float Tz) ;
+void do_flow();
 
 // precalculate the computationally expensive trig values used in coordinate translation   
    float sin_p45 = +.707107;      // sin( + 45 degrees)
