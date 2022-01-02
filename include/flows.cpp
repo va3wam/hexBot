@@ -319,42 +319,46 @@ sp2l(" legStart time= ",micros()-legstart);
                                           // (otherwise exit immediately & wait)
          f_nextTime = millis() + f_msecPerFrame;    // yup, quickly reset for next 20 msec interval
 //sp2("=== working frame= ",f_frame); sp2("   fPrPosn= ",f_framesPerPosn);
-         for(L=1; L<=6; L++)              // use frame count to figure next frame position
-         {  f_tmpX = (float)f_frame * f_deltaX[L] / (float)f_framesPerPosn + f_lastLegX[L];
-            f_tmpY = (float)f_frame * f_deltaY[L] / (float)f_framesPerPosn + f_lastLegY[L];
-            f_tmpZ = (float)f_frame * f_deltaZ[L] / (float)f_framesPerPosn + f_lastLegZ[L];
-            coordsToAngles(f_tmpX, f_tmpY, f_tmpZ); // creates f_angH, f_angK, f_angA
+         int l_base;                      // extra loop index used to alternate between PWM boards
+         for(l_base=1; l_base<=3; l_base++)
+         {
+            for(L=l_base; L<=l_base+3; L=L+3)              // use frame count to figure next frame position
+            {  f_tmpX = (float)f_frame * f_deltaX[L] / (float)f_framesPerPosn + f_lastLegX[L];
+               f_tmpY = (float)f_frame * f_deltaY[L] / (float)f_framesPerPosn + f_lastLegY[L];
+               f_tmpZ = (float)f_frame * f_deltaZ[L] / (float)f_framesPerPosn + f_lastLegZ[L];
+               coordsToAngles(f_tmpX, f_tmpY, f_tmpZ); // creates f_angH, f_angK, f_angA
 
-            // now, one servo within the leg at a time, figure the pwm value, and move the servo
-            // starting with the hip...
-            if((toeMoveAction & fa_moveServos) != 0)    // did flow_go command options tell us to move servos?
-            {  if(f_angH != f_lastAngH[L])               // if new hip angle is different than last one, move the servo 
-               {  pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L],  pwmClkStart, mapDegToPWM(f_angH,0));
-                  f_lastAngH[L] = f_angH;                // and update last angle for this servo
+               // now, one servo within the leg at a time, figure the pwm value, and move the servo
+               // starting with the hip...
+               if((toeMoveAction & fa_moveServos) != 0)    // did flow_go command options tell us to move servos?
+               {  if(f_angH != f_lastAngH[L])               // if new hip angle is different than last one, move the servo 
+                  {  pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L],  pwmClkStart, mapDegToPWM(f_angH,0));
+                     f_lastAngH[L] = f_angH;                // and update last angle for this servo
+                  }
                }
-            }
-            if((toeMoveAction & fa_moveServos) != 0)    // did flow_go command options tell us to move servos?
-            {  if(f_angK != f_lastAngK[L])               // only if the knee angle has changed...
-               {  pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L]+1,pwmClkStart, mapDegToPWM(f_angK,0));
-                  f_lastAngK[L] = f_angK;
+               if((toeMoveAction & fa_moveServos) != 0)    // did flow_go command options tell us to move servos?
+               {  if(f_angK != f_lastAngK[L])               // only if the knee angle has changed...
+                  {  pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L]+1,pwmClkStart, mapDegToPWM(f_angK,0));
+                     f_lastAngK[L] = f_angK;
+                  }
                }
-            }
-            if((toeMoveAction & fa_moveServos) != 0)    // did flow_go command options tell us to move servos?
-            {  if(f_angA != f_lastAngA[L])               // only if ankle angle has changed...
-               {  pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L]+2,pwmClkStart, mapDegToPWM(f_angA,0));
-                  f_lastAngA[L] = f_angA;
+               if((toeMoveAction & fa_moveServos) != 0)    // did flow_go command options tell us to move servos?
+               {  if(f_angA != f_lastAngA[L])               // only if ankle angle has changed...
+                  {  pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L]+2,pwmClkStart, mapDegToPWM(f_angA,0));
+                     f_lastAngA[L] = f_angA;
+                  }
                }
-            }
-            if((toeMoveAction & fa_dispPWM) != 0)    // if flow go command options told us to display PWM..
-            {  sp2s(mapDegToPWM(f_angH,0),mapDegToPWM(f_angK,0));sp;sp1s(mapDegToPWM(f_angA,0)); sp;
-            }
-            if((toeMoveAction & fa_dispAngles) != 0) // if flow_go command options told us to display angles..
-            {  sp2s(f_angH,f_angK); sp; sp1s(f_angA); sp;
-            }
-            if((toeMoveAction & fa_dispLocal) != 0) // if flow_go command options told us to display local coords..
-            {  sp2s(f_tmpX,f_tmpY); sp; sp1s(f_tmpZ); sp; 
-            }
-         }  //for L=1...
+               if((toeMoveAction & fa_dispPWM) != 0)    // if flow go command options told us to display PWM..
+               {  sp2s(mapDegToPWM(f_angH,0),mapDegToPWM(f_angK,0));sp;sp1s(mapDegToPWM(f_angA,0)); sp;
+               }
+               if((toeMoveAction & fa_dispAngles) != 0) // if flow_go command options told us to display angles..
+               {  sp2s(f_angH,f_angK); sp; sp1s(f_angA); sp;
+               }
+               if((toeMoveAction & fa_dispLocal) != 0) // if flow_go command options told us to display local coords..
+               {  sp2s(f_tmpX,f_tmpY); sp; sp1s(f_tmpZ); sp; 
+               }
+            }  //for L=l_base...
+         }  // for l_base = 1, ...
          // output gets messy if you display more than one attribute at a time - avoid that
          if((toeMoveAction & (fa_dispPWM + fa_dispAngles + fa_dispLocal)) != 0)  // if we displayed numbers
          {  nl;                              // then output the final new line
