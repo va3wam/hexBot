@@ -101,8 +101,8 @@ int f_count = 0;                 // counter as we process FLOW commands, accumul
 int f_active = 0;                // what row number we're executing, after a FLOW_GO command
 bool f_flowing = false;          // set to true if we're executing a fow
 int f_frame = 0;                     // what frame number we're on within a flow row
-int f_msecPerFrame = 20;         // time slice length in msec for movement between positions
-int f_msecPerFrameDefault = 20;  // unless specified in the FLOW_GO command, do 20 msec time slices
+int f_msecPerFrame = 50;         // time slice length in msec for movement between positions
+int f_msecPerFrameDefault = 50;  // unless specified in the FLOW_GO command, do 20 msec time slices
 int f_framesPerPosn = 0;         // how many intermediary moves per flow row
 bool f_goodData  ;               // used in flow processing do_flow() routine
 int f_nextTime = 0;              // millis timestamp for next frame movement to be generated
