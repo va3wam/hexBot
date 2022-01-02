@@ -92,6 +92,10 @@ float f_endLegX[7] ;               // local coords of end poing of line for curr
 float f_endLegY[7] ;               // used to calculate delta movements needed for each frame movement
 float f_endLegZ[7] ;
 
+float f_lastAngH[7];             // remember last angle for each servo so you can skip redundant ones
+float f_lastAngK[7];
+float f_lastAngA[7];
+
 
 int f_count = 0;                 // counter as we process FLOW commands, accumulating flow rows, ends up as row count
 int f_active = 0;                // what row number we're executing, after a FLOW_GO command
