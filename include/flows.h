@@ -52,15 +52,16 @@ int f_msecs[flowLength];         // time duration in milliseconds for movement t
 int f_operation[flowLength];     // type of operation specified for this position
    const int fo_moveAbs = 1;     // move to absolute location, coords are in global system
    const int fo_moveLocal = 2;   // move to location given in local coords
-   const int fo_moveRelHome = 3; // move to loc'n relative to home, coords = deltas relative to home position
-   const int fo_moveRelLast = 4; // move to loc'n relative to last position, coords = deltas w.r.t. last position
+   const int fo_moveGRelHome = 3; // move to loc'n relative to home, coords = GLOBAL deltas relative to home position
+   const int fo_moveLRelHome = 4; // move to loc'n relative to home, coords = LOCAL deltas relative to home position
+   const int fo_moveRelLast = 5; // move to loc'n relative to last position, coords = deltas w.r.t. last position
 
-   const int fo_startAbs = 5;    // start of flow - go directly to an absolute location
-   const int fo_startRelHome=6;  // start of flow - go directly to a position relative to home position
-   const int fo_startPrev = 7;   // start flow, treating end of last flow as previous position
-   const int fo_cycleByCount=8;  // repeat this flow for number of cycles in LineShape1
-   const int fo_cycleByTime =9;  // repeat this flow for number of milleseconds in LineShape1
-   const int fo_markCycle = 10;  // next repeatable cycle starts at row after this one
+   const int fo_startAbs = 6;    // start of flow - go directly to an absolute location
+   const int fo_startRelHome=7;  // start of flow - go directly to a position relative to home position
+   const int fo_startPrev = 8;   // start flow, treating end of last flow as previous position
+   const int fo_cycleByCount=9;  // repeat this flow for number of cycles in LineShape1
+   const int fo_cycleByTime =10;  // repeat this flow for number of milleseconds in LineShape1
+   const int fo_markCycle = 11;  // next repeatable cycle starts at row after this one
 
 int f_lShape1[flowLength];    // description of type of line to follow between last position and this one
    const int fl_straight = 10;   // straight line
@@ -110,7 +111,7 @@ float f_angH, f_angK, f_angA ;   // temp variables to hold servo angles
 int L;                           // leg number use as a loop index in many places
 float safeMaxPosX = 6;             // max allowed displacement on local axes from home position
 float safeMaxNegX = 6;             // ..checking is done after local coords are calculated in PrepNextLine()
-float safeMaxPosY = 6;             // can argue that this should be per leg. Front legs have more room?
+float safeMaxPosY = 15;             // can argue that this should be per leg. Front legs have more room?
 float safeMaxNegY = 6;
 float safeMaxPosZ = 6;
 float safeMaxNegZ = 6;

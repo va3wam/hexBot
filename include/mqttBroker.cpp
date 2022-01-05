@@ -332,7 +332,7 @@ bool processCmd(String payload)
    // action: - save given data into next position in the flow arrays, to be part of the motion initiated by flow_go command
 
    {
-      Serial.println("start processing flow command");
+   //   Serial.println("start processing flow command");
 
       // copy position description from MQTT flow command to next flow row
       // f_count starts at 0, which we use to store first position in row 0
@@ -399,7 +399,7 @@ bool processCmd(String payload)
       }
       if (f_action == 1) // 1 means start up the currently define flow
       {
-         Serial.println("<flow_go> saw action = 1");
+//         Serial.println("<flow_go> saw action = 1");
          if (f_count == 0) // is there a flow defined to run?
          {
             Serial.println("<flow_go>: tried to run flow, but none defined");
@@ -455,7 +455,7 @@ bool processCmd(String payload)
          float argZ = arg[5].toFloat(); // and finally, Z
 
          f_goodData = true;           // initially assume all will go well
-         if (argOp == fo_moveRelHome) // check if X, Y, Z are relative to home position
+         if (argOp == fo_moveGRelHome) // check if X, Y, Z are relative to home position
          {                            // we were given offsets relative to home position, so add in home coords
             //      sp1l("--global toe coords including offsets--");
 
@@ -550,9 +550,9 @@ bool processCmd(String payload)
                   // now set the servo "srv" to an angle of sr_deg degrees
                   //use integer division ("/") and modulus ("%") to directly calculate driver#, and pin#
                   {  pwmDriver[(srv-1) / 9].setPWM((srv-1) % 9, pwmClkStart, mapDegToPWM(sr_deg, 0)); 
-                  sp2s("sdd, argN, srv,srv2,sr_deg, index= ",argN);sp;sp2s(sr_srv,sr_srv2);sp;sp2sl(sr_deg,srv);
+                  sp2s("sdd) argN, srv,srv2,sr_deg, index= ",argN);sp;sp2s(sr_srv,sr_srv2);sp;sp2sl(sr_deg,srv);
                   sp2s((srv-1)/9, (srv-1)%9);sp;sp1l(mapDegToPWM(sr_deg, 0));
-                  delay(30);     // see if giving PWM drivers some breathing room helps
+                  delay(10);     // see if giving PWM drivers some breathing room helps
                   }
                }
             }
@@ -657,11 +657,11 @@ bool processCmd(String payload)
       String cmd = mqtt.getCmd();
       if (cmd != "")
       {
-         Log.noticeln("<checkMqtt> cmd = %s.", cmd.c_str());
+         //Log.noticeln("<checkMqtt> cmd = %s.", cmd.c_str());
          bool allIsWell = processCmd(cmd);
          if (allIsWell)
          {
-            Log.noticeln("<checkMqtt> All went well.");
+            //Log.noticeln("<checkMqtt> All went well.");
          } // if
          else
          {
