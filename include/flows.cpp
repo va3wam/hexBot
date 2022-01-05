@@ -1,10 +1,10 @@
 // This is the file flows.cpp, which lives in the include directory
 // and is invoked by an include statement in main.cpp
 // routines here have corresponding entries in include/flows.h
-//
-// TODO: #46 follow doxygen standards
+
 
 #include <flows.h>               // including main.h
+int8_t rgbLedClr = 0; //  Track what colour to set the rgb led to next when working on a new flow row.
 void setupFlows()
 {  // initialize params for the accumulation of flow rows from MQTT FLOW commands
    f_active = 0;      // what row number we fill next, and also the count of rows seen for current flow
@@ -439,6 +439,12 @@ bool prepNextLine()
    // f_operation in flow row tells us what kind of numbers are given for each leg
 
    f_goodData = true;  // initially assume all will go well
+   rgbLedClr ++; // Increment rgb colour to use next.
+   if(rgbLedClr > numColoursSupported) // Never exceed known colour numbers
+   {
+      rgbLedClr = 0;
+   } // if
+   setStdRgbColour(rgbLedClr); // Set RGB led colour
    if(f_operation[f_active] == fo_moveGRelHome || f_operation[f_active] == fo_startRelHome)
    {  // we were given offsets relative to home position, expressed in GLOBAL coords, so add in home coords
 //      sp1l("--global toe coords including offsets--");
