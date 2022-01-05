@@ -260,7 +260,7 @@ void aaMqtt::onMqttMessage(char *topic, char *payload, AsyncMqttClientMessagePro
    Serial.print("<onMqttMessage> msg = ");
    Serial.println(msg);
    cmdQueue.push(msg); // Push message onto FIFO buffer stack.
-   cmdQueue.dumpBuffer();
+   // cmdQueue.dumpBuffer();
 } // aaMqtt::onMqttMessage()
 
 /**

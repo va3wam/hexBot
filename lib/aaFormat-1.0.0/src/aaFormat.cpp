@@ -46,7 +46,7 @@
  ============================================================================*/
 aaFormat::aaFormat() 
 {
-   Serial.println("<aaFormat::aaFormat> Default constructor running.");
+   //Serial.println("<aaFormat::aaFormat> Default constructor running.");
 } // aaFormat::aaFormat()
 
 /**
@@ -54,7 +54,7 @@ aaFormat::aaFormat()
  =============================================================================*/
 aaFormat::~aaFormat() 
 {
-   Serial.println("<aaFormat::aaFormat> Destructor running.");
+   //Serial.println("<aaFormat::aaFormat> Destructor running.");
 } // aaFormat::aaFormat()
 
 /**

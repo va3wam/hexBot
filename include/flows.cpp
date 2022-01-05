@@ -139,25 +139,26 @@ void coordsToAngles(float Tx, float Ty, float Tz)
    // now reduce to a 2D problem by rotating leg into xy plane (around y axis)
    Ux = Tx * cos(radians(- f_angH)) - Tz * sin(radians(- f_angH));
    Uy = Ty; // the rotation doesn't change the y value
- sp3sl("Ux,Uy= ",Ux,Uy);  
+ //sp3sl("Ux,Uy= ",Ux,Uy);  
    // documentation explains the use of 2 coefficients to simplify the algebra
    C1 = BS * BS - BF * BF + Ux * Ux + Uy * Uy - BT * BT ;
    C2 = 2 * BT - 2 * Ux ;
-sp3sl("C1,C2= ",C1,C2);
+//sp3sl("C1,C2= ",C1,C2);
    // the equations of 2 intersecting circles reduces to a quadratic equation for Ax
    // calculate the quadratic coefficients for A*x^2 + B*x +c = 0
    QA = 1 + (C2 * C2) / (4 * Uy * Uy) ;
    QB = (-2 * BT) + (2 * C1 * C2) / (4 * Uy * Uy);
    QC = BT * BT + (C1 * C1) / (4 * Uy * Uy) - BS * BS;
-sp3s("QA, QB, QC = ",QA,QB);sp1l(QC);
+//sp3s("QA, QB, QC = ",QA,QB);sp1l(QC);
    // The x quadratic solution is the ankle's x coordinate, and will be referred to as Ax
    // We'll optimistically use the plus case choice for the "plus or minus" in the quadratic solution...
    //   x = (-B +/- SQRT( B*B - 4 * A * C) / (2 * A)
    DET = round(( QB * QB - 4 * QA * QC) * 10000) / 10000 ;  //if roundoff error causes a tiny -Ve #, SQRT barfs
-sp2sl("determinant= ",DET);
+//sp2sl("determinant= ",DET);
    if(DET < 0) {Log.noticeln("=== negative determinant in coordsToAngles === %d", DET) ; };
    Ax = ( -QB + sqrt( DET)) / (2 * QA) ;
    Ay = (BS*BS - BF*BF + Ux*Ux + Uy*Uy - BT*BT + Ax*(2*BT - 2*Ux)) / (2*Uy) ; // derived by substituting x in earlier equation
+//sp3sl("Ax,Ay= ",Ax,Ay);
    // maybe do some sanity checks to see if we should be using the minus case in the quadratic slution
        //    if(f_AyMinus > f_AyPlus && f_AxMinus >= origXOffset)
        //    if that puts x to the -ve side of knee, where ankle can't go, pick the other case
@@ -169,7 +170,8 @@ sp2sl("determinant= ",DET);
     f_angK = degrees( atan2(-Ay,(Ax - BT)) );
 
     // the ankle angle needs to reflect the 17 degree offset within the "foot"
-    f_angA = degrees( atan2( Ux - Ax, Ay - Uy)) - BTOA ;
+    // and the effect of knee movement on foot angle
+    f_angA = degrees( atan2( Ux - Ax, Ay - Uy)) - BTOA + f_angK ;
    
 } // coordsToAngles()
 
@@ -205,8 +207,7 @@ bool globCoordsToLocal(int legNumber, float gx, float gy, float gz, float *lx, f
         Xrt = cos_p45 * (gx - fp_frontHipX) - sin_p45 * (gy - fp_frontHipY);  // rotated (Xg,Yg)
         Yrt = sin_p45 * (gx - fp_frontHipX) + cos_p45 * (gy - fp_frontHipY);
         *lx = Yrt;
-        *lz = Xrt * -1.;        
-          
+        *lz = Xrt * -1.;         
         break;
       case 5:
         // Middle Left leg
@@ -217,7 +218,7 @@ bool globCoordsToLocal(int legNumber, float gx, float gy, float gz, float *lx, f
         // Back Left leg
         Xrt = cos_m45 * (gx + fp_frontHipX) - sin_m45 * (gy - fp_frontHipY);  // rotated (Xg,Yg)
         Yrt = sin_m45 * (gx + fp_frontHipX) + cos_m45 * (gy - fp_frontHipY);
-sp2s("---Xrt, Yrt: ",Xrt); sp; sp1l(Yrt);
+//sp2s("---Xrt, Yrt: ",Xrt); sp; sp1l(Yrt);
         *lx = Yrt;
         *lz = Xrt * -1.;        
         break;
@@ -234,7 +235,8 @@ sp2s("---Xrt, Yrt: ",Xrt); sp; sp1l(Yrt);
 
 void do_flow()          // called from loop if there's a flow executing that needs attention
 {
-   if(f_active == 0)                // starting a new flow, so need to do some setup
+   float t_angK, t_angA;      // temp angles used in PWM calculations for oppositely mounted servos
+   if(f_active == 0)          // starting a new flow, so need to do some setup
    {
 //      sp1l("--initial flow toe numbers--");
 //      for(L=1; L<=6; L++)     // copy flow coords from flow row [0] into  working vectors
@@ -257,21 +259,27 @@ void do_flow()          // called from loop if there's a flow executing that nee
 //            Log.noticeln(" X: %F, Y: %F, Z: %F",f_endLegX[L], f_endLegY[L], f_endLegZ[L]);
 //  ==============================================================================================================
             coordsToAngles(f_endLegX[L], f_endLegY[L], f_endLegZ[L]); 
-            Log.noticeln("<do_flow> Leg %u, angH = %F, angK = %F, angA = %F",L,f_angH,f_angK,f_angA);
+//            Log.noticeln("<do_flow> Leg %u, angH = %F, angK = %F, angA = %F",L,f_angH,f_angK,f_angA);
             f_lastAngH[L] = f_angH;       // remember angles so we can skip redundant moves in future
             f_lastAngK[L] = f_angK;
             f_lastAngA[L] = f_angA;
 
             // now, one servo wihin the leg at a time, figure the pwm value, and move the servo
+            // might have to negate angles, due to knee and ankle servos mounted opposite on either side of bot
+            t_angK = f_angK;                    // may need to negate this angle, depending what side of bot we're on
+            if(L >= 4) {t_angK = -1 * t_angK;}  // yup , legs 4,5,6 need angle negated
+            t_angA = f_angA;                    // as for knee above
+            if(L >= 4) {t_angA = -1 * t_angA;}
+
             // starting with the hip...
-            int legstart = micros();  // timestamp start of leg movement
+//            int legstart = micros();  // timestamp start of leg movement
             pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L],  pwmClkStart, mapDegToPWM(f_angH,0));
 //            Log.noticeln("H: Driver=%d,  Pin=%d, angH=%F,  pwm=%d",legIndexDriver[L],legIndexHipPin[L],f_angH, mapDegToPWM(f_angH,0));
-            pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L]+1,pwmClkStart, mapDegToPWM(f_angK,0));
+            pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L]+1,pwmClkStart, mapDegToPWM(t_angK,0));
 //            Log.noticeln("K: Driver=%d,  Pin=%d, angH=%F,  pwm=%d",legIndexDriver[L],legIndexHipPin[L]+1,f_angK, mapDegToPWM(f_angK,0));
-            pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L]+2,pwmClkStart, mapDegToPWM(f_angA,0));
+            pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L]+2,pwmClkStart, mapDegToPWM(t_angA,0));
 //            Log.noticeln("A: Driver=%d,  Pin=%d, angH=%F,  pwm=%d",legIndexDriver[L],legIndexHipPin[L]+2,f_angA, mapDegToPWM(f_angA,0));
-sp2l(" legStart time= ",micros()-legstart);
+//sp2l(" legStart time= ",micros()-legstart);
 
             f_lastLegX[L] = f_endLegX[L];   // remember this initial location as start of next line
             f_lastLegY[L] = f_endLegY[L];
@@ -285,17 +293,18 @@ sp2l(" legStart time= ",micros()-legstart);
          // first, figure out local coords of that next position, like we did for initial position
          if(f_count > 1 )     // is there at least one more flow row?
          {                    // yup - set up to do frames to get to it
-            sp1l("--initial flow toe numbers for flow row 1--");
-            for(L=1; L<=6; L++)     // display flow coords from flow row [1] into  working vectors
-            {  sp2s(f_legX[1][L],f_legY[1][L]); sp2l(" ",f_legZ[1][L]);
-            }
+            //sp1l("--initial flow toe numbers for flow row 1--");
+            //for(L=1; L<=6; L++)     // display flow coords from flow row [1] into  working vectors
+            //{  //sp2s(f_legX[1][L],f_legY[1][L]); sp2l(" ",f_legZ[1][L]);
+            //}
             // we need local coords to be able to give commands to servos
             // the operation code in f_operation[f_active] tells us what king of coords we were given
             f_active=1;             // OK, we're now processing flow row 1 for first real line
             prepNextLine();         // decode flow row 1's position, figure deltas, etc
                                     // so we'll be ready at next 20 ms mark
             f_frame = 1 ;           // initialize frame counter
-            f_framesPerPosn = int(f_msecs[1] / f_msecPerFrame + .5);  // rounded count of how many fraes fit in time)
+            f_framesPerPosn = int((f_msecs[1] / f_msecPerFrame) + .5);  // rounded count of how many frames fit in time)
+//sp3sl("initial msecPerFrame,framesPerPosn",f_msecPerFrame,f_framesPerPosn);
          } // if f_count > 1
          else  // if f_count > 1. else case  means only initial position was given in flow
          {  f_flowing = false;      // stop flow processing
@@ -317,44 +326,54 @@ sp2l(" legStart time= ",micros()-legstart);
       {                                   // we did hit 20 ms mark - time to move servos
 //sp2l("===f_active ",f_active);
                                           // (otherwise exit immediately & wait)
+//sp3sl("active,frame= ",f_active,f_frame);                                          
          f_nextTime = millis() + f_msecPerFrame;    // yup, quickly reset for next 20 msec interval
 //sp2("=== working frame= ",f_frame); sp2("   fPrPosn= ",f_framesPerPosn);
-         for(L=1; L<=6; L++)              // use frame count to figure next frame position
-         {  f_tmpX = (float)f_frame * f_deltaX[L] / (float)f_framesPerPosn + f_lastLegX[L];
-            f_tmpY = (float)f_frame * f_deltaY[L] / (float)f_framesPerPosn + f_lastLegY[L];
-            f_tmpZ = (float)f_frame * f_deltaZ[L] / (float)f_framesPerPosn + f_lastLegZ[L];
-            coordsToAngles(f_tmpX, f_tmpY, f_tmpZ); // creates f_angH, f_angK, f_angA
+         for(int l_base=1;l_base<=3;l_base++)   // use alternate sides for leg movements, resting PWM drivers
+         {  for(L=l_base;L<=l_base+3;L=L+3)     // i.e. 1, 4, 2, 5, 3, 6         
+            {                                   // use frame count to figure next frame position
+               f_tmpX = (float)f_frame * f_deltaX[L] / (float)f_framesPerPosn + f_lastLegX[L];
+               f_tmpY = (float)f_frame * f_deltaY[L] / (float)f_framesPerPosn + f_lastLegY[L];
+               f_tmpZ = (float)f_frame * f_deltaZ[L] / (float)f_framesPerPosn + f_lastLegZ[L];
+               coordsToAngles(f_tmpX, f_tmpY, f_tmpZ); // creates f_angH, f_angK, f_angA
 
-            // now, one servo within the leg at a time, figure the pwm value, and move the servo
-            // starting with the hip...
-            if((toeMoveAction & fa_moveServos) != 0)    // did flow_go command options tell us to move servos?
-            {  if(f_angH != f_lastAngH[L])               // if new hip angle is different than last one, move the servo 
-               {  pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L],  pwmClkStart, mapDegToPWM(f_angH,0));
-                  f_lastAngH[L] = f_angH;                // and update last angle for this servo
+               // now, one servo within the leg at a time, figure the pwm value, and move the servo
+               // might have to negate angles, due to knee and ankle servos mounted opposite on either side of bot
+               t_angK = f_angK;                    // may need to negate this angle, depending what side of bot we're on
+               if(L >= 4) {t_angK = -1 * t_angK;}  // yup , legs 4,5,6 need angle negated
+               t_angA = f_angA;                    // as for knee above
+               if(L >= 4) {t_angA = -1 * t_angA;}
+
+               // starting with the hip...
+               if((toeMoveAction & fa_moveServos) != 0)    // did flow_go command options tell us to move servos?
+               {  if(f_angH != f_lastAngH[L]+999)               // if new hip angle is different than last one, move the servo 
+                  {  pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L],  pwmClkStart, mapDegToPWM(f_angH,0));
+                     f_lastAngH[L] = f_angH;                // and update last angle for this servo
+                  }
                }
-            }
-            if((toeMoveAction & fa_moveServos) != 0)    // did flow_go command options tell us to move servos?
-            {  if(f_angK != f_lastAngK[L])               // only if the knee angle has changed...
-               {  pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L]+1,pwmClkStart, mapDegToPWM(f_angK,0));
-                  f_lastAngK[L] = f_angK;
+               if((toeMoveAction & fa_moveServos) != 0)    // did flow_go command options tell us to move servos?
+               {  if(f_angK != f_lastAngK[L]+999)               // only if the knee angle has changed...
+                  {  pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L]+1,pwmClkStart, mapDegToPWM(t_angK,0));
+                     f_lastAngK[L] = f_angK;
+                  }
                }
-            }
-            if((toeMoveAction & fa_moveServos) != 0)    // did flow_go command options tell us to move servos?
-            {  if(f_angA != f_lastAngA[L])               // only if ankle angle has changed...
-               {  pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L]+2,pwmClkStart, mapDegToPWM(f_angA,0));
-                  f_lastAngA[L] = f_angA;
+               if((toeMoveAction & fa_moveServos) != 0)    // did flow_go command options tell us to move servos?
+               {  if(f_angA != f_lastAngA[L]+999)               // only if ankle angle has changed...
+                  {  pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L]+2,pwmClkStart, mapDegToPWM(t_angA,0));
+                     f_lastAngA[L] = f_angA;
+                  }
                }
-            }
-            if((toeMoveAction & fa_dispPWM) != 0)    // if flow go command options told us to display PWM..
-            {  sp2s(mapDegToPWM(f_angH,0),mapDegToPWM(f_angK,0));sp;sp1s(mapDegToPWM(f_angA,0)); sp;
-            }
-            if((toeMoveAction & fa_dispAngles) != 0) // if flow_go command options told us to display angles..
-            {  sp2s(f_angH,f_angK); sp; sp1s(f_angA); sp;
-            }
-            if((toeMoveAction & fa_dispLocal) != 0) // if flow_go command options told us to display local coords..
-            {  sp2s(f_tmpX,f_tmpY); sp; sp1s(f_tmpZ); sp; 
-            }
-         }  //for L=1...
+               if((toeMoveAction & fa_dispPWM) != 0)    // if flow go command options told us to display PWM..
+               {  sp2s(mapDegToPWM(f_angH,0),mapDegToPWM(f_angK,0));sp;sp1s(mapDegToPWM(f_angA,0)); sp;
+               }
+               if((toeMoveAction & fa_dispAngles) != 0) // if flow_go command options told us to display angles..
+               {  sp2s(f_angH,f_angK); sp; sp1s(f_angA); sp;
+               }
+               if((toeMoveAction & fa_dispLocal) != 0) // if flow_go command options told us to display local coords..
+               {  sp2s(f_tmpX,f_tmpY); sp; sp1s(f_tmpZ); sp; 
+               }
+            }  //for L=l_base...
+         } // for l_base = 1...
          // output gets messy if you display more than one attribute at a time - avoid that
          if((toeMoveAction & (fa_dispPWM + fa_dispAngles + fa_dispLocal)) != 0)  // if we displayed numbers
          {  nl;                              // then output the final new line
@@ -373,6 +392,10 @@ sp2l(" legStart time= ",micros()-legstart);
                   f_lastLegZ[L] = f_endLegZ[L];
                }
                f_goodData = true;               // assume thing will go well, & f_operation is valid
+               f_frame = 1;                     // new sequence of frames for next flow row
+               f_framesPerPosn = int((f_msecs[f_active] / f_msecPerFrame) + .5);  // rounded count of how many frames fit in time)
+//sp3sl("second msecPerFrame,framesPerPosn",f_msecPerFrame,f_framesPerPosn);
+
                prepNextLine();                  // process active flow row, leaving local coords in f_endLegX[L], Y, Z
             }                                   // ..and figuring frame deltas, and framesPerPosition
             else                                // we ran out of rows in the flow. end flow processing
@@ -415,8 +438,8 @@ bool prepNextLine()
    // f_operation in flow row tells us what kind of numbers are given for each leg
 
    f_goodData = true;  // initially assume all will go well
-   if(f_operation[f_active] == fo_moveRelHome || f_operation[f_active] == fo_startRelHome)
-   {  // we were given offsets relative to home position, so add in home coords
+   if(f_operation[f_active] == fo_moveGRelHome || f_operation[f_active] == fo_startRelHome)
+   {  // we were given offsets relative to home position, expressed in GLOBAL coords, so add in home coords
 //      sp1l("--global toe coords including offsets--");
       for(L=1; L<=6; L++)  // add offset to home's global coord, to get final global coord
       {  f_tmpX = f_legX[f_active][L] + f_homeX[L];   
@@ -424,9 +447,15 @@ bool prepNextLine()
          f_tmpZ = f_legZ[f_active][L] + f_homeZ[L];
          // then convert global coords to local coords
          globCoordsToLocal(L,f_tmpX,f_tmpY,f_tmpZ,&f_endLegX[L],&f_endLegY[L],&f_endLegZ[L]);
-          sp1s("***tmpX: ");sp2s(f_tmpX,f_tmpY); sp2l(" ",f_tmpZ);
-          sp1s("===Lxyz: ");sp2s(f_endLegX[L],f_endLegY[L]); sp2l(" ",f_endLegZ[L]);
+//          sp1s("***tmpX: ");sp2s(f_tmpX,f_tmpY); sp2l(" ",f_tmpZ);
+//          sp1s("===Lxyz: ");sp2s(f_endLegX[L],f_endLegY[L]); sp2l(" ",f_endLegZ[L]);
       }
+   }
+   else if (f_operation[f_active] == fo_moveLRelHome)    // relative to home position, deltas in local coords
+   {  // we were given offsets relative to leg's home position, expressed in LOCAL coordinates
+      f_endLegX[L] = f_legX[f_active][L] + f_localHomeX;   // get local offset out of flow row, and add to local home coords
+      f_endLegY[L] = f_legY[f_active][L] + f_localHomeY;
+      f_endLegZ[L] = f_legZ[f_active][L] + f_localHomeZ;  
    }
    else if (f_operation[f_active] == fo_moveAbs || f_operation[f_active] == fo_startAbs)
    {  // we were given absolute coords, and need to convert to local coords
@@ -456,7 +485,7 @@ bool prepNextLine()
       String badLegs = "" ;   // error message identifying unsafe positions
       for(L=1; L<=6; L++ )       // go thru all legs
       { 
-sp2s(f_endLegX[L],f_endLegY[L]); sp; sp1l(f_endLegZ[L]);
+//sp2s(f_endLegX[L],f_endLegY[L]); sp; sp1l(f_endLegZ[L]);
          if(f_endLegX[L] - f_localHomeX > safeMaxPosX){ badLegs = badLegs + legNum[L] + "XP ";}
          if(f_localHomeX - f_endLegX[L] > safeMaxNegX){ badLegs = badLegs + legNum[L] + "XN ";}
          if(f_endLegY[L] - f_localHomeY > safeMaxPosY){ badLegs = badLegs + legNum[L] + "YP ";}
@@ -475,7 +504,7 @@ sp2s(f_endLegX[L],f_endLegY[L]); sp; sp1l(f_endLegZ[L]);
          {  f_deltaX[L] = f_endLegX[L] - f_lastLegX[L]; //travel needed in local X direction
             f_deltaY[L] = f_endLegY[L] - f_lastLegY[L]; //travel needed in local Y direction
             f_deltaZ[L] = f_endLegZ[L] - f_lastLegZ[L]; //travel needed in local Z direction
-            sp2s("deltas: ",f_deltaX[L]); sp; sp2sl(f_deltaY[L],f_deltaZ[L]);
+//            sp2s("deltas: ",f_deltaX[L]); sp; sp2sl(f_deltaY[L],f_deltaZ[L]);
          } //for L=1...
       }  // else if f_active != 0
    } // if f_goodData
