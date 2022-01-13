@@ -432,15 +432,19 @@ bool processCmd(String payload)
    } // if cmd = flow_go
    
    // <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><> start of new command
-   
+   /*
    // MOVE_LEG command - move leg to coordinates that can be given in various ways
-   if (cmd == "MOVE_LEG" || cmd == "ML")
+   if (cmd == "MOVE_LEGx" || cmd == "MLx")   // the "x" additions effectively disable this commmand
    { // command format: ML, f_operation, leg, X, Y, Z
+   // *************************** this command needs to be reworked to:
+   // todo #92
+   // allow all movement methods used in flow rows
+   // use changed format of globCoordsToLocal routine
       //  f_operation is one of:
       //   fo_moveAbs = 1;     // move to absolute location, coords are in global system
       //   fo_moveLocal = 2;   // move to location given, interpreted as local coords
       //   fo_moveRelHome = 3; // move to loc'n relative to home, coords = deltas relative to home position
-      float locX, locY, locZ; //
+      
       if (argN != 5)          // did we get command pls 5 arguments?
       {                       // ignore command altogether
          sp1l("******* MOVE_LEG command didn't have 5 additional arguments");
@@ -467,12 +471,12 @@ bool processCmd(String payload)
             // now convert final global coords to local coords we can feed to servos
             sp1l("--final local coords including offsets--");
 
-            globCoordsToLocal(argLeg, f_tmpX, f_tmpY, f_tmpZ, &locX, &locY, &locZ);
+ //           globCoordsToLocal(argLeg, f_tmpX, f_tmpY, f_tmpZ, &locX, &locY, &locZ);
             //          sp2s(locX,locY); sp2l(" ",locZ);
          }
          else if (argOp == fo_moveAbs)
          { // we were given absolute coords, and just need to convert to local coords
-            globCoordsToLocal(argLeg, argX, argY, argZ, &locX, &locY, &locZ);
+ //           globCoordsToLocal(argLeg, argX, argY, argZ, &locX, &locY, &locZ);
          }
          else if (argOp == fo_moveLocal)
          { // we were given local coords, just copy and use them directy
@@ -518,7 +522,7 @@ bool processCmd(String payload)
          }
       } // else
    }    // if cmd = "MOVE_LEG"
-
+*/
    // declare variables for upcoming servo test commands
    int sr_deg, sr_pwm, sr_srv, sr_srv2;
    bool sr_OK;

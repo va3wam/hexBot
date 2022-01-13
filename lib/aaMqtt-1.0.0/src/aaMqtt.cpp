@@ -255,7 +255,7 @@ void aaMqtt::onMqttMessage(char *topic, char *payload, AsyncMqttClientMessagePro
    String tmp = String(payload).substring(0, len);
    Serial.print("<onMqttMessage> Message to process = ");
    Serial.println(tmp);
-   char msg[90]; // Used to hold message converted from const. // was 30
+   char msg[120]; // Used to hold message converted from const. // was 30
    strcpy(msg, tmp.c_str()); // Convert const char* to char*;
    Serial.print("<onMqttMessage> msg = ");
    Serial.println(msg);

@@ -110,8 +110,8 @@ int f_nextTime = 0;              // millis timestamp for next frame movement to 
 float f_angH, f_angK, f_angA ;   // temp variables to hold servo angles
 int L;                           // leg number use as a loop index in many places
 float safeMaxPosX = 6;             // max allowed displacement on local axes from home position
-float safeMaxNegX = 6;             // ..checking is done after local coords are calculated in PrepNextLine()
-float safeMaxPosY = 15;             // can argue that this should be per leg. Front legs have more room?
+float safeMaxNegX = 8;             // ..checking is done after local coords are calculated in PrepNextLine()
+float safeMaxPosY = 17;             // can argue that this should be per leg. Front legs have more room?
 float safeMaxNegY = 6;
 float safeMaxPosZ = 6;
 float safeMaxNegZ = 6;
@@ -125,6 +125,13 @@ int toeMoveAction = 8;           // binary coded action to take when you calcula
 // fa_disGlobal  = 16;           // display the global coordinates of toe position <too hard to do, frames are in local coords
 
 const float pi = 3.1415926 ;
+
+   // hexbot body measurements
+   const float BT = 2.915 ;   // thigh length (between hip and knee, horizontally)
+   const float BS = 7.620 ;   // shin length (between knee and ankle)
+   const float BF = 11.059;   // foot length (diagonal between ankle and toe)
+   const float BTOA = 17.063; // toe offset angle = angle between ankle servo vertical, and toe, in degrees
+   const float BTOD = 3.245;  // toe offset distance. perpendicular distance from toe to ankle servo vertical line
 
 // coordinate system memory menmonic:
 // if direction dude is riding the bot like a bronco, 
