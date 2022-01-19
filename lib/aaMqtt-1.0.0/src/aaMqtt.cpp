@@ -62,7 +62,8 @@ const char* TOP_OF_TREE = "agingApprentice/"; // Define top of MQTT topic tree.
 const char* HEALTH_MQTT_TOPIC = "/health"; // Define MQTT health topic.
 const char* HELP_MQTT_TOPIC = "/help"; // Define MQTT health topic.
 const char* CHECKIN_MQTT_TOPIC = "checkin"; // Define MQTT health topic.
- 
+extern const int MAX_MQTT_BUF_SIZE = 200;   // maximum size for MQTT messages
+
 /**
  * @class Write variables to flash memory.
  ============================================================================*/
@@ -255,7 +256,7 @@ void aaMqtt::onMqttMessage(char *topic, char *payload, AsyncMqttClientMessagePro
    String tmp = String(payload).substring(0, len);
    Serial.print("<onMqttMessage> Message to process = ");
    Serial.println(tmp);
-   char msg[120]; // Used to hold message converted from const. // was 30
+   char msg [MAX_MQTT_BUF_SIZE]; // Used to hold message converted from const. // was 30
    strcpy(msg, tmp.c_str()); // Convert const char* to char*;
    Serial.print("<onMqttMessage> msg = ");
    Serial.println(msg);
