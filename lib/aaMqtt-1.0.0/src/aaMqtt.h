@@ -23,6 +23,7 @@ extern const char* TOP_OF_TREE; // Declare top of MQTT topic tree.
 extern const char* HEALTH_MQTT_TOPIC; // Declare MQTT health topic.
 extern const char* HELP_MQTT_TOPIC; // Declare MQTT help topic.
 extern const char* CHECKIN_MQTT_TOPIC; // Declare MQTT health topic.
+extern const int MAX_MQTT_BUF_SIZE;   // maximum size for MQTT messages
 
 /************************************************************************************
  * @class Read/write to/from flash RAM.

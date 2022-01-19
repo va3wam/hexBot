@@ -114,7 +114,7 @@ float safeMaxNegX = 8;             // ..checking is done after local coords are 
 float safeMaxPosY = 17;             // can argue that this should be per leg. Front legs have more room?
 float safeMaxNegY = 6;
 float safeMaxPosZ = 6;
-float safeMaxNegZ = 6;
+float safeMaxNegZ = 8;           // raised for rotation script
 
 int toeMoveAction = 8;           // binary coded action to take when you calculated next toe position (frame) in do_flow()
                                  // persists, but defaults to display local coords, set up in FLOW_GO MQTT command

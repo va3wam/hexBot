@@ -241,6 +241,8 @@ void do_flow()          // called from loop if there's a flow executing that nee
    float t_angK, t_angA, t_angH; // temp angles used in PWM calculations for oppositely mounted servos
    if(f_active == 0)             // starting a new flow, so need to do some setup
    {
+      sp1l(" start of flow row # 0");
+
 //      sp1l("--initial flow toe numbers--");
 //      for(L=1; L<=6; L++)     // copy flow coords from flow row [0] into  working vectors
 //      {  sp2s(f_legX[0][L],f_legY[0][L]); sp2l(" ",f_legZ[0][L]);
@@ -278,7 +280,7 @@ void do_flow()          // called from loop if there's a flow executing that nee
                t_angA = -1 * t_angA;
             }  // if L>=4
 
-            sp1l(" start of flow row # 1");
+
             // starting with the hip...
 //            int legstart = micros();  // timestamp start of leg movement
             pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L],  pwmClkStart, mapDegToPWM(t_angH,0));
@@ -314,6 +316,7 @@ void do_flow()          // called from loop if there's a flow executing that nee
          } // if f_count > 1
          else  // if f_count > 1. else case  means only initial position was given in flow
          {  f_flowing = false;      // stop flow processing
+            sp1l(" end of single row flow processing");
          }
       }  // if(goodData)
       else   // f_goodData was false - abort flow
@@ -415,6 +418,7 @@ sp2sl(" start of flow row #",f_active);
             {
                f_flowing = false;               // stop flow processing triggered from loop()
                f_nextTime=0;                    // kill any 20 ms processing
+               sp1l(" end of multi row flow processing");
             }
          } // if(f_frame > f_framesPerPosn) 
       }   // if millis > f_nextTime
@@ -507,9 +511,9 @@ bool prepNextLine()
          if(f_endLegX[L] - f_localHomeX > safeMaxPosX){ badLegs = badLegs + legNum[L] + "XP ";sp3sl("XP",f_localHomeX,f_endLegX[L]);}
          if(f_localHomeX - f_endLegX[L] > safeMaxNegX){ badLegs = badLegs + legNum[L] + "XN ";sp3sl("XN",f_localHomeX,f_endLegX[L]);}
          if(f_endLegY[L] - f_localHomeY > safeMaxPosY){ badLegs = badLegs + legNum[L] + "YP ";sp3sl("YP",f_localHomeY,f_endLegY[L]);}
-         if(f_localHomeY - f_endLegY[L] > safeMaxPosY){ badLegs = badLegs + legNum[L] + "YN ";sp3sl("YN",f_localHomeY,f_endLegY[L]);}
+         if(f_localHomeY - f_endLegY[L] > safeMaxNegY){ badLegs = badLegs + legNum[L] + "YN ";sp3sl("YN",f_localHomeY,f_endLegY[L]);}
          if(f_endLegZ[L] - f_localHomeZ > safeMaxPosZ){ badLegs = badLegs + legNum[L] + "ZP ";sp3sl("ZP",f_localHomeZ,f_endLegZ[L]);}
-         if(f_localHomeZ - f_endLegZ[L] > safeMaxPosZ){ badLegs = badLegs + legNum[L] + "ZN ";sp3sl("ZN",f_localHomeZ,f_endLegZ[L]);}
+         if(f_localHomeZ - f_endLegZ[L] > safeMaxNegZ){ badLegs = badLegs + legNum[L] + "ZN ";sp3sl("ZN",f_localHomeZ,f_endLegZ[L]);}
       }  // for L=1...
       if(badLegs != "")             // if any safety violation ocurred..
       {  f_goodData = false;        // abort further processing of the flow row
