@@ -45,7 +45,7 @@
 //
 // These are the arrays that contain the flow currently being executed
 
-#define flowLength  100          // maximum number of positions in a flow
+#define flowLength  200          // maximum number of positions in a flow
 //  -----------------------------// start of flow row arraysq
 int f_msecs[flowLength];         // time duration in milliseconds for movement to this location
 
@@ -148,9 +148,9 @@ const float pi = 3.1415926 ;
 
 
 // home position of each leg, using global coords
-float f_homeX[7] ;         // X coord in global coords, for each of 6 legs
-float f_homeY[7] ;         //  initialized in setupFlows()
-float f_homeZ[7] ;
+float f_homeGlobX[7] ;         // X coord in global coords, for each of 6 legs
+float f_homeGlobY[7] ;         //  initialized in setupFlows()
+float f_homeGlobZ[7] ;
 
 float f_localHomeX = 13.78;   // home position in local coordinates
 float f_localHomeY = -10.60;  // (same for all legs)
@@ -188,6 +188,121 @@ void do_flow();
    float sin_m45 = -.707107;      // sin( - 45 degrees)
    float cos_p45 = +.707107;      // cos( + 45 degrees) 
    float cos_m45 = +.707107;     // cos( - 45 degrees)
+
+// quick and dirty easily typed debug commands
+#define sp1(_y) Serial.print(_y);
+//   #define sp1l(_a) Serial.println(_a);
+#define sp1l(_z) Serial.println(_z);
+#define sp1s(_b)     \
+   Serial.print(_b); \
+   Serial.print(" ");
+
+#define sp2(x, y)   \
+   Serial.print(x); \
+   Serial.print(y);
+
+#define sp2s(x, y)    \
+   Serial.print(x);   \
+   Serial.print(" "); \
+   Serial.print(y);   \
+   Serial.print(" ");
+
+#define sp2l(x, y)  \
+   Serial.print(x); \
+   Serial.println(y);
+
+#define sp2sl(x, y)   \
+   Serial.print(x);   \
+   Serial.print(" "); \
+   Serial.println(y);
+
+#define sp3s(a,b,c)   \
+   Serial.print(a);   \
+   Serial.print(" "); \
+   Serial.print(b);   \
+   Serial.print(" "); \
+   Serial.print(c);   \
+   Serial.print(" ");
+
+#define sp3sl(a,b,c)  \
+   Serial.print(a);   \
+   Serial.print(" "); \
+   Serial.print(b);   \
+   Serial.print(" "); \
+   Serial.println(c);
+
+#define sp4s(a,b,c,d)   \
+   Serial.print(a);   \
+   Serial.print(" "); \
+   Serial.print(b);   \
+   Serial.print(" "); \
+   Serial.print(c);   \
+   Serial.print(" "); \
+   Serial.print(d);   \
+   Serial.print(" ");
+
+#define sp4sl(a,b,c,d)   \
+   Serial.print(a);   \
+   Serial.print(" "); \
+   Serial.print(b);   \
+   Serial.print(" "); \
+   Serial.print(c);   \
+   Serial.print(" "); \
+   Serial.println(d);
+
+#define sp5s(a,b,c,d,e)   \
+   Serial.print(a);   \
+   Serial.print(" "); \
+   Serial.print(b);   \
+   Serial.print(" "); \
+   Serial.print(c);   \
+   Serial.print(" "); \
+   Serial.print(d);   \
+   Serial.print(" "); \
+   Serial.print(e);   \
+   Serial.print(" ");
+
+#define sp5sl(a,b,c,d,e)   \
+   Serial.print(a);   \
+   Serial.print(" "); \
+   Serial.print(b);   \
+   Serial.print(" "); \
+   Serial.print(c);   \
+   Serial.print(" "); \
+   Serial.print(d);   \
+   Serial.print(" "); \
+   Serial.println(e);
+
+#define sp6s(a,b,c,d,e,f)   \
+   Serial.print(a);   \
+   Serial.print(" "); \
+   Serial.print(b);   \
+   Serial.print(" "); \
+   Serial.print(c);   \
+   Serial.print(" "); \
+   Serial.print(d);   \
+   Serial.print(" "); \
+   Serial.print(e);   \
+   Serial.print(" "); \
+   Serial.print(f);   \
+   Serial.print(" ");
+
+#define sp6sl(a,b,c,d,e,f)   \
+   Serial.print(a);   \
+   Serial.print(" "); \
+   Serial.print(b);   \
+   Serial.print(" "); \
+   Serial.print(c);   \
+   Serial.print(" "); \
+   Serial.print(d);   \
+   Serial.print(" "); \
+   Serial.print(e);   \
+   Serial.print(" "); \
+   Serial.println(f);
+
+#define sp Serial.print(" ");
+#define nl Serial.println();
+
 
 // routine call templates
 bool prepNextLine();   

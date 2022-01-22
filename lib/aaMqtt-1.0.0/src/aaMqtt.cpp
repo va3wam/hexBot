@@ -236,6 +236,7 @@ void aaMqtt::publishEvent(int evtId, int evtSev, String evtMsg)
  =============================================================================*/
 void aaMqtt::onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total)
 {
+   #ifdef mqttVerbose
    Serial.println("<onMqttMessage> Received message.");
    Serial.print("<onMqttMessage>  topic: ");
    Serial.println(topic);
@@ -253,13 +254,18 @@ void aaMqtt::onMqttMessage(char *topic, char *payload, AsyncMqttClientMessagePro
    Serial.println(total);
    Serial.print("<onMqttMessage>  payload: ");
    Serial.println(payload);
+   #endif
    String tmp = String(payload).substring(0, len);
+   #ifdef mqttVerbose
    Serial.print("<onMqttMessage> Message to process = ");
    Serial.println(tmp);
+   #endif
    char msg [MAX_MQTT_BUF_SIZE]; // Used to hold message converted from const. // was 30
    strcpy(msg, tmp.c_str()); // Convert const char* to char*;
+   #ifdef mqttVerbose
    Serial.print("<onMqttMessage> msg = ");
    Serial.println(msg);
+   #endif
    cmdQueue.push(msg); // Push message onto FIFO buffer stack.
    // cmdQueue.dumpBuffer();
 } // aaMqtt::onMqttMessage()
@@ -280,10 +286,12 @@ String aaMqtt::getCmd()
       int strSize = cmdQueue.getCmdMaxLength();    // Int allows buffer sizes over 256
       char str[strSize];
       cmdQueue.pop(str);
+      #ifdef mqttVerbose
       Serial.print("<aaMqtt::getCmd> Size of string = ");
       Serial.println(strSize);
       Serial.print("<aaMqtt::getCmd> Command pulled from buffer = ");
       Serial.println(String(str));
+      #endif
       return String(str);
    } // else
 } // aaMqtt::getCmd()

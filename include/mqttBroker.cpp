@@ -8,44 +8,6 @@
 
 #include <main.h> // Header file for all libraries needed by this program.
 
-// quick and dirty easily typed debug commands
-#define sp1(_y) Serial.print(_y);
-//   #define sp1l(_a) Serial.println(_a);
-#define sp1l(_z) Serial.println(_z);
-#define sp1s(_b)     \
-   Serial.print(_b); \
-   Serial.print(" ");
-#define sp2(x, y)   \
-   Serial.print(x); \
-   Serial.print(y);
-#define sp2s(x, y)    \
-   Serial.print(x);   \
-   Serial.print(" "); \
-   Serial.print(y);   \
-   Serial.print(" ");
-#define sp2l(x, y)  \
-   Serial.print(x); \
-   Serial.println(y);
-#define sp2sl(x, y)   \
-   Serial.print(x);   \
-   Serial.print(" "); \
-   Serial.println(y);
-#define sp3s(a,b,c)   \
-   Serial.print(a);   \
-   Serial.print(" "); \
-   Serial.print(b);   \
-   Serial.print(" "); \
-   Serial.print(c);   \
-   Serial.print(" ");
-#define sp3sl(a,b,c)   \
-   Serial.print(a);   \
-   Serial.print(" "); \
-   Serial.print(b);   \
-   Serial.print(" "); \
-   Serial.println(c);   \
-
-#define sp Serial.print(" ");
-#define nl Serial.println();
 
 // TODO #7 : A pingable but non MQTT IP address crash loops code.
 /** 
@@ -184,7 +146,7 @@ bool checkNumArg(int8_t numArgumentsRequired, int argN, String *arg)
  * =================================================================================*/
 bool processCmd(String payload)
 {
-   Serial.println("<processCmd>");
+   // Serial.println("<processCmd>");
    aaFormat format;
    String ucPayload = format.stringToUpper(payload);
    const int8_t maxArg = 30;                      // Allow 1 cmd and up to 29 args in an MQTT message.
