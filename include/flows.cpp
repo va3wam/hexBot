@@ -25,12 +25,12 @@ void setupFlows()
    legIndexHipPin[6] = 6;
 
 // global coords for each leg's home position
-   f_homeX[1] =  18.62 ; f_homeY[1] = -14.79 ; f_homeZ[1] = -10.60 ; 
-   f_homeX[2] =   0    ; f_homeY[2] = -20.71 ; f_homeZ[2] = -10.60 ;
-   f_homeX[3] = -18.62 ; f_homeY[3] = -14.79 ; f_homeZ[3] = -10.60 ;
-   f_homeX[4] =  18.62 ; f_homeY[4] =  14.79 ; f_homeZ[4] = -10.60 ;
-   f_homeX[5] =   0    ; f_homeY[5] =  20.71 ; f_homeZ[5] = -10.60 ;
-   f_homeX[6] = -18.62 ; f_homeY[6] =  14.79 ; f_homeZ[6] = -10.60 ;
+   f_homeGlobX[1] =  18.62 ; f_homeGlobY[1] = -14.79 ; f_homeGlobZ[1] = -10.60 ; 
+   f_homeGlobX[2] =   0    ; f_homeGlobY[2] = -20.71 ; f_homeGlobZ[2] = -10.60 ;
+   f_homeGlobX[3] = -18.62 ; f_homeGlobY[3] = -14.79 ; f_homeGlobZ[3] = -10.60 ;
+   f_homeGlobX[4] =  18.62 ; f_homeGlobY[4] =  14.79 ; f_homeGlobZ[4] = -10.60 ;
+   f_homeGlobX[5] =   0    ; f_homeGlobY[5] =  20.71 ; f_homeGlobZ[5] = -10.60 ;
+   f_homeGlobX[6] = -18.62 ; f_homeGlobY[6] =  14.79 ; f_homeGlobZ[6] = -10.60 ;
 
 // global coords for each leg's hip position
    f_hipX[1] = 8.87;  f_hipY[1] = -5.05;     
@@ -210,20 +210,21 @@ bool globCoordsToLocal(int legNumber, float gx, float gy, float gz)
         Xrt = cos_p45 * (gx - fp_frontHipX) - sin_p45 * (gy - fp_frontHipY);  // rotated (Xg,Yg)
         Yrt = sin_p45 * (gx - fp_frontHipX) + cos_p45 * (gy - fp_frontHipY);
         f_endLegX[legNumber] = Yrt;
-        f_endLegZ[legNumber] = Xrt * -1.;         
+        f_endLegZ[legNumber] = Xrt;         
         break;
       case 5:
         // Middle Left leg
         f_endLegX[L] = gy - fp_sideHipY;
-        f_endLegZ[L] = gx * -1.;
+//        f_endLegZ[L] = gx * -1.;
+        f_endLegZ[L] = gx ;
         break;
       case 6:
         // Back Left leg
-        Xrt = cos_m45 * (gx + fp_frontHipX) - sin_m45 * (gy - fp_frontHipY);  // rotated (Xg,Yg)
-        Yrt = sin_m45 * (gx + fp_frontHipX) + cos_m45 * (gy - fp_frontHipY);
+        Xrt = cos_m45 * (gx - (-fp_frontHipX)) - sin_m45 * (gy - fp_frontHipY);  // rotated (Xg,Yg)
+        Yrt = sin_m45 * (gx - (-fp_frontHipX)) + cos_m45 * (gy - fp_frontHipY);
 //sp2s("---Xrt, Yrt: ",Xrt); sp; sp1l(Yrt);
         f_endLegX[L] = Yrt;
-        f_endLegZ[L] = Xrt * -1.;        
+        f_endLegZ[L] = Xrt;        
         break;
       default:
         return false;
@@ -394,11 +395,11 @@ void do_flow()          // called from loop if there's a flow executing that nee
          {  nl;                              // then output the final new line
          }
          f_frame ++  ;                          // advance to next frame within the flow row
-//sp2l("=== new frame ",f_frame);
+sp2l("=== new frame ",f_frame);
          if(f_frame > f_framesPerPosn)          // did we run out of frames?
          {  // yup - we must be sitting at end position of the line, otherwise wait for next 20 msec
             f_active = f_active + 1 ;                       // advance to next flow row
-//sp2l("=== new f_active ",f_active);
+sp2l("=== new f_active ",f_active);
             if(f_active < f_count)              // have we run out of flow rows to do?
             {
 sp2sl(" start of flow row #",f_active);               
@@ -465,9 +466,9 @@ bool prepNextLine()
    if(f_operation[f_active] == fo_moveGRelHome || f_operation[f_active] == fo_startRelHome)
    {  // we were given offsets relative to home position, expressed in GLOBAL coords, so add in home coords
       for(L=1; L<=6; L++)  // add offset to home's global coord, to get final global coord
-      {  f_tmpX = f_legX[f_active][L] + f_homeX[L];   
-         f_tmpY = f_legY[f_active][L] + f_homeY[L];
-         f_tmpZ = f_legZ[f_active][L] + f_homeZ[L];
+      {  f_tmpX = f_legX[f_active][L] + f_homeGlobX[L];   
+         f_tmpY = f_legY[f_active][L] + f_homeGlobY[L];
+         f_tmpZ = f_legZ[f_active][L] + f_homeGlobZ[L];
          // then convert global coords to local coords
          globCoordsToLocal(L,f_tmpX,f_tmpY,f_tmpZ);   // local coords returned in f_endLegX[L],...
       }
@@ -533,6 +534,6 @@ bool prepNextLine()
          } //for L=1...
       }  // else if f_active != 0
    } // if f_goodData
-   return f_goodData;            // return, tellling called if we ran into problems
+   return f_goodData;            // return, telling caller if we ran into problems
 
 }                     
