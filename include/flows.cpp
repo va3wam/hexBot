@@ -140,26 +140,21 @@ void coordsToAngles(float Tx, float Ty, float Tz)
    // now reduce to a 2D problem by rotating leg into xy plane (around y axis)
    Ux = Tx * cos(radians(- f_angH)) - Tz * sin(radians(- f_angH));
    Uy = Ty; // the rotation doesn't change the y value
- //sp3sl("Ux,Uy= ",Ux,Uy);  
    // documentation explains the use of 2 coefficients to simplify the algebra
    C1 = BS * BS - BF * BF + Ux * Ux + Uy * Uy - BT * BT ;
    C2 = 2 * BT - 2 * Ux ;
-//sp3sl("C1,C2= ",C1,C2);
    // the equations of 2 intersecting circles reduces to a quadratic equation for Ax
    // calculate the quadratic coefficients for A*x^2 + B*x +c = 0
    QA = 1 + (C2 * C2) / (4 * Uy * Uy) ;
    QB = (-2 * BT) + (2 * C1 * C2) / (4 * Uy * Uy);
    QC = BT * BT + (C1 * C1) / (4 * Uy * Uy) - BS * BS;
-//sp3s("QA, QB, QC = ",QA,QB);sp1l(QC);
    // The x quadratic solution is the ankle's x coordinate, and will be referred to as Ax
    // We'll optimistically use the plus case choice for the "plus or minus" in the quadratic solution...
    //   x = (-B +/- SQRT( B*B - 4 * A * C) / (2 * A)
    DET = round(( QB * QB - 4 * QA * QC) * 10000) / 10000 ;  //if roundoff error causes a tiny -Ve #, SQRT barfs
-//sp2sl("determinant= ",DET);
    if(DET < 0) {Log.noticeln("=== negative determinant in coordsToAngles === %d", DET) ; };
    Ax = ( -QB + sqrt( DET)) / (2 * QA) ;
    Ay = (BS*BS - BF*BF + Ux*Ux + Uy*Uy - BT*BT + Ax*(2*BT - 2*Ux)) / (2*Uy) ; // derived by substituting x in earlier equation
-//sp3sl("Ax,Ay= ",Ax,Ay);
    // maybe do some sanity checks to see if we should be using the minus case in the quadratic slution
        //    if(f_AyMinus > f_AyPlus && f_AxMinus >= origXOffset)
        //    if that puts x to the -ve side of knee, where ankle can't go, pick the other case
@@ -215,14 +210,12 @@ bool globCoordsToLocal(int legNumber, float gx, float gy, float gz)
       case 5:
         // Middle Left leg
         f_endLegX[L] = gy - fp_sideHipY;
-//        f_endLegZ[L] = gx * -1.;
         f_endLegZ[L] = gx ;
         break;
       case 6:
         // Back Left leg
         Xrt = cos_m45 * (gx - (-fp_frontHipX)) - sin_m45 * (gy - fp_frontHipY);  // rotated (Xg,Yg)
         Yrt = sin_m45 * (gx - (-fp_frontHipX)) + cos_m45 * (gy - fp_frontHipY);
-//sp2s("---Xrt, Yrt: ",Xrt); sp; sp1l(Yrt);
         f_endLegX[L] = Yrt;
         f_endLegZ[L] = Xrt;        
         break;
@@ -244,12 +237,8 @@ void do_flow()          // called from loop if there's a flow executing that nee
    {
       sp1l(" start of flow row # 0");
 
-//      sp1l("--initial flow toe numbers--");
-//      for(L=1; L<=6; L++)     // copy flow coords from flow row [0] into  working vectors
-//      {  sp2s(f_legX[0][L],f_legY[0][L]); sp2l(" ",f_legZ[0][L]);
-//      }
       // we need local coords to be able to give commands to servos
-      // the operation code in f_operation[f_active] tells us what king of coords we were given
+      // the operation code in f_operation[f_active] tells us what kind of coords we were given
       f_goodData = true;               // assume thing will go well, & f_operation is valid
       prepNextLine();         // get local coords of position in active flow row in f_endlegX[L], Y, Z
 
@@ -313,7 +302,6 @@ void do_flow()          // called from loop if there's a flow executing that nee
             f_frame = 1 ;           // initialize frame counter
             f_framesPerPosn = int((f_msecs[1] / f_msecPerFrame) + .5);  // rounded count of how many frames fit in time)
             sp1l(" start of flow row # 1");
-//sp3sl("initial msecPerFrame,framesPerPosn",f_msecPerFrame,f_framesPerPosn);
          } // if f_count > 1
          else  // if f_count > 1. else case  means only initial position was given in flow
          {  f_flowing = false;      // stop flow processing
@@ -334,11 +322,8 @@ void do_flow()          // called from loop if there's a flow executing that nee
    else if( f_active > 0)
    {  if(millis() >= f_nextTime)          // did we get to next 20 msec frame time?
       {                                   // we did hit 20 ms mark - time to move servos
-//sp2l("===f_active ",f_active);
                                           // (otherwise exit immediately & wait)
-//sp3sl("active,frame= ",f_active,f_frame);                                          
          f_nextTime = millis() + f_msecPerFrame;    // yup, quickly reset for next 20 msec interval
-//sp2("=== working frame= ",f_frame); sp2("   fPrPosn= ",f_framesPerPosn);
          for(int l_base=1;l_base<=3;l_base++)   // use alternate sides for leg movements, resting PWM drivers
          {  for(L=l_base;L<=l_base+3;L=L+3)     // i.e. 1, 4, 2, 5, 3, 6         
             {                                   // use frame count to figure next frame position
@@ -395,15 +380,13 @@ void do_flow()          // called from loop if there's a flow executing that nee
          {  nl;                              // then output the final new line
          }
          f_frame ++  ;                          // advance to next frame within the flow row
-sp2l("=== new frame ",f_frame);
          if(f_frame > f_framesPerPosn)          // did we run out of frames?
          {  // yup - we must be sitting at end position of the line, otherwise wait for next 20 msec
             f_active = f_active + 1 ;                       // advance to next flow row
-sp2l("=== new f_active ",f_active);
             if(f_active < f_count)              // have we run out of flow rows to do?
             {
-sp2sl(" start of flow row #",f_active);               
-              for(L=1; L<=6; L++)              // no, remember end of last line as start of next one
+               sp2sl(" start of flow row #",f_active);               
+               for(L=1; L<=6; L++)              // no, remember end of last line as start of next one
                {  f_lastLegX[L] = f_endLegX[L];
                   f_lastLegY[L] = f_endLegY[L];
                   f_lastLegZ[L] = f_endLegZ[L];
