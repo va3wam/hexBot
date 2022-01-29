@@ -287,12 +287,14 @@ bool processCmd(String payload)
    //
    // flow command format
    // FL,msec,operation,lShape1,lS2,lS3,lS4, L1X,L1Y,L1Z, L2X,L2Y,L2Z, L3X,L3Y,L3Z, L4X,L4Y,L4Z, L5X,L5Y,L5Z, L6X,L6Y,L6Z
-   //
-   // example: // move all toes to to 1 cm above home position, i.e. slightly squatting from neutral
+     // example: // move all toes to to 1 cm above home position, i.e. slightly squatting from neutral
    // FL,1000,2,10,0,0,0, 0,0,1, 0,0,1, 0,0,1, 0,0,1, 0,0,1, 0,0,1
-   //
    // action: - save given data into next position in the flow arrays, to be part of the motion initiated by flow_go command
-
+   //
+   // some specialized commands (cycleStart, cycleEnd, executeCycle) don't use the last 18 numbers, and are in the form
+   // FL,msec,operation, param1-int, param2-float, param3-float, param4-float
+   // example: FL, 0, 9, 7
+   // action: note that the next flow command is he start of cycle number 7
    {
    //   Serial.println("start processing flow command");
 
@@ -306,29 +308,32 @@ bool processCmd(String payload)
       f_lShape3[f_count] = arg[5].toFloat(); // more line parameters
       f_lShape4[f_count] = arg[6].toFloat();
 
-      f_legX[f_count][1] = arg[7].toFloat(); // X coordinate or delta value for leg 1
-      f_legY[f_count][1] = arg[8].toFloat(); // Y coordinate or delta value for leg 1
-      f_legZ[f_count][1] = arg[9].toFloat(); // Z coordinate or delta value for leg 1
+      if(argN > 6)   // if more comma separated values were given, move them into the flow row
+      {
+         f_legX[f_count][1] = arg[7].toFloat(); // X coordinate or delta value for leg 1
+         f_legY[f_count][1] = arg[8].toFloat(); // Y coordinate or delta value for leg 1
+         f_legZ[f_count][1] = arg[9].toFloat(); // Z coordinate or delta value for leg 1
 
-      f_legX[f_count][2] = arg[10].toFloat(); // X coordinate or delta value for leg 2
-      f_legY[f_count][2] = arg[11].toFloat(); // Y coordinate or delta value for leg 2
-      f_legZ[f_count][2] = arg[12].toFloat(); // Z coordinate or delta value for leg 2
+         f_legX[f_count][2] = arg[10].toFloat(); // X c}oordinate or delta value for leg 2
+         f_legY[f_count][2] = arg[11].toFloat(); // Y coordinate or delta value for leg 2
+         f_legZ[f_count][2] = arg[12].toFloat(); // Z coordinate or delta value for leg 2
 
-      f_legX[f_count][3] = arg[13].toFloat(); // X coordinate or delta value for leg 3
-      f_legY[f_count][3] = arg[14].toFloat(); // Y coordinate or delta value for leg 3
-      f_legZ[f_count][3] = arg[15].toFloat(); // Z coordinate or delta value for leg 3
+         f_legX[f_count][3] = arg[13].toFloat(); // X coordinate or delta value for leg 3
+         f_legY[f_count][3] = arg[14].toFloat(); // Y coordinate or delta value for leg 3
+         f_legZ[f_count][3] = arg[15].toFloat(); // Z coordinate or delta value for leg 3
 
-      f_legX[f_count][4] = arg[16].toFloat(); // X coordinate or delta value for leg 4
-      f_legY[f_count][4] = arg[17].toFloat(); // Y coordinate or delta value for leg 4
-      f_legZ[f_count][4] = arg[18].toFloat(); // Z coordinate or delta value for leg 4
+         f_legX[f_count][4] = arg[16].toFloat(); // X coordinate or delta value for leg 4
+         f_legY[f_count][4] = arg[17].toFloat(); // Y coordinate or delta value for leg 4
+         f_legZ[f_count][4] = arg[18].toFloat(); // Z coordinate or delta value for leg 4
 
-      f_legX[f_count][5] = arg[19].toFloat(); // X coordinate or delta value for leg 5
-      f_legY[f_count][5] = arg[20].toFloat(); // Y coordinate or delta value for leg 5
-      f_legZ[f_count][5] = arg[21].toFloat(); // Z coordinate or delta value for leg 5
+         f_legX[f_count][5] = arg[19].toFloat(); // X coordinate or delta value for leg 5
+         f_legY[f_count][5] = arg[20].toFloat(); // Y coordinate or delta value for leg 5
+         f_legZ[f_count][5] = arg[21].toFloat(); // Z coordinate or delta value for leg 5
 
-      f_legX[f_count][6] = arg[22].toFloat(); // X coordinate or delta value for leg 6
-      f_legY[f_count][6] = arg[23].toFloat(); // Y coordinate or delta value for leg 6
-      f_legZ[f_count][6] = arg[24].toFloat(); // Z coordinate or delta value for leg 6
+         f_legX[f_count][6] = arg[22].toFloat(); // X coordinate or delta value for leg 6
+         f_legY[f_count][6] = arg[23].toFloat(); // Y coordinate or delta value for leg 6
+         f_legZ[f_count][6] = arg[24].toFloat(); // Z coordinate or delta value for leg 6
+      }  // if(argN > 6) 
 
       f_count++; // advance to next entry in flow arrays
                  // f_count now contains the number of flow rows that have been defined
