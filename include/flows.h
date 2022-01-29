@@ -59,9 +59,9 @@ int f_operation[flowLength];     // type of operation specified for this positio
    const int fo_startAbs = 6;    // start of flow - go directly to an absolute location
    const int fo_startRelHome=7;  // start of flow - go directly to a position relative to home position
    const int fo_startPrev = 8;   // start flow, treating end of last flow as previous position
-   const int fo_cycleByCount=9;  // repeat this flow for number of cycles in LineShape1
-   const int fo_cycleByTime =10;  // repeat this flow for number of milleseconds in LineShape1
-   const int fo_markCycle = 11;  // next repeatable cycle starts at row after this one
+   const int fo_markCycleStart=9;  // note this flow row number as the beginning of a numbered cycle within the flow
+   const int fo_markCycleEnd =10;  // note this flow row number as the end of a numbered cycle within the flow
+   const int fo_doCycle = 11;  // execute the specified cycle for the specified number of iterations.
 
 int f_lShape1[flowLength];    // description of type of line to follow between last position and this one
    const int fl_straight = 10;   // straight line
@@ -97,11 +97,17 @@ float f_lastAngH[7];             // remember last angle for each servo so you ca
 float f_lastAngK[7];
 float f_lastAngA[7];
 
+int f_cycleStart[10];         // starting flow row number for each of 10 repeatable cycles
+int f_cycleEnd[10];           // ending flow row number for each of 10 repeatable cycles
+bool f_cycling;               // true iff we're executing a repeating cycle
+int f_cyclesLeft;             // counter for repeatable cycles
+int f_resumeRow;              // flow row number to resume at after a repeatable cycle is completed
+
 
 int f_count = 0;                 // counter as we process FLOW commands, accumulating flow rows, ends up as row count
 int f_active = 0;                // what row number we're executing, after a FLOW_GO command
 bool f_flowing = false;          // set to true if we're executing a fow
-int f_frame = 0;                     // what frame number we're on within a flow row
+int f_frame = 0;                 // what frame number we're working on within a flow row
 int f_msecPerFrame = 50;         // time slice length in msec for movement between positions
 int f_msecPerFrameDefault = 50;  // unless specified in the FLOW_GO command, do 20 msec time slices
 int f_framesPerPosn = 0;         // how many intermediary moves per flow row
@@ -111,7 +117,7 @@ float f_angH, f_angK, f_angA ;   // temp variables to hold servo angles
 int L;                           // leg number use as a loop index in many places
 float safeMaxPosX = 6;             // max allowed displacement on local axes from home position
 float safeMaxNegX = 8;             // ..checking is done after local coords are calculated in PrepNextLine()
-float safeMaxPosY = 17;             // can argue that this should be per leg. Front legs have more room?
+float safeMaxPosY = 17;            // ..can argue that safety limits should be per leg. Front legs have more room?
 float safeMaxNegY = 6;
 float safeMaxPosZ = 6;
 float safeMaxNegZ = 8;           // raised for rotation script
@@ -305,5 +311,6 @@ void do_flow();
 
 
 // routine call templates
-bool prepNextLine();   
+bool prepNextLine();
+bool prepNextLine1();   
 #endif // End of precompiler protected code block

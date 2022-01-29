@@ -417,7 +417,24 @@ void do_flow()          // called from loop if there's a flow executing that nee
 
 // ================================================================================
 
-bool prepNextLine()  
+bool prepNextLine() 
+
+{
+   bool cycleFlag = prepNextLine1() ;        // look at next line, which could be a cycle command
+   if(cycleFlag)  // it was a cycle command, so redo prepNextLine to get movement command
+   {  sp2sl(" start of flow-row #",f_active);  
+      cycleFlag = prepNextLine1();  // could have 2 cycle commands in a row: cycleEnd and doCycle
+      if(cycleFlag)
+      {  sp2sl(" start of flow-row #",f_active);
+         prepNextLine1();
+      }
+   }            // it was a cycle command. redo prepNextLine to get movement command
+   return true;
+}
+bool prepNextLine1()             // set up for toes movements according to next line in flow row
+
+{                             // return true if we saw a cycle command and still need to set up for movement
+                                 // return false if we saw a move command, and not a cycle command
 // prepare for next line that goes from position in last flow row to one in current flow row
 // which is identified by row number in f_active
 // actions, all taken for each leg:
@@ -432,12 +449,12 @@ bool prepNextLine()
 //          - translate servo angles to PWM integer values
 //          - feed the PWM values to the servers
 
-{  // initialize to start doing frame moves in the line between
+  // initialize to start doing frame moves in the line between
    // previous flow row's position: lastLegX[L], Y, Z
    // this flow row's (identified by f_active) position: f_legX[f_active][L], Y, Z
    // local coords of end point of line are left in f_endLegX[L], Y, Z
    // f_operation in flow row tells us what kind of numbers are given for each leg
-
+   int cycle;        // interna temp variable
    f_goodData = true;  // initially assume all will go well
    rgbLedClr ++; // Increment rgb colour to use next.
    if(rgbLedClr > numColoursSupported) // Never exceed known colour numbers
@@ -478,9 +495,56 @@ bool prepNextLine()
         f_endLegZ[L] = f_legZ[f_active][L];
       }
    }
+
+   else if(f_operation[f_active] == fo_markCycleStart )
+   {  // this flow row is a marker flagging the start of a repeatable cycle. param1 is the cycle #
+      cycle = f_lShape1[f_active];  // get cycle identifier from flow row
+      if(cycle < 0 || cycle > 10) { cycle = 0;}  // force out of bounds cycle # to a safe one
+      f_cycleStart[cycle] = f_active + 1;     // remember that this cycle starts at the next flow row
+      f_active ++ ;            // advance to flow row after the one with the markCycleStart operation code
+      return true;
+   }
+   else if(f_operation[f_active] == fo_markCycleEnd )
+   {  // this flow row is a marker flagging the end of a repeatable cycle. param1 is the cycle # 
+      cycle = f_lShape1[f_active];  // get cycle identifier from flow row
+      if(cycle < 0 || cycle > 10) { cycle = 0;}  // force out of bounds cycle # to a safe one
+      f_cycleEnd[cycle] = f_active - 1;     // remember that this cycle ends at the previous flow row
+      // not sure we need to track f_cycleEnd, since we run in to the end marker anyway.
+      if(!f_cycling)    // are we currently executing a repeating cycle?     
+      {   // if we're not in a cycle, we're just executing it once, & carrying on
+         f_active ++ ;                 // advance to flow row after the one with the markCycleStart operation code
+         return true;
+      }
+      else
+      {  // if we are cycling, then we've just completed one more repetition of the cycle
+         if(f_cyclesLeft-- > 0)        //decrement repetition counter & check it
+         {  // there are still more reps to do
+            f_active = f_cycleStart[cycle];     // we want to continue at the beginning of the cycle
+            return true;               // signal the need for another call to set up for next movements
+         }
+         else  // there weren't any reps left for repeated cycle
+         {  f_cycling = false;         //we're not running a cycle repetition anymore
+            f_active = f_resumeRow;    // continue just after the flow row that requested the cycle
+            return true;               // signal the need for another call to set up for next movements
+         } 
+      }
+      
+   }
+   else if (f_operation[f_active] == fo_doCycle)
+   {  //  the flow row is a marker telling robot to execute the repeatable cycle whose number is in param 1
+      cycle = f_lShape1[f_active];           // get cycle identifier from flow row
+      if(cycle < 0 || cycle > 10) { cycle = 0;}  // force out of bounds cycle # to a safe one
+      f_cyclesLeft = f_lShape2[f_active];    // second parameter is repetition count for the cycle
+      f_resumeRow = f_active + 1;            // what flow row to resume flow processing at after the repeated cycle is done
+      f_active = f_cycleStart[cycle];        // next flow row to execute is start of cycle
+      f_cycling = true;                      // note that we are in a repeating cycle.
+      return true;                           // have to recall ProcNextLine1 for new active flow row
+   }
+
    else
    {  // unsupported op code in nextfirst row - abort
       f_flowing = false;         // stop executing the flow
+      f_cycling = false;         // abort repeatable cycle, if we were in one
       f_goodData = false;        // bypass rest of do_flow processing
       // need to avoid falling into following code. use a flag for "good data seen" ?
    }
@@ -517,6 +581,6 @@ bool prepNextLine()
          } //for L=1...
       }  // else if f_active != 0
    } // if f_goodData
-   return f_goodData;            // return, telling caller if we ran into problems
+   return false;            // return, telling caller there's no need for an encore call due to cycle command
 
 }                     
