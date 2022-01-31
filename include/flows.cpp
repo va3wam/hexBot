@@ -225,6 +225,46 @@ bool globCoordsToLocal(int legNumber, float gx, float gy, float gz)
    return true;
 }
 
+void localCoordsToGlobal(int legNumber, float lx, float ly, float lz)
+{  // answers (global x,y,z) are returned in f_graphX, f_graphY, and f_graphZ
+   f_graphZ = ly;    //height off floor
+   switch (legNumber) 
+   {
+      case 1:
+        // Front Right leg
+        f_graphX = f_hipX[legNumber] + lx * cos_p45 + lz * cos_p45;
+        f_graphY = f_hipY[legNumber] - lx * cos_p45 + lz * cos_p45;
+        break;
+      case 2:
+        // Middle Right leg
+        f_graphX = f_hipX[legNumber] + lz;
+        f_graphY = f_hipY[legNumber] - lx;
+        break;
+      case 3:
+        // Back Right leg
+        f_graphX = f_hipX[legNumber] - lx * cos_p45 + lz * cos_p45;
+        f_graphY = f_hipY[legNumber] - lx * cos_p45 - lz * cos_p45;
+        break;
+      case 4:
+        // Front Left leg
+        f_graphX = f_hipX[legNumber] + lx * cos_p45 - lz * cos_p45;
+        f_graphY = f_hipY[legNumber] + lx * cos_p45 + lz * cos_p45;
+        break;
+      case 5:
+        // Middle Left leg
+        f_graphX = f_hipX[legNumber] - lz;
+        f_graphY = f_hipY[legNumber] + lx;
+        break;
+      case 6:
+        // Back Left leg
+        f_graphX = f_hipX[legNumber] - lx * cos_p45 - lz * cos_p45;
+        f_graphY = f_hipY[legNumber] + lx * cos_p45 - lz * cos_p45;
+        break;
+      default:
+        return;
+   }
+}
+
 // do_flow is enabled by the MQTT flow_go command, which sets f_flowing to true
 // f_flowing is checked in loop() and calls do_flow() on every loop, if it's enabled
 // f_active is initially zero, which initiates various setup activities on first do_flow entry
@@ -236,56 +276,73 @@ void do_flow()          // called from loop if there's a flow executing that nee
    if(f_active == 0)             // starting a new flow, so need to do some setup
    {
       sp1l(" start of flow row # 0");
-
-      // we need local coords to be able to give commands to servos
+// do conditional display of entire flow here, nicely formatted, with row numbering
+      if((toeMoveAction & fa_dispFlow) != 0)    // if requested in the FG command at the end of the script
+      {  // display the entire flow, nicely formatted, with row numbers
+         for(int r=0; r<f_count; r++)  // step through the flow rows
+         {  // most flow rows are long, except the ones that control repeated cycles which lack the 18 trailing numbers
+            if(f_operation[r] >= fo_markCycleStart && f_operation[r] <= fo_doCycle )   // if it's a short flow row...
+            {  printf("%02d)%4d %2d %2d %6.2f %6.2f %6.2f\n",r,f_msecs[r],f_operation[r],f_lShape1[r],f_lShape2[r],f_lShape3[r],f_lShape4[r]);
+            }
+            else
+            {  printf("%02d)%4d %2d %2d %6.2f %6.2f %6.2f  %6.2f %6.2f %6.2f/%6.2f %6.2f %6.2f/%6.2f %6.2f %6.2f/%6.2f %6.2f %6.2f/%6.2f %6.2f %6.2f/%6.2f %6.2f %6.2f\n",
+               r,f_msecs[r],f_operation[r],f_lShape1[r],f_lShape2[r],f_lShape3[r],f_lShape4[r],
+               f_legX[r] [1], f_legY[r] [1], f_legZ[r] [1],
+               f_legX[r] [2], f_legY[r] [2], f_legZ[r] [2],
+               f_legX[r] [3], f_legY[r] [3], f_legZ[r] [3],
+               f_legX[r] [4], f_legY[r] [4], f_legZ[r] [4],
+               f_legX[r] [5], f_legY[r] [5], f_legZ[r] [5],
+               f_legX[r] [6], f_legY[r] [6], f_legZ[r] [6] );
+            }
+         }
+      }
+      // we're going to need local coords to be able to figure angles, then the PWM commands to feed to servos
       // the operation code in f_operation[f_active] tells us what kind of coords we were given
       f_goodData = true;               // assume thing will go well, & f_operation is valid
       prepNextLine();         // get local coords of position in active flow row in f_endlegX[L], Y, Z
 
       if(f_goodData)
       {  // f_endLegX[leg],Y,Z arrays contain the local coords of the position we need to jump to
-         for(L=1; L<=6; L++)
-         {  // move each leg to the position in local coords in f_endLegX[l], f_endLegY[l], f_endLegZ[l]
-            // the call that actually moves servo is pwmDriver[driver].setPWM[pin, pwmClkStart, pwm-value]
-            //   the driver we can lookup in legIndexDriver[leg]
-            //   the pin can be derived from legIndexHipPin[leg]
-            //   to get pwm value, we convert local coords to angles, then from angles to pwm values
+   //  for(L=1; L<=6; L++)
+         for(int l_base=1;l_base<=3;l_base++)   // use alternate sides for leg movements, resting PWM drivers
+         {  for(L=l_base;L<=l_base+3;L=L+3)     // i.e. 1, 4, 2, 5, 3, 6         
+            {  // move each leg to the position in local coords in f_endLegX[l], f_endLegY[l], f_endLegZ[l]
+               // the call that actually moves servo is pwmDriver[driver].setPWM[pin, pwmClkStart, pwm-value]
+               //   the driver we can lookup in legIndexDriver[leg]
+               //   the pin can be derived from legIndexHipPin[leg]
+               //   to get pwm value, we convert local coords to angles, then from angles to pwm values
+               coordsToAngles(f_endLegX[L], f_endLegY[L], f_endLegZ[L]); 
+   //            Log.noticeln("<do_flow> Leg %u, angH = %F, angK = %F, angA = %F",L,f_angH,f_angK,f_angA);
+               f_lastAngH[L] = f_angH;       // remember angles so we can skip redundant moves in future
+               f_lastAngK[L] = f_angK;
+               f_lastAngA[L] = f_angA;
 
-//            Log.noticeln(" X: %F, Y: %F, Z: %F",f_endLegX[L], f_endLegY[L], f_endLegZ[L]);
-//  ==============================================================================================================
-            coordsToAngles(f_endLegX[L], f_endLegY[L], f_endLegZ[L]); 
-//            Log.noticeln("<do_flow> Leg %u, angH = %F, angK = %F, angA = %F",L,f_angH,f_angK,f_angA);
-            f_lastAngH[L] = f_angH;       // remember angles so we can skip redundant moves in future
-            f_lastAngK[L] = f_angK;
-            f_lastAngA[L] = f_angA;
-
-            // now, one servo wihin the leg at a time, figure the pwm value, and move the servo
-            // might have to temporarily negate angles, due to opposite servo mounting on either side of bot
-            t_angH = f_angH;    // may need to negate this angle for PWM calculation purposes, depending on leg
-            t_angK = f_angK;
-            t_angA = f_angA;
-            if(L >= 4)
-            {  t_angH = -1 * t_angH;   // need to use -ve angles for PWM calculation purposes on one side of bot,
-               t_angK = -1 * t_angK;   //... because servos are mounted opposite ways on opposite sides of bot
-               t_angA = -1 * t_angA;
-            }  // if L>=4
+               // now, one servo wihin the leg at a time, figure the pwm value, and move the servo
+               // might have to temporarily negate angles, due to opposite servo mounting on either side of bot
+               t_angH = f_angH;    // may need to negate this angle for PWM calculation purposes, depending on leg
+               t_angK = f_angK;
+               t_angA = f_angA;
+               if(L >= 4)
+               {  t_angH = -1 * t_angH;   // need to use -ve angles for PWM calculation purposes on one side of bot,
+                  t_angK = -1 * t_angK;   //... because servos are mounted opposite ways on opposite sides of bot
+                  t_angA = -1 * t_angA;
+               }  // if L>=4
 
 
-            // starting with the hip...
-//            int legstart = micros();  // timestamp start of leg movement
-            pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L],  pwmClkStart, mapDegToPWM(t_angH,0));
-//            Log.noticeln("H: Driver=%d,  Pin=%d, angH=%F,  pwm=%d",legIndexDriver[L],legIndexHipPin[L],f_angH, mapDegToPWM(f_angH,0));
-            pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L]+1,pwmClkStart, mapDegToPWM(t_angK,0));
-//            Log.noticeln("K: Driver=%d,  Pin=%d, angH=%F,  pwm=%d",legIndexDriver[L],legIndexHipPin[L]+1,f_angK, mapDegToPWM(f_angK,0));
-            pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L]+2,pwmClkStart, mapDegToPWM(t_angA,0));
-//            Log.noticeln("A: Driver=%d,  Pin=%d, angH=%F,  pwm=%d",legIndexDriver[L],legIndexHipPin[L]+2,f_angA, mapDegToPWM(f_angA,0));
-//sp2l(" legStart time= ",micros()-legstart);
-
-            f_lastLegX[L] = f_endLegX[L];   // remember this initial location as start of next line
-            f_lastLegY[L] = f_endLegY[L];
-            f_lastLegZ[L] = f_endLegZ[L];
-            // ok, the 3 servos in that leg have been moved - on to the next leg
-         }  // for l = 1 to 6
+               // starting with the hip...
+   //            int legstart = micros();  // timestamp start of leg movement
+               pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L],  pwmClkStart, mapDegToPWM(t_angH,0));
+   //            Log.noticeln("H: Driver=%d,  Pin=%d, angH=%F,  pwm=%d",legIndexDriver[L],legIndexHipPin[L],f_angH, mapDegToPWM(f_angH,0));
+               pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L]+1,pwmClkStart, mapDegToPWM(t_angK,0));
+   //            Log.noticeln("K: Driver=%d,  Pin=%d, angH=%F,  pwm=%d",legIndexDriver[L],legIndexHipPin[L]+1,f_angK, mapDegToPWM(f_angK,0));
+               pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L]+2,pwmClkStart, mapDegToPWM(t_angA,0));
+   //            Log.noticeln("A: Driver=%d,  Pin=%d, angH=%F,  pwm=%d",legIndexDriver[L],legIndexHipPin[L]+2,f_angA, mapDegToPWM(f_angA,0));
+               f_lastLegX[L] = f_endLegX[L];   // remember this initial location as start of next line
+               f_lastLegY[L] = f_endLegY[L];
+               f_lastLegZ[L] = f_endLegZ[L];
+               // ok, the 3 servos in that leg have been moved - on to the next leg
+            }  // for(L=l_base;L<=l_base+3;L=L+3) 
+         } // for(int l_base=1;l_base<=3;l_base++) 
          //at this point, all legs have been moved to the initial position in the flow
          // well, move commands have been sent. pause a bit for the servos to actually move
          delay(340);             // in theory, wost case is about 120 degrees, & servo does 60 degrees in .17 sec
@@ -302,6 +359,7 @@ void do_flow()          // called from loop if there's a flow executing that nee
             f_frame = 1 ;           // initialize frame counter
             f_framesPerPosn = int((f_msecs[1] / f_msecPerFrame) + .5);  // rounded count of how many frames fit in time)
             sp1l(" start of flow row # 1");
+            if((toeMoveAction & fa_graphPrint) != 0) { sp1s(f_active);} // keep output for Excel graphing uniform
          } // if f_count > 1
          else  // if f_count > 1. else case  means only initial position was given in flow
          {  f_flowing = false;      // stop flow processing
@@ -323,6 +381,8 @@ void do_flow()          // called from loop if there's a flow executing that nee
    {  if(millis() >= f_nextTime)          // did we get to next 20 msec frame time?
       {                                   // we did hit 20 ms mark - time to move servos
                                           // (otherwise exit immediately & wait)
+// bool df = false;
+// if((f_active>6) & (f_active<12)) {df=true;}   // debug flag for reducing test output in loops
          f_nextTime = millis() + f_msecPerFrame;    // yup, quickly reset for next 20 msec interval
          for(int l_base=1;l_base<=3;l_base++)   // use alternate sides for leg movements, resting PWM drivers
          {  for(L=l_base;L<=l_base+3;L=L+3)     // i.e. 1, 4, 2, 5, 3, 6         
@@ -343,7 +403,6 @@ void do_flow()          // called from loop if there's a flow executing that nee
                   t_angA = -1 * t_angA;   //... because servos are mounted opposite ways on opposite sides of bot
                   t_angH = -1 * t_angH;   
                }  // if L>=4
-             
 
                // starting with the hip...
                if((toeMoveAction & fa_moveServos) != 0)    // did flow_go command options tell us to move servos?
@@ -373,10 +432,14 @@ void do_flow()          // called from loop if there's a flow executing that nee
                if((toeMoveAction & fa_dispLocal) != 0) // if flow_go command options told us to display local coords..
                {  sp2s(f_tmpX,f_tmpY);  sp1s(f_tmpZ);  
                }
+               if((toeMoveAction & fa_graphPrint) != 0) // if flow_go command options told us to display local coords..
+               {  localCoordsToGlobal(L, f_tmpX, f_tmpY, f_tmpZ);   // convert local to global coords, into f_graphX...
+                  sp2s(f_graphX,f_graphY);  // print global coords suitable for Excel graphing
+               }
             }  //for L=l_base...
          } // for l_base = 1...
          // output gets messy if you display more than one attribute at a time - avoid that
-         if((toeMoveAction & (fa_dispPWM + fa_dispAngles + fa_dispLocal)) != 0)  // if we displayed numbers
+         if((toeMoveAction & (fa_dispPWM + fa_dispAngles + fa_dispLocal + fa_graphPrint)) != 0)  // if we displayed numbers
          {  nl;                              // then output the final new line
          }
          f_frame ++  ;                          // advance to next frame within the flow row
@@ -384,17 +447,16 @@ void do_flow()          // called from loop if there's a flow executing that nee
          {  // yup - we must be sitting at end position of the line, otherwise wait for next 20 msec
             f_active = f_active + 1 ;                       // advance to next flow row
             if(f_active < f_count)              // have we run out of flow rows to do?
-            {
-               sp2sl(" start of flow row #",f_active);               
-               for(L=1; L<=6; L++)              // no, remember end of last line as start of next one
+            {  // there are rows left, f_active points to a valid flow row
+               if((toeMoveAction & fa_graphPrint) == 0)  // if we're NOT doing Excel compatible output...
+               { sp2sl(" start of flow row #",f_active);   // announce start of this flow row 
+               }
+               for(L=1; L<=6; L++)              // remember end of last line as start of next one
                {  f_lastLegX[L] = f_endLegX[L];
                   f_lastLegY[L] = f_endLegY[L];
                   f_lastLegZ[L] = f_endLegZ[L];
                }
                f_goodData = true;               // assume thing will go well, & f_operation is valid
-               f_frame = 1;                     // new sequence of frames for next flow row
-               f_framesPerPosn = int((f_msecs[f_active] / f_msecPerFrame) + .5);  // rounded count of how many frames fit in time)
-//sp3sl("second msecPerFrame,framesPerPosn",f_msecPerFrame,f_framesPerPosn);
 
                prepNextLine();                  // process active flow row, leaving local coords in f_endLegX[L], Y, Z
             }                                   // ..and figuring frame deltas, and framesPerPosition
@@ -405,6 +467,7 @@ void do_flow()          // called from loop if there's a flow executing that nee
                sp1l(" end of multi row flow processing");
             }
          } // if(f_frame > f_framesPerPosn) 
+         if((toeMoveAction & fa_graphPrint) != 0) {sp1s(f_active); }  // put flow row # at start of Excel fa_graphPrint lines
       }   // if millis > f_nextTime
    } // else if( f_active > 0)
    else
@@ -422,13 +485,15 @@ bool prepNextLine()
 {
    bool cycleFlag = prepNextLine1() ;        // look at next line, which could be a cycle command
    if(cycleFlag)  // it was a cycle command, so redo prepNextLine to get movement command
-   {  sp2sl(" start of flow-row #",f_active);  
+   {  if((toeMoveAction & fa_graphPrint) == 0) { sp2sl(" start of flow-row #",f_active); }
+      // note dash in "flow-row" in above message 
       cycleFlag = prepNextLine1();  // could have 2 cycle commands in a row: cycleEnd and doCycle
       if(cycleFlag)
-      {  sp2sl(" start of flow-row #",f_active);
+      {  if((toeMoveAction & fa_graphPrint) == 0) { sp2sl(" start of flow~row #",f_active); } 
+      // note tilde in "flow~row" in above message
          prepNextLine1();
       }
-   }            // it was a cycle command. redo prepNextLine to get movement command
+   }  // if(cycleFlag)  // it was a cycle command. redo prepNextLine to get movement command
    return true;
 }
 bool prepNextLine1()             // set up for toes movements according to next line in flow row
@@ -454,7 +519,7 @@ bool prepNextLine1()             // set up for toes movements according to next 
    // this flow row's (identified by f_active) position: f_legX[f_active][L], Y, Z
    // local coords of end point of line are left in f_endLegX[L], Y, Z
    // f_operation in flow row tells us what kind of numbers are given for each leg
-   int cycle;        // interna temp variable
+   int cycle;        // internal temp variable
    f_goodData = true;  // initially assume all will go well
    rgbLedClr ++; // Increment rgb colour to use next.
    if(rgbLedClr > numColoursSupported) // Never exceed known colour numbers
@@ -495,7 +560,6 @@ bool prepNextLine1()             // set up for toes movements according to next 
         f_endLegZ[L] = f_legZ[f_active][L];
       }
    }
-
    else if(f_operation[f_active] == fo_markCycleStart )
    {  // this flow row is a marker flagging the start of a repeatable cycle. param1 is the cycle #
       cycle = f_lShape1[f_active];  // get cycle identifier from flow row
@@ -527,9 +591,8 @@ bool prepNextLine1()             // set up for toes movements according to next 
             f_active = f_resumeRow;    // continue just after the flow row that requested the cycle
             return true;               // signal the need for another call to set up for next movements
          } 
-      }
-      
-   }
+      }  
+   } // else if(f_operation[f_active] == fo_markCycleEnd )
    else if (f_operation[f_active] == fo_doCycle)
    {  //  the flow row is a marker telling robot to execute the repeatable cycle whose number is in param 1
       cycle = f_lShape1[f_active];           // get cycle identifier from flow row
@@ -577,7 +640,8 @@ bool prepNextLine1()             // set up for toes movements according to next 
          {  f_deltaX[L] = f_endLegX[L] - f_lastLegX[L]; //travel needed in local X direction
             f_deltaY[L] = f_endLegY[L] - f_lastLegY[L]; //travel needed in local Y direction
             f_deltaZ[L] = f_endLegZ[L] - f_lastLegZ[L]; //travel needed in local Z direction
-//            sp2s("deltas: ",f_deltaX[L]); sp; sp2sl(f_deltaY[L],f_deltaZ[L]);
+            f_frame = 1;                     // new sequence of frames for next flow row
+            f_framesPerPosn = int((f_msecs[f_active] / f_msecPerFrame) + .5);  // rounded count of how many frames fit in time
          } //for L=1...
       }  // else if f_active != 0
    } // if f_goodData

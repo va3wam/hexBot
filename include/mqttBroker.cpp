@@ -336,7 +336,8 @@ bool processCmd(String payload)
       }  // if(argN > 6) 
 
       f_count++; // advance to next entry in flow arrays
-                 // f_count now contains the number of flow rows that have been defined
+                 // f_count now contains the number of flow rows that have been defined,
+                 // i.e. row 0 up to and including row (f_count -1)
                  // it's reset by the FLOW_GO command
       return true;
    } // if cmd = flow
