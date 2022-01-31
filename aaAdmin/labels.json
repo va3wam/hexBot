@@ -11,51 +11,6 @@
      ]
    },
    {
-     "name": "effort: 1",
-     "color": "91ca55",
-     "description": "Requires about 1 to 2 hours of work."
-   },
-   {
-     "name": "effort: 2",
-     "color": "c2e2a2",
-     "description": "Requires about half a days work."
-   },
-   {
-     "name": "effort: 3",
-     "color": "e9f4dc",
-     "description": "Requires about 1 to 2 days of work."
-   },
-   {
-     "name": "effort: 4",
-     "color": "fef6d7",
-     "description": "Requires about 1 week of work."
-   },
-   {
-     "name": "effort: 5",
-     "color": "fef2c0",
-     "description": "Requires weeks of work."
-   },
-   {
-     "name": "effort: 6",
-     "color": "fbca04",
-     "description": "Requires months of work."
-   },
-   {
-     "name": "good first issue",
-     "color": "7057ff",
-     "description": "Good for newcomers.",
-     "aliases": [
-       "beginner-friendly",
-       "beginner",
-       "good for beginner",
-       "Good for beginners",
-       "good-starter-issue",
-       "starter-issue",
-       "starter",
-       "status: good starter issue"
-     ]
-   },
-   {
      "name": "help",
      "color": "0e8a16",
      "description": "Requires training or information exchange.",
@@ -98,24 +53,6 @@
      "name": "semantic-release",
      "description": "Create release after main merge.",
      "color": "e6e6e6"
-   },
-   {
-     "name": "state: approved",
-     "color": "91ca55",
-     "description": "Approved to proceed.",
-     "aliases": [
-       "approved"
-     ]
-   },
-   {
-     "name": "state: blocked",
-     "color": "d73a4a",
-     "description": "Something is blocking action.",
-     "aliases": [
-       "blocked",
-       "Status: Blocked",
-       "status: blocked"
-     ]
    },
    {
      "name": "state: pending",
@@ -171,24 +108,6 @@
      ]
    },
    {
-     "name": "type: discussion",
-     "color": "d4c5f9",
-     "description": "Questions, proposals and info that requires discussion.",
-     "aliases": [
-       "discussion",
-       "feedback",
-       "help wanted",
-       "idea",
-       "Idea",
-       "Proposal",
-       "proposal",
-       "question",
-       "type: design",
-       "Type: Question",
-       "type: question"
-     ]
-   },
-   {
      "name": "type: docs",
      "color": "fef2c0",
      "description": "Related to documentation and information.",
@@ -200,18 +119,6 @@
        "documents",
        "Type: Documentation",
        "type: documentation"
-     ]
-   },
-   {
-     "name": "type: feature",
-     "color": "5ebeff",
-     "description": "Brand new functionality, features, pages, workflows, endpoints, etc.",
-     "aliases": [
-       "addition",
-       "enhancement",
-       "feature",
-       "type: enhancement",
-       "Type: Feature"
      ]
    },
    {
@@ -234,14 +141,6 @@
       "aliases": [
       ]
     },
-    {
-     "name": "type: security",
-     "color": "d73a4a",
-     "description": "Something is vulnerable or not secure.",
-     "aliases": [
-       "security"
-     ]
-   },
    {
      "name": "type: testing",
      "color": "fbca04",
@@ -249,38 +148,6 @@
      "aliases": [
        "test",
        "testing"
-     ]
-   },
-   {
-     "name": "work: chaotic",
-     "color": "fbca04",
-     "description": "The situation is chaotic, novel practices used.",
-     "aliases": [
-       "chaotic"
-     ]
-   },
-   {
-     "name": "work: complex",
-     "color": "d4c5f9",
-     "description": "The situation is complex, emergent practices used.",
-     "aliases": [
-       "complex"
-     ]
-   },
-   {
-     "name": "work: complicated",
-     "color": "ffb8c6",
-     "description": "The situation is complicated, good practices used.",
-     "aliases": [
-       "complicated"
-     ]
-   },
-   {
-     "name": "work: obvious",
-     "color": "91ca55",
-     "description": "The situation is obvious, best practices used.",
-     "aliases": [
-       "obvious"
      ]
    }
  ]
