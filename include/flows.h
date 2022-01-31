@@ -121,14 +121,20 @@ float safeMaxPosY = 17;            // ..can argue that safety limits should be p
 float safeMaxNegY = 6;
 float safeMaxPosZ = 6;
 float safeMaxNegZ = 8;           // raised for rotation script
+float f_graphX;                  // X coordinate used to generate graphable debug output if f_toeMoveAction has 16 bit on
+float f_graphY;
+float f_graphZ;
+
 
 int toeMoveAction = 8;           // binary coded action to take when you calculated next toe position (frame) in do_flow()
+               
                                  // persists, but defaults to display local coords, set up in FLOW_GO MQTT command
    const int fa_moveServos = 1;  // feed calculated PWM values to servo motors so they move
    const int fa_dispAngles = 2;  // display the calculated servo angles (degrees) in serial monitor
    const int fa_dispPWM    = 4;  // display the calculated PWM values
    const int fa_dispLocal  = 8;  // display the local coordinates of toe position
-// fa_disGlobal  = 16;           // display the global coordinates of toe position <too hard to do, frames are in local coords
+   const int fa_graphPrint = 16; // output each toe position is a way that an be graphed in an Excel scatter plot
+   const int fa_dispFlow = 32;   // display flow in numbered readable format before execution
 
 const float pi = 3.1415926 ;
 
