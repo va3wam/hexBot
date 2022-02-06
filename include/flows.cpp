@@ -359,7 +359,7 @@ void do_flow()          // called from loop if there's a flow executing that nee
             f_frame = 1 ;           // initialize frame counter
             f_framesPerPosn = int((f_msecs[1] / f_msecPerFrame) + .5);  // rounded count of how many frames fit in time)
             sp1l(" start of flow row # 1");
-            if((toeMoveAction & fa_graphPrint) != 0) { sp1s(f_active);} // keep output for Excel graphing uniform
+            if((toeMoveAction & fa_graphPrint) != 0) { sp1s(f_active);} // keep output for Calc graphing uniform
          } // if f_count > 1
          else  // if f_count > 1. else case  means only initial position was given in flow
          {  f_flowing = false;      // stop flow processing
@@ -434,7 +434,7 @@ void do_flow()          // called from loop if there's a flow executing that nee
                }
                if((toeMoveAction & fa_graphPrint) != 0) // if flow_go command options told us to display local coords..
                {  localCoordsToGlobal(L, f_tmpX, f_tmpY, f_tmpZ);   // convert local to global coords, into f_graphX...
-                  sp2s(f_graphX,f_graphY);  // print global coords suitable for Excel graphing
+                  sp2s(f_graphX,f_graphY);  // print global coords suitable for Calc graphing
                }
             }  //for L=l_base...
          } // for l_base = 1...
@@ -448,7 +448,7 @@ void do_flow()          // called from loop if there's a flow executing that nee
             f_active = f_active + 1 ;                       // advance to next flow row
             if(f_active < f_count)              // have we run out of flow rows to do?
             {  // there are rows left, f_active points to a valid flow row
-               if((toeMoveAction & fa_graphPrint) == 0)  // if we're NOT doing Excel compatible output...
+               if((toeMoveAction & fa_graphPrint) == 0)  // if we're NOT doing Calc compatible output...
                { sp2sl(" start of flow row #",f_active);   // announce start of this flow row 
                }
                for(L=1; L<=6; L++)              // remember end of last line as start of next one
@@ -467,7 +467,7 @@ void do_flow()          // called from loop if there's a flow executing that nee
                sp1l(" end of multi row flow processing");
             }
          } // if(f_frame > f_framesPerPosn) 
-         if((toeMoveAction & fa_graphPrint) != 0) {sp1s(f_active); }  // put flow row # at start of Excel fa_graphPrint lines
+         if((toeMoveAction & fa_graphPrint) != 0) {sp1s(f_active); }  // put flow row # at start of Calc fa_graphPrint lines
       }   // if millis > f_nextTime
    } // else if( f_active > 0)
    else
