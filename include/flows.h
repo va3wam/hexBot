@@ -133,7 +133,7 @@ int toeMoveAction = 8;           // binary coded action to take when you calcula
    const int fa_dispAngles = 2;  // display the calculated servo angles (degrees) in serial monitor
    const int fa_dispPWM    = 4;  // display the calculated PWM values
    const int fa_dispLocal  = 8;  // display the local coordinates of toe position
-   const int fa_graphPrint = 16; // output each toe position is a way that an be graphed in an Excel scatter plot
+   const int fa_graphPrint = 16; // output each toe position is a way that an be graphed in an Calc scatter plot
    const int fa_dispFlow = 32;   // display flow in numbered readable format before execution
 
 const float pi = 3.1415926 ;
@@ -177,7 +177,7 @@ float fp_frontToeHomeY = 20.91875 * .707107;
 float fp_sideToeHomeX = 0;
 float fp_sideToeHomeY = 6.9423 + 2.9165 + 7.61998 + 3.23019;
 
-float fp_frontHipX = 3.82739 + 7.13528 * .707107;
+float fp_frontHipX = 3.82739 + 7.13528 * .707107;  // = 8.872796
 float fp_frontHipY = 5.04750;
 float fp_sideHipX = 0;
 float fp_sideHipY = 6.9423;
