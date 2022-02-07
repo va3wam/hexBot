@@ -331,7 +331,7 @@ void do_flow()          // called from loop if there's a flow executing that nee
                t_angK = f_angK;
                t_angA = f_angA;
                if(L >= 4)
-               {  t_angH = -1 * t_angH;   // need to use -ve angles for PWM calculation purposes on one side of bot,
+               {  // t_angH = -1 * t_angH;   // need to use -ve angles for PWM calculation purposes on one side of bot,
                   t_angK = -1 * t_angK;   //... because servos are mounted opposite ways on opposite sides of bot
                   t_angA = -1 * t_angA;
                }  // if L>=4
@@ -406,13 +406,11 @@ void do_flow()          // called from loop if there's a flow executing that nee
                t_angA = f_angA;
                t_angH = f_angH;
 
-//  think the following might be misguided
                if(L >= 4)
                {  t_angK = -1 * t_angK;   // need to use -ve angles for PWM calculation purposes on one side of bot,
                   t_angA = -1 * t_angA;   //... because servos are mounted opposite ways on opposite sides of bot
                   // t_angH = -1 * t_angH;   
                }  // if L>=4
-//
 
                // starting with the hip...
                if((toeMoveAction & fa_moveServos) != 0)    // did flow_go command options tell us to move servos?
