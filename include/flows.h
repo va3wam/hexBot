@@ -187,6 +187,7 @@ int legIndexHipPin[7];      // for a lookup based on leg # to get pin number for
                            // knee pin is 1 more than hip, ankle is 2 more
                            // these are initialized in flows.cpp:setupFlows()
 String legNum[7];          // lookup table to convert leg# to corresponding string
+bool DF;    // debug flag for conditionalizing generation of debug tracing
 
 // defines for routines acessed from elsewhere
 bool globCoordsToLocal(int legNumber, float gx, float gy, float gz, float *lx, float *ly, float *lz);

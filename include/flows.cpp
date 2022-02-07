@@ -176,7 +176,12 @@ bool globCoordsToLocal(int legNumber, float gx, float gy, float gz)
 {
 // local coordinates are returned in f_endLegX[legnumber], f_endLegY[legnumber], and f_endLegZ[legnumber]
 // leg numbers: 1=FrontRight, 2=MR, 3=BR, 4=FrontLeft, 5=ML, 6=BL
-   float Xrt, Yrt ;  //tem variables for rotated global X & Y coords
+
+// rotating a vector(X,Y) thru counter clockwise angle B, to get (Xr,Yr)
+//    Xr = cos(B) * X - sin(B) * Y
+//    Yr = sin(B) * X + cos(B) * Y
+
+   float Xrt, Yrt ;  //temp variables for rotated global X & Y coords
 
    f_endLegY[L] = gz;       // height above robot is global Z, local Y
    switch (legNumber) 
@@ -185,39 +190,39 @@ bool globCoordsToLocal(int legNumber, float gx, float gy, float gz)
         // Front Right leg
         Xrt = cos_m45 * (gx-fp_frontHipX) - sin_m45 * (gy + fp_frontHipY);  // rotated (Xg,Yg)
         Yrt = sin_m45 * (gx-fp_frontHipX) + cos_m45 * (gy + fp_frontHipY);
-        f_endLegX[L] = -1 * Yrt;
-        f_endLegZ[L] = Xrt;
+        f_endLegX[legNumber] = -1 * Yrt;
+        f_endLegZ[legNumber] = Xrt;
         break;
       case 2:
         // Middle Right leg
-        f_endLegX[L] = -1 * gy - fp_sideHipY;
-        f_endLegZ[L] = gx;
+        f_endLegX[legNumber] = -1 * gy - fp_sideHipY;
+        f_endLegZ[legNumber] = gx;
         break;
       case 3:
         // Back Right leg
         Xrt = cos_p45 * (gx + fp_frontHipX) - sin_p45 * (gy + fp_frontHipY);  // rotated (Xg,Yg)
         Yrt = sin_p45 * (gx + fp_frontHipX) + cos_p45 * (gy + fp_frontHipY);
-        f_endLegX[L] = -1 * Yrt;
-        f_endLegZ[L] = Xrt;        
+        f_endLegX[legNumber] = -1 * Yrt;
+        f_endLegZ[legNumber] = Xrt;        
         break;
       case 4:
         // Front Left leg
         Xrt = cos_p45 * (gx - fp_frontHipX) - sin_p45 * (gy - fp_frontHipY);  // rotated (Xg,Yg)
         Yrt = sin_p45 * (gx - fp_frontHipX) + cos_p45 * (gy - fp_frontHipY);
         f_endLegX[legNumber] = Yrt;
-        f_endLegZ[legNumber] = Xrt;         
+        f_endLegZ[legNumber] = -1 * Xrt;         
         break;
-      case 5:
+      case 5:  
         // Middle Left leg
-        f_endLegX[L] = gy - fp_sideHipY;
-        f_endLegZ[L] = gx ;
+        f_endLegX[legNumber] = gy - fp_sideHipY;
+        f_endLegZ[legNumber] = -1 * gx ;
         break;
       case 6:
         // Back Left leg
         Xrt = cos_m45 * (gx - (-fp_frontHipX)) - sin_m45 * (gy - fp_frontHipY);  // rotated (Xg,Yg)
         Yrt = sin_m45 * (gx - (-fp_frontHipX)) + cos_m45 * (gy - fp_frontHipY);
-        f_endLegX[L] = Yrt;
-        f_endLegZ[L] = Xrt;        
+        f_endLegX[legNumber] = Yrt;
+        f_endLegZ[legNumber] = -1* Xrt;        
         break;
       default:
         return false;
@@ -261,8 +266,11 @@ void localCoordsToGlobal(int legNumber, float lx, float ly, float lz)
         f_graphY = f_hipY[legNumber] + lx * cos_p45 - lz * cos_p45;
         break;
       default:
-        return;
+         break;
    }
+   //sp4sl("legnum,lx,f_graphY",legNumber,lx,f_graphY);
+   return;
+
 }
 
 // do_flow is enabled by the MQTT flow_go command, which sets f_flowing to true
@@ -323,7 +331,7 @@ void do_flow()          // called from loop if there's a flow executing that nee
                t_angK = f_angK;
                t_angA = f_angA;
                if(L >= 4)
-               {  t_angH = -1 * t_angH;   // need to use -ve angles for PWM calculation purposes on one side of bot,
+               {  // t_angH = -1 * t_angH;   // need to use -ve angles for PWM calculation purposes on one side of bot,
                   t_angK = -1 * t_angK;   //... because servos are mounted opposite ways on opposite sides of bot
                   t_angA = -1 * t_angA;
                }  // if L>=4
@@ -381,8 +389,9 @@ void do_flow()          // called from loop if there's a flow executing that nee
    {  if(millis() >= f_nextTime)          // did we get to next 20 msec frame time?
       {                                   // we did hit 20 ms mark - time to move servos
                                           // (otherwise exit immediately & wait)
-// bool df = false;
-// if((f_active>6) & (f_active<12)) {df=true;}   // debug flag for reducing test output in loops
+// bool DF = false;
+// if((f_active>0) & (f_active<3)) {DF=true;}   // debug flag for reducing test output in loops
+
          f_nextTime = millis() + f_msecPerFrame;    // yup, quickly reset for next 20 msec interval
          for(int l_base=1;l_base<=3;l_base++)   // use alternate sides for leg movements, resting PWM drivers
          {  for(L=l_base;L<=l_base+3;L=L+3)     // i.e. 1, 4, 2, 5, 3, 6         
@@ -390,8 +399,7 @@ void do_flow()          // called from loop if there's a flow executing that nee
                f_tmpX = (float)f_frame * f_deltaX[L] / (float)f_framesPerPosn + f_lastLegX[L];
                f_tmpY = (float)f_frame * f_deltaY[L] / (float)f_framesPerPosn + f_lastLegY[L];
                f_tmpZ = (float)f_frame * f_deltaZ[L] / (float)f_framesPerPosn + f_lastLegZ[L];
-               coordsToAngles(f_tmpX, f_tmpY, f_tmpZ); // creates f_angH, f_angK, f_angA
-
+               coordsToAngles(f_tmpX, f_tmpY, f_tmpZ); // creates f_angH, f_angK, f_angAltaZ[L]);}
                // now, one servo within the leg at a time, figure the pwm value, and move the servo
                // might have to temporarily negate angles, due servos mounted opposite on either side of bot
                t_angK = f_angK;    // may need to negate this angle for PWM calculation purposes, depending on leg
@@ -401,7 +409,7 @@ void do_flow()          // called from loop if there's a flow executing that nee
                if(L >= 4)
                {  t_angK = -1 * t_angK;   // need to use -ve angles for PWM calculation purposes on one side of bot,
                   t_angA = -1 * t_angA;   //... because servos are mounted opposite ways on opposite sides of bot
-                  t_angH = -1 * t_angH;   
+                  // t_angH = -1 * t_angH;   
                }  // if L>=4
 
                // starting with the hip...
