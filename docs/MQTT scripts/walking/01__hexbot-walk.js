@@ -22,7 +22,7 @@ function execute() {
 // for the middle legs, 2 and 5, the step can be added directly to the local axis that is aligned with step
 
     out(" ");
-	send("fg,0,0")	// clear any previous flow
+	send("new_flow")	// clear any previous flow
 // go to the  home position
 //0 since this is the first flow row, we jump to it directly, then pause for 340 msec
 	send("fl,1000,4,10,0,0,0,    0,0,0,      0,0,0,    0,0,0,     0,0,0,    0,0,0,     0,0,0")
@@ -99,7 +99,7 @@ function execute() {
 	send("fl,1000,4,10,0,0,0,   0,3.0,0,   0,3.0,0,   0,3.0,0,   0,3.0,0,   0,3.0,0,   0,3.0,0,")
 	
 	// now that we've defined the flow, execute it
-	send("fg,1,50,49")          // start er up, 50 msec per frame,
+	send("do_flow,49,50")          // start er up, 50 msec per frame,
 								// toeMoveAction:
 								// 1 - move toes (altho I sometimes test with 5V power offset)
 								// 16 - print global X and Y coords for Excel graphing

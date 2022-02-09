@@ -10,7 +10,7 @@ function execute() {
 //	myTWIPe = "calServoCC50E394F048/commands"     // Andrew's bot
 
     out(" ");
-	send("fg,0,0")	// clear any previous flow
+	send("new_flow")	// clear any previous flow
 
 	// since this is the first flow row, we jump to it directly, then pause for 340 msec
 	send("fl,0500,4,10,0,0,0,    0,0,0,      0,0,0,    0,0,0,     0,0,0,    0,0,0,     0,0,0")
@@ -139,7 +139,7 @@ function execute() {
 	send("fl,0500,4,10,0,0,0,   0,3.0,0,   0,3.0,0,   0,3.0,0,   0,3.0,0,   0,3.0,0,   0,3.0,0,")
 	
 	// now that we've defined the flow, execute it
-	send("fg,1,50,9")          // start er up, 20 msec, move toes and don't print coords for each frame
+	send("do_flow,9,50")          // start er up, 20 msec, move toes and don't print coords for each frame
 
     action.setExitCode(0);
     action.setResultText("done.");

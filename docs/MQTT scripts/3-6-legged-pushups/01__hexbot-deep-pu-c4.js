@@ -7,7 +7,7 @@ function execute() {
 //	myTWIPe = "calServoCC50E394F048/commands"     // Andrew's bot
 
     out(" ");
-	send("fg,0,0")	// clear any previous flow
+	send("new_flow")	// clear any previous flow
 // this script will need safety box extensions to position legs low, 	
 	// go to the  home position
 	// since this is the first flow row, we jump to it directly, then pause for 340 msec
@@ -80,7 +80,7 @@ function execute() {
 	send("fl,1000,4,10,0,0,0,   0,3.0,0,   0,3.0,0,   0,3.0,0,   0,3.0,0,   0,3.0,0,   0,3.0,0,")
 	
 	// now that we've defined the flow, execute it
-	send("fg,1,50,1")          // start er up, 20 msec, move toes and don't print coords for each frame
+	send("do_flow,1,50")          // start er up, 20 msec, move toes and don't print coords for each frame
 
     action.setExitCode(0);
     action.setResultText("done.");
