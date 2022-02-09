@@ -344,30 +344,33 @@ bool processCmd(String payload)
    
    // <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><> start of new command
    
-      // FLOW_GO command to start up motion as previously defined in the flow arrays using the FLOW command
+   // NEW_FLOW command to prepare for flow commands defining a new flow
    // the FLOW command builds arrays describing the desired movement
-   // the FLOW_GO command starts the movement and controls repetitions, resets, etc
+   // the DO_FLOW command starts the movement and controls repetitions, resets, etc
    //
-   // format: FLOW_GO, <action>,<msecPerFrame>
+   // command: NEW_FLOW
+   // format: NEW_FLOW
    // action: 1 - start the flow currently defined in the flow arrays
    //         0 - reset the current flow, and empty the flow arrays
    // msecPerFrame: duration of each frame (fraction of a position) in millis. this determines f_framesPerPosn
    //               - if omitted, it defaults to f_msecPerFrameDefault, which defaults to 20 msec
 
-   if (cmd == "FLOW_GO" || cmd == "FG")
-   // ==== can this stay unchanged?
-   {
-      int f_action = arg[1].toInt(); // decode the first argument - either start flow, or reset it
-      if (f_action == 0)             // zero means reset
-      {
-         f_flowing = false;
+   if (cmd == "NEW_FLOW" || cmd == "NF")  // prep for definition of a new flow
+   {     f_flowing = false;
          f_count = 0;
          f_active = 0;
          return true;
-      }
-      if (f_action == 1) // 1 means start up the currently define flow
-      {
-//         Serial.println("<flow_go> saw action = 1");
+   }
+
+   // command: DO_FLOW
+   // format: DO_FLOW,toeMoveAction, msecPerFrame
+   //
+   // toeMoveAction: bit encoded actions to be taken when new toe position has been calculated. defined in flows.h
+   // msecPerFrame: duration of each frame (fraction of a position) in millis. this determines f_framesPerPosn
+   //               - if omitted, it defaults to f_msecPerFrameDefault, which defaults to 50 msec
+   // 
+   if (cmd == "DO_FLOW" || cmd == "DF")  // execute flow that has just been defined
+   {     
          if (f_count == 0) // is there a flow defined to run?
          {
             Serial.println("<flow_go>: tried to run flow, but none defined");
@@ -376,8 +379,14 @@ bool processCmd(String payload)
          f_flowing = 1; // we're now executing a flow
          f_active = 0;  // starting at the 0th entry in the flow arrays
 
+         toeMoveAction = 1;   // default value if it's not in DO_FLOW command
+         if (argN >= 1)
+         {
+            toeMoveAction = arg[1].toInt();
+         } // binary coded options for toe moves
+
          f_msecPerFrame = f_msecPerFrameDefault; // if not given in FG command, use the default
-         if (argN > 1)                           // if there were at least 2 numeric args to FG command
+         if (argN >= 2)                           // if there were at least 2 numeric args to FG command
          {                                       // ... 2nd one is msecPerFrame
             f_msecPerFrame = arg[2].toInt();     // 2nd number is millis per frame
             if (f_msecPerFrame < 10 || f_msecPerFrame > 200)
@@ -385,20 +394,9 @@ bool processCmd(String payload)
                f_msecPerFrame = f_msecPerFrameDefault;
             }
          }
-         if (argN > 2)
-         {
-            toeMoveAction = arg[3].toInt();
-         } // binary coded options for toe moves
-
-      } // if action = 1
-      else
-      {
-         Serial.println("<flow_go>: invalid action in MQTT flow_go command");
-         return false;
-      }
-      return true;
-   } // if cmd = flow_go
-   
+         return true;
+   } // if (cmd == "DO_FLOW" || cmd == "DF")  
+      
    // <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><> start of new command
    /*
    // MOVE_LEG command - move leg to coordinates that can be given in various ways
