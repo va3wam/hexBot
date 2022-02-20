@@ -1,22 +1,19 @@
 var Thread = Java.type("java.lang.Thread");
 
 function execute() {
-    out("Hexapod go to Belly position.  File= 01__hexbot-go-to-belly.js");
+    out("Hexapod goto home position. File: 01__hexbot-goto-home.js");
 	
     myTWIPe = "Hexbot3C61054ADD98/commands"     // Doug's bot
 //	myTWIPe = "calServoCC50E394F048/commands"     // Andrew's bot
-	
+
 	// clear any previous flow
-	send("new_flow")
-	
-	// go to the lying on belly position, with legs 3.5 cm above home position
+	send("NEW_FLOW")
+		// go to the  home position
 	// since this is the first flow row, we jump to it directly, then pause for 340 msec
-	// start with neutral position, to avoid crashing to floor
-	send("fl,300,3,10,0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0")
-	send("fl,1000,3,10,0,0,0, 0,0,3.5, 0,0,3.5, 0,0,3.5, 0,0,3.5, 0,0,3.5, 0,0,3.5")
-	//
+	send("fl,1000,MLRH,10,0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0")
+
 	// now that we've defined the flow, execute it
-	send("do_flow,1,50")          // start er up, 20 msec, move toes and don't print coords for each frame
+	send("DO_FLOW,49")          // start er up, 20 msec, move toes and don't print coords for each frame
 
     action.setExitCode(0);
     action.setResultText("done.");
