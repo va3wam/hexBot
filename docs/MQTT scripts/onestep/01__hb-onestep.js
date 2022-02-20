@@ -9,31 +9,31 @@ function execute() {
 // This script is documented in ...docs/MQTT scripts/creating-flows.odt, section 17
 
     out(" ");
-	send("new_flow")	// clear any previous flow
+	send("NEW_FLOW")	// clear any previous flow
 //stage1: go directly to home position first, ignoring the 1000 msec, then pause for 340 msec
-	send("FL, 1000, 3, 10,0,0,0,   0,0,0,   0,0,0,   0,0,0,   0,0,0,    0,0,0,     0,0,0")
+	send("FL, 1000, MGRH, 10,0,0,0,   0,0,0,   0,0,0,   0,0,0,   0,0,0,    0,0,0,     0,0,0")
 //stage2:	
-    send("FL, 1000, 3, 10,0,0,0,   0,0,2,   0,0,0,   0,0,2,   0,0,0,  0,0,2,   0,0,0")
+    send("FL, 1000, MGRH, 10,0,0,0,   0,0,2,   0,0,0,   0,0,2,   0,0,0,  0,0,2,   0,0,0")
 //stage3:	
-    send("FL, 1000, 3, 10,0,0,0,   0,0,2,  -4,0,0,   0,0,2,  -4,0,0,  0,0,2,  -4,0,0")
+    send("FL, 1000, MGRH, 10,0,0,0,   0,0,2,  -4,0,0,   0,0,2,  -4,0,0,  0,0,2,  -4,0,0")
 //stage4:	
-    send("FL, 1000, 3, 10,0,0,0,   0,0,0,  -4,0,0,   0,0,0,  -4,0,0,  0,0,0,  -4,0,0")
+    send("FL, 1000, MGRH, 10,0,0,0,   0,0,0,  -4,0,0,   0,0,0,  -4,0,0,  0,0,0,  -4,0,0")
 //stage5:	
-    send("FL, 1000, 3, 10,0,0,0,   0,0,0,  -4,0,2,   0,0,0,  -4,0,2,  0,0,0,  -4,0,2")
+    send("FL, 1000, MGRH, 10,0,0,0,   0,0,0,  -4,0,2,   0,0,0,  -4,0,2,  0,0,0,  -4,0,2")
 //stage6:	
-    send("FL, 1000, 3, 10,0,0,0,  -4,0,0,   0,0,2,  -4,0,0,   0,0,2,  -4,0,0,  0,0,2")
+    send("FL, 1000, MGRH, 10,0,0,0,  -4,0,0,   0,0,2,  -4,0,0,   0,0,2,  -4,0,0,  0,0,2")
 //stage7:	
-    send("FL, 1000, 3, 10,0,0,0,  -4,0,0,   0,0,0,  -4,0,0,   0,0,0,  -4,0,0,  0,0,0")
+    send("FL, 1000, MGRH, 10,0,0,0,  -4,0,0,   0,0,0,  -4,0,0,   0,0,0,  -4,0,0,  0,0,0")
 //stage8:	
-    send("FL, 1000, 3, 10,0,0,0,  -4,0,2,   0,0,0,  -4,0,2,   0,0,0,  -4,0,2,  0,0,0")
+    send("FL, 1000, MGRH, 10,0,0,0,  -4,0,2,   0,0,0,  -4,0,2,   0,0,0,  -4,0,2,  0,0,0")
 //stage9:	
-    send("FL, 1000, 3, 10,0,0,0,   0,0,2,  -4,0,0,  0,0,2,   -4,0,0,  0,0,2,  -4,0,0")
+    send("FL, 1000, MGRH, 10,0,0,0,   0,0,2,  -4,0,0,  0,0,2,   -4,0,0,  0,0,2,  -4,0,0")
 
 //27 leave bot in belly-on-the-floor position, to ease next start up
-	send("fl,1000,4,10,0,0,0,   0,3.0,0,   0,3.0,0,   0,3.0,0,   0,3.0,0,   0,3.0,0,   0,3.0,0,")
+	send("fl,1000,MLRH,10,0,0,0,   0,3.0,0,   0,3.0,0,   0,3.0,0,   0,3.0,0,   0,3.0,0,   0,3.0,0,")
 	
 	// now that we've defined the flow, execute it
-	send("do_flow,49,50")          // start er up, 50 msec per frame,
+	send("DO_FLOW,49")          // start er up, 50 msec per frame,
 								// toeMoveAction:
 								// 1 - move toes (altho I sometimes test with 5V power offset)
 								// 16 - print global X and Y coords for Excel graphing
