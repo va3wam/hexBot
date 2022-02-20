@@ -291,24 +291,40 @@ bool processCmd(String payload)
    // FL,1000,2,10,0,0,0, 0,0,1, 0,0,1, 0,0,1, 0,0,1, 0,0,1, 0,0,1
    // action: - save given data into next position in the flow arrays, to be part of the motion initiated by flow_go command
    //
-   // some specialized commands (cycleStart, cycleEnd, executeCycle) don't use the last 18 numbers, and are in the form
+   // some specialized commands (cycleStart, cycleEnd, executeCycle, newHomexxx, toeSafetyX...) don't use the last 18 numbers, 
+   //   and are in the form
    // FL,msec,operation, param1-int, param2-float, param3-float, param4-float
    // example: FL, 0, 9, 7
-   // action: note that the next flow command is he start of cycle number 7
+   // action: next flow command is defined as he start of cycle number 7
+   // the short flow commands are the ones with f_operation codes that are:
+   // >= fo_newHomeHere  and  < 100
    {
    //   Serial.println("start processing flow command");
 
       // copy position description from MQTT flow command to next flow row
       // f_count starts at 0, which we use to store first position in row 0
       f_msecs[f_count] = arg[1].toInt();     // arg[0] is the FL command, arg[1] is msec time ...
+      // arg[2] is the operation code. If it's alphabetic, convert to equivalent number
+      if( !isValidNumber(arg[2]) )   // if it's a number, leave it, but if not, do a lookup translation
+      {  // wrap dashes around the given operation mnemonic, in upper case, to ensure lookup works
+         String op = arg[2];     // need a shorter non indexed variable to work with
+         if(op.substring(0,1) == " ") { op = op.substring(1,99);} // if there's a leading space, remove it
+         if(op.substring(0,1) == " ") { op = op.substring(1,99);} // if there's another leading space, remove it
+         if(op.substring(0,1) == " ") { op = op.substring(1,99);} // if there's another leading space, remove it
+         String opCode = "-" + format.stringToUpper(op) + "-"; // standardize non numeric code tp upper case
+         // sp2sl("opCode=",opCode);
+         String fcmds="-MGC--MLC--MGRH-MLRH-MGRL-MLRL-NHGC-NHLC-NHH--NHR--CPF--MCS--MCE--DC---TSX--TSY--TSZ--TSR--";
+         int cmdNum = (fcmds.indexOf(opCode) +5) /5; // look up command in above string, and convert to command number
+         arg[2] = f_flowOps[cmdNum];  //look up associated numeric operations code, and substitute it in for mnemonic
+      }
       f_operation[f_count] = arg[2].toInt(); // code for operation in this row of the flow, eg fo_moveAbs
 
-      f_lShape1[f_count] = arg[3].toInt();   // type of line. initially, always fl_straight
-      f_lShape2[f_count] = arg[4].toFloat(); // parameter to define line when it's a parabola, ellipse,...
-      f_lShape3[f_count] = arg[5].toFloat(); // more line parameters
-      f_lShape4[f_count] = arg[6].toFloat();
+      if(argN>2) {f_lShape1[f_count] = arg[3].toInt();}   // type of line. initially, always fl_straight
+      if(argN>3) {f_lShape2[f_count] = arg[4].toFloat();} // parameter to define line when it's a parabola, ellipse,...
+      if(argN>4) {f_lShape3[f_count] = arg[5].toFloat();} // more line parameters
+      if(argN>5) {f_lShape4[f_count] = arg[6].toFloat();}
 
-      if(argN > 6)   // if more comma separated values were given, move them into the flow row
+      if(argN > 6)   // if more comma separated values were given, move 18 into the flow row
       {
          f_legX[f_count][1] = arg[7].toFloat(); // X coordinate or delta value for leg 1
          f_legY[f_count][1] = arg[8].toFloat(); // Y coordinate or delta value for leg 1

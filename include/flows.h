@@ -49,19 +49,27 @@
 //  -----------------------------// start of flow row arraysq
 int f_msecs[flowLength];         // time duration in milliseconds for movement to this location
 
-int f_operation[flowLength];     // type of operation specified for this position
-   const int fo_moveAbs = 1;     // move to absolute location, coords are in global system
-   const int fo_moveLocal = 2;   // move to location given in local coords
-   const int fo_moveGRelHome = 3; // move to loc'n relative to home, coords = GLOBAL deltas relative to home position
-   const int fo_moveLRelHome = 4; // move to loc'n relative to home, coords = LOCAL deltas relative to home position
-   const int fo_moveRelLast = 5; // move to loc'n relative to last position, coords = deltas w.r.t. last position
-
-   const int fo_startAbs = 6;    // start of flow - go directly to an absolute location
-   const int fo_startRelHome=7;  // start of flow - go directly to a position relative to home position
-   const int fo_startPrev = 8;   // start flow, treating end of last flow as previous position
-   const int fo_markCycleStart=9;  // note this flow row number as the beginning of a numbered cycle within the flow
-   const int fo_markCycleEnd =10;  // note this flow row number as the end of a numbered cycle within the flow
-   const int fo_doCycle = 11;  // execute the specified cycle for the specified number of iterations.
+int f_operation[flowLength];        // type of operation specified for this position
+   const int fo_moveGlobal = 1;     // move to absolute location, coords are in global system
+   const int fo_moveLocal = 2;      // move to location given in local coords
+   const int fo_moveGRelHome = 3;   // move to loc'n relative to home, coords = GLOBAL deltas relative to home position
+   const int fo_moveLRelHome = 4;   // move to loc'n relative to home, coords = LOCAL deltas relative to home position
+   const int fo_moveGRelLast = 5;   // move to loc'n relative to last position, coords = global deltas w.r.t. last position
+   const int fo_moveLRelLast = 6;   // move to loc'n relative to last position, coords = local deltas w.r.t. last position
+// end of operations that that prepare coordinates for next leg movement, start of control commands
+   const int fo_newHomeGCoords = 20;// redefine home position using 18 global coords in this command
+   const int fo_newHomeLCoords = 21;// redefine home position using 18 local coords in this command
+// ---- end of long form commands containing 18 numbers
+   const int fo_newHomeHere = 41;   // define new homes for all legs at their current positions
+   const int fo_newHomeReset = 42;  // go back to original home position definitions for all legs
+   const int fo_continuePrevFlow = 43;  // start flow with next move, treating end of last flow as previous position
+   const int fo_markCycleStart=50;  // note this flow row number as the beginning of a numbered cycle within the flow
+   const int fo_markCycleEnd = 51;  // note this flow row number as the end of a numbered cycle within the flow
+   const int fo_doCycle = 52;       // execute the specified cycle for the specified number of iterations.
+   const int fo_toeSafetyX = 60;    // specify new plus and minus safety limits for local X coordinate
+   const int fo_toeSafetyY = 61;    // specify new plus and minus safety limits for local Y coordinate
+   const int fo_toeSafetyZ = 62;    // specify new plus and minus safety limits for local Z coordinate
+   const int fo_toeSafetyReset = 63;// return toe safety limits to default values defined at compile time
 
 int f_lShape1[flowLength];    // description of type of line to follow between last position and this one
    const int fl_straight = 10;   // straight line
@@ -76,6 +84,9 @@ float f_legX[flowLength] [7];    // X coord for each of 6 legs, 2nd index is leg
 float f_legY[flowLength] [7];    // Y coord for each of 6 legs, 2nd index is leg number
 float f_legZ[flowLength] [7];    // size 7 means indices 0 - 6, so can number legs from 1 to 6
 //  -----------------------------// end of flow row arrays
+
+int f_flowOps[20] ;              // flow comman operation codes, for translation of alpha mnemonics
+                                 // initialized in flows.cpp/setupFlows(), used in mqttBroker.cpp/ flow command  handler
 
 float f_lastLegX[7] ;              // working copy of coords for each leg
 float f_lastLegY[7] ;
@@ -101,8 +112,9 @@ int f_cycleStart[10];         // starting flow row number for each of 10 repeata
 int f_cycleEnd[10];           // ending flow row number for each of 10 repeatable cycles
 bool f_cycling;               // true iff we're executing a repeating cycle
 int f_cyclesLeft;             // counter for repeatable cycles
+int f_cycle;                  // cycle number variable used in processing cycle related commands
 int f_resumeRow;              // flow row number to resume at after a repeatable cycle is completed
-
+bool didControl;              // flag in procNextLine to flag that we did a control operation that didn't set up leg movement
 
 int f_count = 0;                 // counter as we process FLOW commands, accumulating flow rows, ends up as row count
 int f_active = 0;                // what row number we're executing, after a FLOW_GO command
@@ -145,28 +157,33 @@ const float pi = 3.1415926 ;
    const float BTOA = 17.063; // toe offset angle = angle between ankle servo vertical, and toe, in degrees
    const float BTOD = 3.245;  // toe offset distance. perpendicular distance from toe to ankle servo vertical line
 
-// coordinate system memory menmonic:
+// coordinate system memory mnemonic:
 // if direction dude is riding the bot like a bronco, 
 //     ...global X, Y, and Z follow the BLT rule:
 // Belly button points to +x
 // Left shoulder points to +y
 // Top of his head points to +z
 
-// if direction dude is standing on a leg's hip servo, facing away hexbot's center,
-//      ...local X, Y, and Z follow the BTL rule:
-// Belly button points to local +x
-// Top of head points to local +y
+// if direction dude is standing on a leg's hip servo, facing away from hexbot's center,
+//      ...local X, Y, and Z follow the FUL rule:
+// Forward points to local +x
+// Upward points to local +y
 // Left shoulder points to local +z
 
 
 // home position of each leg, using global coords
-float f_homeGlobX[7] ;         // X coord in global coords, for each of 6 legs
-float f_homeGlobY[7] ;         //  initialized in setupFlows()
-float f_homeGlobZ[7] ;
+float f_dynGHomeX[7] ;         // X coord for home in global coords, for each of 6 legs
+float f_dynGHomeY[7] ;         //  initialized in setupFlows(), changable by FLOW operation newHomexxx cmds
+float f_dynGHomeZ[7] ;
 
-float f_localHomeX = 13.78;   // home position in local coordinates
-float f_localHomeY = -10.60;  // (same for all legs)
-float f_localHomeZ = 0.0;
+const float f_staticHomeX = 13.78;   // home position in local coordinates
+const float f_staticHomeY = -10.60;  // (same for all legs)
+const float f_staticHomeZ = 0.0;
+
+float f_dynLHomeX[7] ;         // dynamic home's X coord in local coords, for each of 6 legs
+float f_dynLHomeY[7] ;         //  changable by FLOW operation newHomexxx cmds
+float f_dynLHomeZ[7] ;
+
 
 float f_hipX[7];           //global X coordinate for hip, for each leg
 float f_hipY[7];           // and Y, init'd in flows.cpp setupFlows()
@@ -319,5 +336,24 @@ void do_flow();
 
 // routine call templates
 bool prepNextLine();
-bool prepNextLine1();   
+bool prepNextLine1();
+
+void handle_fo_moveGlobal();        // routines within procNextLine1()
+void handle_fo_moveLocal();
+void handle_fo_moveGRelHome(); 
+void handle_fo_moveLRelHome();
+void handle_fo_moveGRelLast();
+void handle_fo_moveLRelLast();
+void handle_fo_markCycleStart();
+void handle_fo_markCycleEnd();
+void handle_fo_doCycle();
+void handle_fo_newHomeGCoords();
+void handle_fo_newHomeLCoords();
+void handle_fo_newHomeHere();
+void handle_fo_newHomeLReset();
+void handle_fo_toeSafetyX();
+void handle_fo_toeSafetyY();
+void handle_fo_toeSafetyZ();
+void handle_fo_toeSafetyReset();
+
 #endif // End of precompiler protected code block
