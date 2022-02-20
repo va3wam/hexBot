@@ -9,28 +9,49 @@ void setupFlows()
 {  // initialize params for the accumulation of flow rows from MQTT FLOW commands
    f_active = 0;      // what row number we fill next, and also the count of rows seen for current flow
                               // set up leg info that's indexable by leg number from 1 to 6
-   legIndexDriver[1] = 0;     // leg #1's river is 0, like whole right side
-   legIndexDriver[2] = 0;
-   legIndexDriver[3] = 0;
-   legIndexDriver[4] = 1;     // and driver for the right side is 1
-   legIndexDriver[5] = 1;
-   legIndexDriver[6] = 1;
 
-   legIndexHipPin[1] = 0;     // leg 1's hip servo is on pin 0 of it's PWM driver
-                              // knee pin = hip pin +1, ankle pin = hip pin +2
-   legIndexHipPin[2] = 3;     // leg 2's hip pin
-   legIndexHipPin[3] = 6;     // and so on
-   legIndexHipPin[4] = 0;
-   legIndexHipPin[5] = 3;
-   legIndexHipPin[6] = 6;
+// GLOBAL coords for each leg's home position
+// these are now dynamic, due to the fo_newHomexxx flow operations
+// these 6 lines are re-executed in the fo_newHomeReset operation
+   f_dynGHomeX[1] =  18.62 ; f_dynGHomeY[1] = -14.79 ; f_dynGHomeZ[1] = -10.60 ; 
+   f_dynGHomeX[2] =   0    ; f_dynGHomeY[2] = -20.71 ; f_dynGHomeZ[2] = -10.60 ;
+   f_dynGHomeX[3] = -18.62 ; f_dynGHomeY[3] = -14.79 ; f_dynGHomeZ[3] = -10.60 ;
+   f_dynGHomeX[4] =  18.62 ; f_dynGHomeY[4] =  14.79 ; f_dynGHomeZ[4] = -10.60 ;
+   f_dynGHomeX[5] =   0    ; f_dynGHomeY[5] =  20.71 ; f_dynGHomeZ[5] = -10.60 ;
+   f_dynGHomeX[6] = -18.62 ; f_dynGHomeY[6] =  14.79 ; f_dynGHomeZ[6] = -10.60 ;
 
-// global coords for each leg's home position
-   f_homeGlobX[1] =  18.62 ; f_homeGlobY[1] = -14.79 ; f_homeGlobZ[1] = -10.60 ; 
-   f_homeGlobX[2] =   0    ; f_homeGlobY[2] = -20.71 ; f_homeGlobZ[2] = -10.60 ;
-   f_homeGlobX[3] = -18.62 ; f_homeGlobY[3] = -14.79 ; f_homeGlobZ[3] = -10.60 ;
-   f_homeGlobX[4] =  18.62 ; f_homeGlobY[4] =  14.79 ; f_homeGlobZ[4] = -10.60 ;
-   f_homeGlobX[5] =   0    ; f_homeGlobY[5] =  20.71 ; f_homeGlobZ[5] = -10.60 ;
-   f_homeGlobX[6] = -18.62 ; f_homeGlobY[6] =  14.79 ; f_homeGlobZ[6] = -10.60 ;
+// perform a variety of per-leg initialization tasks
+
+   for(int legnum=1; legnum<=6; legnum++) 
+   {  f_dynLHomeX[legnum] = f_staticHomeX;   // initially, dynamic home is same as original home
+      f_dynLHomeY[legnum] = f_staticHomeY;
+      f_dynLHomeZ[legnum] = f_staticHomeZ;
+
+      legIndexDriver[legnum] = (legnum - 1) / 3 ;        // 0 for left side, 1 for right side
+      legIndexHipPin[legnum] = ((legnum -1) % 3 ) * 3;   // 0, 3, 6, 0, 3, 6
+   }
+
+// initialize the flow operation codes for translation of alpha mnemonics
+// index numbers are determined by position in the mnemonic lookup string in mqttBroker flow command processing
+// values are fo_operation codes, which are used in displatching by operation for short & long flow commands
+   f_flowOps[ 1] = fo_moveGlobal;      //MGC    Move to Global Coordinates
+   f_flowOps[ 2] = fo_moveLocal;       //MLC    Move to Local Coordinates
+   f_flowOps[ 3] = fo_moveGRelHome;    //MGRH   Move using Global offsets Relative to Home
+   f_flowOps[ 4] = fo_moveLRelHome;    //MLRH   Move using Local offsets Relative to Home
+   f_flowOps[ 5] = fo_moveGRelLast;    //MGRL   Move using Global offsets Relative to Last
+   f_flowOps[ 6] = fo_moveLRelLast;    //MLRL   Move using Local offsets Relative to Last
+   f_flowOps[ 7] = fo_newHomeGCoords;  //NHGC   New Home using Global Coordinates
+   f_flowOps[ 8] = fo_newHomeLCoords;  //NHLC   New Home using Local Coordinates
+   f_flowOps[ 9] = fo_newHomeHere;     //NHH    New Home Here
+   f_flowOps[10] = fo_newHomeReset;    //NHR    New Home Reset
+   f_flowOps[11] = fo_continuePrevFlow;//CPF    Continue Previous Flow
+   f_flowOps[12] = fo_markCycleStart;  //MCS    Mark Cycle Start
+   f_flowOps[13] = fo_markCycleEnd;    //MCE    Mark Cycle End
+   f_flowOps[14] = fo_doCycle;         //DC     Do Cycle
+   f_flowOps[15] = fo_toeSafetyX;      //TSX    Toe Safety X limits
+   f_flowOps[16] = fo_toeSafetyY;      //TSY    Toe Safety Y limits
+   f_flowOps[17] = fo_toeSafetyX  ;    //TSZ    Toe Safety Z limits
+   f_flowOps[18] = fo_toeSafetyReset;  //TSR    Toe Safety Reset
 
 // global coords for each leg's hip position
    f_hipX[1] = 8.87;  f_hipY[1] = -5.05;     
@@ -46,6 +67,9 @@ void setupFlows()
    legNum[4] = "4" ;
    legNum[5] = "5" ;
    legNum[6] = "6" ;
+
+// initialize dynamic home position in local coords for each leg
+
 }
 
 // standard doxygen docs here
@@ -288,7 +312,7 @@ void do_flow()          // called from loop if there's a flow executing that nee
       if((toeMoveAction & fa_dispFlow) != 0)    // if requested in the FG command at the end of the script
       {  // display the entire flow, nicely formatted, with row numbers
          for(int r=0; r<f_count; r++)  // step through the flow rows
-         {  // most flow rows are long, except the ones that control repeated cycles which lack the 18 trailing numbers
+         {  // most flow rows are long, except the control ones for cycles, new home positions, toe safety set up, etc which lack the 18 trailing numbers
             if(f_operation[r] >= fo_markCycleStart && f_operation[r] <= fo_doCycle )   // if it's a short flow row...
             {  printf("%02d)%4d %2d %2d %6.2f %6.2f %6.2f\n",r,f_msecs[r],f_operation[r],f_lShape1[r],f_lShape2[r],f_lShape3[r],f_lShape4[r]);
             }
@@ -304,6 +328,10 @@ void do_flow()          // called from loop if there's a flow executing that nee
             }
          }
       }
+      // last flow might have changed the home position. start this new flow with the default home position
+      handle_fo_newHomeLReset();
+      f_active = 0;     // undo the change to f_active that the home reset does
+      
       // we're going to need local coords to be able to figure angles, then the PWM commands to feed to servos
       // the operation code in f_operation[f_active] tells us what kind of coords we were given
       f_goodData = true;               // assume thing will go well, & f_operation is valid
@@ -491,24 +519,57 @@ void do_flow()          // called from loop if there's a flow executing that nee
 bool prepNextLine() 
 
 {
-   bool cycleFlag = prepNextLine1() ;        // look at next line, which could be a cycle command
-   if(cycleFlag)  // it was a cycle command, so redo prepNextLine to get movement command
+   prepNextLine1() ;        // look at next line, which could be a control command
+   if(didControl)          // it was a control command, so redo prepNextLine to get movement command
    {  if((toeMoveAction & fa_graphPrint) == 0) { sp2sl(" start of flow-row #",f_active); }
       // note dash in "flow-row" in above message 
-      cycleFlag = prepNextLine1();  // could have 2 cycle commands in a row: cycleEnd and doCycle
-      if(cycleFlag)
-      {  if((toeMoveAction & fa_graphPrint) == 0) { sp2sl(" start of flow~row #",f_active); } 
-      // note tilde in "flow~row" in above message
-         prepNextLine1();
-      }
-   }  // if(cycleFlag)  // it was a cycle command. redo prepNextLine to get movement command
+      prepNextLine1();     // could have 2 control commands in a row.
+      if(didControl)
+      {  if((toeMoveAction & fa_graphPrint) == 0) { sp2sl(" start of flow~row #",f_active);} 
+         // note tilde in "flow~row" in above message
+         prepNextLine1();         
+         if(didControl)
+         {  if((toeMoveAction & fa_graphPrint) == 0) { sp2sl(" start of flow~row #",f_active);} 
+            // note tilde in "flow~row" in above message
+            prepNextLine1();         
+            if(didControl)
+            {  if((toeMoveAction & fa_graphPrint) == 0) { sp2sl(" start of flow~row #",f_active);} 
+               // note tilde in "flow~row" in above message
+               prepNextLine1();         
+               if(didControl)
+               {  if((toeMoveAction & fa_graphPrint) == 0) { sp2sl(" start of flow~row #",f_active);} 
+                  // note tilde in "flow~row" in above message
+                  prepNextLine1();         
+                  if(didControl)
+                  {  if((toeMoveAction & fa_graphPrint) == 0) { sp2sl(" start of flow~row #",f_active);} 
+                     // note tilde in "flow~row" in above message
+                     prepNextLine1();         
+                     if(didControl)
+                     {  if((toeMoveAction & fa_graphPrint) == 0) { sp2sl(" start of flow~row #",f_active);} 
+                        // note tilde in "flow~row" in above message
+                        prepNextLine1();         
+                        if(didControl)
+                        {  if((toeMoveAction & fa_graphPrint) == 0) { sp2sl(" start of flow~row #",f_active);} 
+                           // note tilde in "flow~row" in above message
+                           prepNextLine1();         
+                           if(didControl) { sp2sl(" **** unhandled 9 consecutive control commands around flow row: ",f_active)}
+                        } // if(didControl)
+                     } // if(didControl)
+                  } // if(didControl)
+               } // if(didControl)
+            } // if(didControl)
+         } // if(didControl)
+      } // if(didControl)
+   }  // if(didControl)    // really should make this structure a loop
    return true;
 }
-bool prepNextLine1()             // set up for toes movements according to next line in flow row
+//          if(didControl) { sp2sl(" **** unhandled 3 consecutive control commands around flow row: ",f_active)}
 
-{                             // return true if we saw a cycle command and still need to set up for movement
-                                 // return false if we saw a move command, and not a cycle command
-// prepare for next line that goes from position in last flow row to one in current flow row
+// bool prepNextLine1()  - // set up for toes movements according to next line in flow row
+
+     // return true if we saw a control command and still need to set up for movement
+     // return false if we saw a move command, and not a control command command
+// prepare for next movement line that goes from position in last flow row to one in current flow row
 // which is identified by row number in f_active
 // actions, all taken for each leg:
 // - figure global coords of the end point of the line, which could be given as absolute global coords,
@@ -522,13 +583,17 @@ bool prepNextLine1()             // set up for toes movements according to next 
 //          - translate servo angles to PWM integer values
 //          - feed the PWM values to the servers
 
-  // initialize to start doing frame moves in the line between
-   // previous flow row's position: lastLegX[L], Y, Z
+bool prepNextLine1()          
+
+{ 
+  // initialize to start doing frame by frame moves in the line between
+   // previous flow row's position: lastLegX[L], Y, Z, and
    // this flow row's (identified by f_active) position: f_legX[f_active][L], Y, Z
    // local coords of end point of line are left in f_endLegX[L], Y, Z
    // f_operation in flow row tells us what kind of numbers are given for each leg
-   int cycle;        // internal temp variable
-   f_goodData = true;  // initially assume all will go well
+
+   f_goodData = true;   // initially assume all will go well
+   didControl = false;  // ...and that we'll do a leg movement command, not a control command
    rgbLedClr ++; // Increment rgb colour to use next.
    if(rgbLedClr > numColoursSupported) // Never exceed known colour numbers
    {
@@ -536,81 +601,29 @@ bool prepNextLine1()             // set up for toes movements according to next 
    } // if
    // following line removed because it causes console messages in the middle of spreadsheet data
    // setStdRgbColour(rgbLedClr); // Set RGB led colour
-   if(f_operation[f_active] == fo_moveGRelHome || f_operation[f_active] == fo_startRelHome)
-   {  // we were given offsets relative to home position, expressed in GLOBAL coords, so add in home coords
-      for(L=1; L<=6; L++)  // add offset to home's global coord, to get final global coord
-      {  f_tmpX = f_legX[f_active][L] + f_homeGlobX[L];   
-         f_tmpY = f_legY[f_active][L] + f_homeGlobY[L];
-         f_tmpZ = f_legZ[f_active][L] + f_homeGlobZ[L];
-         // then convert global coords to local coords
-         globCoordsToLocal(L,f_tmpX,f_tmpY,f_tmpZ);   // local coords returned in f_endLegX[L],...
-      }
-   }
-   else if (f_operation[f_active] == fo_moveLRelHome)    // relative to home position, deltas in local coords
-   {  // we were given offsets relative to leg's home position, expressed in LOCAL coordinates
-      for(L=1; L<=6; L++)
-      {  f_endLegX[L] = f_legX[f_active][L] + f_localHomeX;   // get local offset out of flow row, and add to local home coords
-         f_endLegY[L] = f_legY[f_active][L] + f_localHomeY;
-         f_endLegZ[L] = f_legZ[f_active][L] + f_localHomeZ;
-      }  
-   }
-   else if (f_operation[f_active] == fo_moveAbs || f_operation[f_active] == fo_startAbs)
-   {  // we were given absolute coords, and need to convert to local coords
-      for(L=1; L<=6; L++)   // l stands for leg. short to avoid cobol expression syndrome
-      {  globCoordsToLocal(L,f_legX[f_active][L],f_legY[f_active][L],f_legZ[f_active][L]);   // local coords returned in f_endLegX[L],...
-      }
-   }
-   else if (f_operation[f_active] == fo_moveLocal)   // does flow row contain local cords?
-   {  // yup, we were given the local coordinate that we need, so just copy them
-      for(L=1; L<=6; L++) 
-      { f_endLegX[L] = f_legX[f_active][L];   // get local coords right out of flow row
-        f_endLegY[L] = f_legY[f_active][L];
-        f_endLegZ[L] = f_legZ[f_active][L];
-      }
-   }
-   else if(f_operation[f_active] == fo_markCycleStart )
-   {  // this flow row is a marker flagging the start of a repeatable cycle. param1 is the cycle #
-      cycle = f_lShape1[f_active];  // get cycle identifier from flow row
-      if(cycle < 0 || cycle > 10) { cycle = 0;}  // force out of bounds cycle # to a safe one
-      f_cycleStart[cycle] = f_active + 1;     // remember that this cycle starts at the next flow row
-      f_active ++ ;            // advance to flow row after the one with the markCycleStart operation code
-      return true;
-   }
-   else if(f_operation[f_active] == fo_markCycleEnd )
-   {  // this flow row is a marker flagging the end of a repeatable cycle. param1 is the cycle # 
-      cycle = f_lShape1[f_active];  // get cycle identifier from flow row
-      if(cycle < 0 || cycle > 10) { cycle = 0;}  // force out of bounds cycle # to a safe one
-      f_cycleEnd[cycle] = f_active - 1;     // remember that this cycle ends at the previous flow row
-      // not sure we need to track f_cycleEnd, since we run in to the end marker anyway.
-      if(!f_cycling)    // are we currently executing a repeating cycle?     
-      {   // if we're not in a cycle, we're just executing it once, & carrying on
-         f_active ++ ;                 // advance to flow row after the one with the markCycleStart operation code
-         return true;
-      }
-      else
-      {  // if we are cycling, then we've just completed one more repetition of the cycle
-         if(f_cyclesLeft-- > 0)        //decrement repetition counter & check it
-         {  // there are still more reps to do
-            f_active = f_cycleStart[cycle];     // we want to continue at the beginning of the cycle
-            return true;               // signal the need for another call to set up for next movements
-         }
-         else  // there weren't any reps left for repeated cycle
-         {  f_cycling = false;         //we're not running a cycle repetition anymore
-            f_active = f_resumeRow;    // continue just after the flow row that requested the cycle
-            return true;               // signal the need for another call to set up for next movements
-         } 
-      }  
-   } // else if(f_operation[f_active] == fo_markCycleEnd )
-   else if (f_operation[f_active] == fo_doCycle)
-   {  //  the flow row is a marker telling robot to execute the repeatable cycle whose number is in param 1
-      cycle = f_lShape1[f_active];           // get cycle identifier from flow row
-      if(cycle < 0 || cycle > 10) { cycle = 0;}  // force out of bounds cycle # to a safe one
-      f_cyclesLeft = f_lShape2[f_active];    // second parameter is repetition count for the cycle
-      f_resumeRow = f_active + 1;            // what flow row to resume flow processing at after the repeated cycle is done
-      f_active = f_cycleStart[cycle];        // next flow row to execute is start of cycle
-      f_cycling = true;                      // note that we are in a repeating cycle.
-      return true;                           // have to recall ProcNextLine1 for new active flow row
-   }
+   if      (f_operation[f_active] == fo_moveGlobal)         {handle_fo_moveGlobal();} 
+   else if (f_operation[f_active] == fo_moveLocal)       {handle_fo_moveLocal();} 
+   else if (f_operation[f_active] == fo_moveGRelHome)    {handle_fo_moveGRelHome();}
+   else if (f_operation[f_active] == fo_moveLRelHome)    {handle_fo_moveLRelHome();}
+
+   else if (f_operation[f_active] == fo_moveGRelLast)    {handle_fo_moveGRelLast();} 
+   else if (f_operation[f_active] == fo_moveLRelLast)    {handle_fo_moveLRelLast();}    // FO_moveGRelLast and fo_moveLRelLast, moving relative to last position, aren't implemented yet
+
+   else if (f_operation[f_active] == fo_newHomeGCoords)  {handle_fo_newHomeGCoords();}
+   else if (f_operation[f_active] == fo_newHomeLCoords)  {handle_fo_newHomeLCoords();}
+   else if (f_operation[f_active] == fo_newHomeHere)     {handle_fo_newHomeHere();}
+   else if (f_operation[f_active] == fo_newHomeReset)    {handle_fo_newHomeLReset();}
+   //else if (f_operation[f_active] == fo_ContinuePrev)    {handle_fo_ContinuePrev();}
+
+   else if (f_operation[f_active] == fo_markCycleStart ) {handle_fo_markCycleStart();}
+   else if (f_operation[f_active] == fo_markCycleEnd )   {handle_fo_markCycleEnd();}
+   else if (f_operation[f_active] == fo_doCycle)         {handle_fo_doCycle();}
+
+   else if (f_operation[f_active] == fo_toeSafetyX)      {handle_fo_toeSafetyX();}
+   else if (f_operation[f_active] == fo_toeSafetyY)      {handle_fo_toeSafetyY();}
+   else if (f_operation[f_active] == fo_toeSafetyZ)      {handle_fo_toeSafetyZ();}
+   else if (f_operation[f_active] == fo_toeSafetyReset)  {handle_fo_toeSafetyReset();}
+
 
    else
    {  // unsupported op code in nextfirst row - abort
@@ -619,20 +632,28 @@ bool prepNextLine1()             // set up for toes movements according to next 
       f_goodData = false;        // bypass rest of do_flow processing
       // need to avoid falling into following code. use a flag for "good data seen" ?
    }
-   if(f_goodData)       // continue only if we haven't aborted due to an error
+   if(f_goodData)       // continue only if we haven't aborted due to an error, 
+                        // and didn't do a control command that already returned
    {
       // get here if we've been able to calculate local coordinates for next toe position
       // now we need to see if requested position is within "safe positions box"
-      String badLegs = "" ;   // error message identifying unsafe positions
+
+      String badLegs = "" ;   // initialize error message identifying unsafe positions
       for(L=1; L<=6; L++ )       // go thru all legs
       { 
 //sp2s(f_endLegX[L],f_endLegY[L]); sp; sp1l(f_endLegZ[L]);
-         if(f_endLegX[L] - f_localHomeX > safeMaxPosX){ badLegs = badLegs + legNum[L] + "XP ";sp3sl("XP",f_localHomeX,f_endLegX[L]);}
-         if(f_localHomeX - f_endLegX[L] > safeMaxNegX){ badLegs = badLegs + legNum[L] + "XN ";sp3sl("XN",f_localHomeX,f_endLegX[L]);}
-         if(f_endLegY[L] - f_localHomeY > safeMaxPosY){ badLegs = badLegs + legNum[L] + "YP ";sp3sl("YP",f_localHomeY,f_endLegY[L]);}
-         if(f_localHomeY - f_endLegY[L] > safeMaxNegY){ badLegs = badLegs + legNum[L] + "YN ";sp3sl("YN",f_localHomeY,f_endLegY[L]);}
-         if(f_endLegZ[L] - f_localHomeZ > safeMaxPosZ){ badLegs = badLegs + legNum[L] + "ZP ";sp3sl("ZP",f_localHomeZ,f_endLegZ[L]);}
-         if(f_localHomeZ - f_endLegZ[L] > safeMaxNegZ){ badLegs = badLegs + legNum[L] + "ZN ";sp3sl("ZN",f_localHomeZ,f_endLegZ[L]);}
+         if(f_endLegX[L] - f_staticHomeX > safeMaxPosX){badLegs =badLegs +legNum[L] +"XP ";
+            sp5sl(L,"XP:home,new,max=",f_staticHomeX,f_endLegX[L],safeMaxPosX);}
+         if(f_staticHomeX - f_endLegX[L] > safeMaxNegX){badLegs =badLegs +legNum[L] +"XN ";
+            sp5sl(L,"XN:home,new,max=",f_staticHomeX,f_endLegX[L],safeMaxNegX);}
+         if(f_endLegY[L] - f_staticHomeY > safeMaxPosY){badLegs =badLegs +legNum[L] +"YP ";
+            sp5sl(L,"YP:home,new,max=",f_staticHomeY,f_endLegY[L],safeMaxPosY);}
+         if(f_staticHomeY - f_endLegY[L] > safeMaxNegY){badLegs =badLegs +legNum[L] +"YN ";
+            sp5sl(L,"YN:home,new,max=",f_staticHomeY,f_endLegY[L],safeMaxNegY);}
+         if(f_endLegZ[L] - f_staticHomeZ > safeMaxPosZ){badLegs =badLegs +legNum[L] +"ZP ";
+            sp5sl(L,"ZP:home,new,max=",f_staticHomeZ,f_endLegZ[L],safeMaxPosZ);}
+         if(f_staticHomeZ - f_endLegZ[L] > safeMaxNegZ){badLegs =badLegs +legNum[L] +"ZN ";
+            sp5sl(L,"ZN:home,new,max=",f_staticHomeZ,f_endLegZ[L],safeMaxNegZ);}
       }  // for L=1...
       if(badLegs != "")             // if any safety violation ocurred..
       {  f_goodData = false;        // abort further processing of the flow row
@@ -654,5 +675,227 @@ bool prepNextLine1()             // set up for toes movements according to next 
       }  // else if f_active != 0
    } // if f_goodData
    return false;            // return, telling caller there's no need for an encore call due to cycle command
+} 
 
-}                     
+// ======== handler routines for the various f_operation codes in flow commands =========
+
+void handle_fo_moveGlobal()
+{  // we were given absolute coords, and need to convert to local coords
+   for(L=1; L<=6; L++)   // l stands for leg. short to avoid cobol expression syndrome
+   {  globCoordsToLocal(L,f_legX[f_active][L],f_legY[f_active][L],f_legZ[f_active][L]);   // local coords returned in f_endLegX[L],...
+   }
+} // handle_fo_moveAbs()
+
+void handle_fo_moveLocal()   // does flow row contain local cords?
+{  // yup, we were given the local coordinate that we need, so just copy them
+   for(L=1; L<=6; L++) 
+   {  f_endLegX[L] = f_legX[f_active][L];   // get local coords right out of flow row
+      f_endLegY[L] = f_legY[f_active][L];
+      f_endLegZ[L] = f_legZ[f_active][L];
+   }
+} // void handle_fo_moveLocal()
+
+
+void handle_fo_moveGRelHome()
+{  // we were given offsets relative to home position, expressed in GLOBAL coords, so add in home coords
+   for(L=1; L<=6; L++)  // add offset to home's global coord, to get final global coord
+   {  f_tmpX = f_legX[f_active][L] + f_dynGHomeX[L];   
+      f_tmpY = f_legY[f_active][L] + f_dynGHomeY[L];
+      f_tmpZ = f_legZ[f_active][L] + f_dynGHomeZ[L];
+      // then convert global coords to local coords
+      globCoordsToLocal(L,f_tmpX,f_tmpY,f_tmpZ);   // local coords returned in f_endLegX[L],...
+   }
+} // void handle_fo_moveGRelHome() 
+
+void handle_fo_moveLRelHome()
+{  // we were given offsets relative to leg's home position, expressed in LOCAL coordinates
+   for(L=1; L<=6; L++)
+   {  f_endLegX[L] = f_legX[f_active][L] + f_dynLHomeX[L];   // get local offset out of flow row, and add to local home coords
+      f_endLegY[L] = f_legY[f_active][L] + f_dynLHomeY[L];
+      f_endLegZ[L] = f_legZ[f_active][L] + f_dynLHomeZ[L];
+   }  
+} // void handle_fo_moveLRelHome()
+
+void handle_fo_moveGRelLast()
+{  // we were given offsets in global coords from the last toe positions
+// translate current location to global coords
+   for(L=1; L<=6; L++)
+   {  // translate current position to global coords
+      localCoordsToGlobal(L, f_lastLegX[L], f_lastLegY[L], f_lastLegZ[L]);   // convert local to global coords, into f_graphX...
+      // add offsets from flow command
+      f_graphX += f_legX[f_active][L];
+      f_graphY += f_legY[f_active][L];
+      f_graphZ += f_legZ[f_active][L];
+      // then translate back into local coords
+      globCoordsToLocal(L,f_graphX,f_graphY,f_graphZ);   // local coords returned in f_endLegX[L],...
+   }
+} // handle_fo_moveGRelLast()
+
+void handle_fo_moveLRelLast()
+{  // we were given offsets in local coords from the last toe positions
+   for(L=1; L<=6; L++)
+   {  f_endLegX[L] = f_legX[f_active][L] + f_lastLegX[L];   // get local offset out of flow row, and add to current position
+      f_endLegY[L] = f_legY[f_active][L] + f_lastLegY[L];
+      f_endLegZ[L] = f_legZ[f_active][L] + f_lastLegZ[L];
+   }  
+} // handle_fo_moveLRelLast()
+
+void handle_fo_markCycleStart()
+{  // this flow row is a marker flagging the start of a repeatable cycle. param1 is the cycle #
+   f_cycle = f_lShape1[f_active];  // get cycle identifier from flow row
+   if(f_cycle < 0 || f_cycle > 10) { f_cycle = 0;}  // force out of bounds cycle # to a safe one
+   f_cycleStart[f_cycle] = f_active + 1;     // remember that this cycle starts at the next flow row
+   f_active ++ ;           // advance to flow row after the one with the markCycleStart operation code
+   didControl = true;      // signal that we did a control command rather than preparing leg moves
+   return;
+} // void handle_fo_markCycleStart()
+
+void handle_fo_markCycleEnd()
+{  // this flow row is a marker flagging the end of a repeatable cycle. param1 is the cycle # 
+   f_cycle = f_lShape1[f_active];  // get cycle identifier from flow row
+   if(f_cycle < 0 || f_cycle > 10) { f_cycle = 0;}  // force out of bounds cycle # to a safe one
+   f_cycleEnd[f_cycle] = f_active - 1;     // remember that this cycle ends at the previous flow row
+   // not sure we need to track f_cycleEnd, since we run in to the end marker anyway.
+   if(!f_cycling)    // are we currently executing a repeating cycle?     
+   {   // if we're not in a cycle, we're just executing it once, & carrying on
+      f_active ++ ;                 // advance to flow row after the one with the markCycleStart operation code
+      didControl = true;            // signal that we did a control command rather than preparing leg moves
+      return;
+   }
+   else
+   {  // if we are cycling, then we've just completed one more repetition of the cycle
+      if(f_cyclesLeft-- > 0)        //decrement repetition counter & check it
+      {  // there are still more reps to do
+         f_active = f_cycleStart[f_cycle];     // we want to continue at the beginning of the cycle
+         didControl = true;         // signal that we did a control command rather than preparing leg moves
+         return ;                   // signal the need for another call to set up for next movements
+      }
+      else  // there weren't any reps left for repeated cycle
+      {  f_cycling = false;         //we're not running a cycle repetition anymore
+         f_active = f_resumeRow;    // continue just after the flow row that requested the cycle
+         didControl = true;         // signal that we did a control command rather than preparing leg moves
+         return ;                   // signal the need for another call to set up for next movements
+      } 
+   }  
+} // void handle_fo_markCycleEnd()
+
+void handle_fo_doCycle()
+{  //  the flow row is a marker telling robot to execute the repeatable cycle whose number is in param 1
+   f_cycle = f_lShape1[f_active];         // get cycle identifier from flow row
+   if(f_cycle < 0 || f_cycle > 10) { f_cycle = 0;}  // force out of bounds cycle # to a safe one
+   f_cyclesLeft = f_lShape2[f_active];    // second parameter is repetition count for the cycle
+   f_resumeRow = f_active + 1;            // what flow row to resume flow processing at after the repeated cycle is done
+   f_active = f_cycleStart[f_cycle];      // next flow row to execute is start of cycle
+   f_cycling = true;                      // note that we are in a repeating cycle.
+   didControl = true;                     // signal that we did a control command rather than preparing leg moves
+   return;                                // have to re-call ProcNextLine1 for new active flow row
+} // void handle_fo_doCycle()
+
+void handle_fo_newHomeGCoords()
+{  // the 18 numbers in the arguments are the new GLOBAL coordinates of the home position
+   // MQTT command processing put them into the flow arrays f_legX[f_active][L] ...
+
+   for(L=1; L<=6; L++)           // for all the legs
+   {
+      f_dynGHomeX[L] = f_legX[f_active] [L];   // new dynamic home local coord is right out of flow command
+      f_dynGHomeY[L] = f_legY[f_active] [L];
+      f_dynGHomeZ[L] = f_legZ[f_active] [L];
+
+      // we'll need to convert global coords to get equivalent local coords
+      // first, save the f_endLegX[L]... values used to return answers - might need to conserve them
+      float GTL_X = f_endLegX[L];
+      float GTL_Y = f_endLegY[L];
+      float GTL_Z = f_endLegZ[L];
+      
+      globCoordsToLocal(L,f_dynGHomeX[L],f_dynGHomeY[L],f_dynGHomeZ[L]);
+      // local coordinates are returned in f_endLegX[legnumber],...
+      f_dynLHomeX[L] = f_endLegX[L];
+      f_dynLHomeY[L] = f_endLegY[L];
+      f_dynLHomeZ[L] = f_endLegZ[L];
+      // and restore original values for f_endLegX[L]...
+      f_endLegX[L] = GTL_X;
+      f_endLegY[L] = GTL_Y;
+      f_endLegZ[L] = GTL_Z;
+   } // for(L=1; L<=6; L++)  
+   f_active ++ ;                 // advance to flow row after the one with this control operation code
+   didControl = true;                  // signal that we did a control command rather than preparing leg moves
+}
+
+void handle_fo_newHomeLCoords()
+{  // the 18 numbers in the arguments are the new LOCAL coordinates of the home position
+   // MQTT command processing put them into the flow arrays f_legX[f_active][L] ...
+
+   for(L=1; L<=6; L++)           // for all the legs
+   {
+      f_dynLHomeX[L] = f_legX[f_active] [L];   // new dynamic home local coord is right out of flow command
+      f_dynLHomeY[L] = f_legZ[f_active] [L];
+      f_dynLHomeZ[L] = f_legX[f_active] [L];
+
+      // we'll need to convert local coords to get equivalent global coords
+      localCoordsToGlobal(L,f_dynLHomeX[L],f_dynLHomeY[L],f_dynLHomeZ[L]);
+      // answers (global x,y,z) are returned in f_graphX, f_graphY, and f_graphZ
+      f_dynGHomeX[L] = f_graphX;
+      f_dynGHomeY[L] = f_graphY;
+      f_dynGHomeZ[L] = f_graphZ;
+   }
+   f_active ++ ;                 // advance to flow row after the one with this control operation code
+   didControl = true;                  // signal that we did a control command rather than preparing leg moves
+}
+
+void handle_fo_newHomeHere()        // new home position is now defined as current toe positions
+{  // need to redefine both local and global home variables, f_dynLHomeX[l]... and f_dynGHomeX[L]...
+
+   // the local part is easy - they're sitting in f_endLegX[L]... from last movement
+   for (L=1; L<=6; L++)             // for all the legs...
+   {
+      f_dynLHomeX[L] = f_endLegX[L];   // new dynamic home local coord is end of line we just finished
+      f_dynLHomeY[L] = f_endLegY[L]; 
+      f_dynLHomeZ[L] = f_endLegZ[L]; 
+      // we'll need to convert local coords to get equivalent global coords
+      localCoordsToGlobal(L,f_dynLHomeX[L],f_dynLHomeY[L],f_dynLHomeZ[L]);
+      // answers (global x,y,z) are returned in f_graphX, f_graphY, and f_graphZ
+      f_dynGHomeX[L] = f_graphX;
+      f_dynGHomeY[L] = f_graphY;
+      f_dynGHomeZ[L] = f_graphZ;
+   }
+   f_active ++ ;                 // advance to flow row after the one with this control operation code
+   didControl = true;                  // signal that we did a control command rather than preparing leg moves
+}
+
+void handle_fo_newHomeLReset()
+{
+// GLOBAL coords for each leg's home position
+// these are now dynamic, due to the fo_newHomexxx flow operations
+// these 6 lines are re-executed in the fo_newHomeReset operation
+   f_dynGHomeX[1] =  18.62 ; f_dynGHomeY[1] = -14.79 ; f_dynGHomeZ[1] = -10.60 ; 
+   f_dynGHomeX[2] =   0    ; f_dynGHomeY[2] = -20.71 ; f_dynGHomeZ[2] = -10.60 ;
+   f_dynGHomeX[3] = -18.62 ; f_dynGHomeY[3] = -14.79 ; f_dynGHomeZ[3] = -10.60 ;
+   f_dynGHomeX[4] =  18.62 ; f_dynGHomeY[4] =  14.79 ; f_dynGHomeZ[4] = -10.60 ;
+   f_dynGHomeX[5] =   0    ; f_dynGHomeY[5] =  20.71 ; f_dynGHomeZ[5] = -10.60 ;
+   f_dynGHomeX[6] = -18.62 ; f_dynGHomeY[6] =  14.79 ; f_dynGHomeZ[6] = -10.60 ;
+
+// LOCAL coords for each leg's home position
+// these are now dynamic, due to the fo_newHomexxx flow operations
+// this is re-executed in the fo_newHomeReset operation
+   for(int legnum=1; legnum<=6; legnum++) 
+   {  f_dynLHomeX[legnum] = f_staticHomeX;   // initially, dynamic home is same as original home
+      f_dynLHomeY[legnum] = f_staticHomeY;
+      f_dynLHomeZ[legnum] = f_staticHomeZ;
+   }
+   f_active ++ ;                 // advance to flow row after the one with this control operation code
+   didControl = true;              // signal that we did a control command rather than preparing leg moves
+   return;
+}
+
+void handle_fo_toeSafetyX()
+{}
+
+void handle_fo_toeSafetyY()
+{}
+
+void handle_fo_toeSafetyZ()
+{}
+
+void handle_fo_toeSafetyReset()
+{}
+
