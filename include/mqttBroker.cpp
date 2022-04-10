@@ -506,9 +506,49 @@ bool processCmd(String payload)
    }    // if cmd = "MOVE_LEG"
 */
    // declare variables for upcoming servo test commands
-   int sr_deg, sr_pwm, sr_srv, sr_srv2;
+   int sr_deg, sr_pwm, sr_srv, sr_srv2, sr_side, sr_port;
    bool sr_OK;
    String sr_cause;
+
+// <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><> start of new command
+
+// Servo_Test_PWM command to allow testing of servos using specific PWM values
+//  Servo_Test_PWM <side (0-1)> <port(0-15)> <PWM (100-500?)>
+//  Shortform: STP
+//  Example: STP 0, 15, 300
+   if(cmd == "SERVO_TEST_PWM" || cmd == "STP")
+   {
+      sr_cause = ""; // initially, no error message
+      sr_OK = true;  // and arguments were OK
+      if(argN != 3)  // need 3 args: side, port & PWM
+      {
+         sr_OK = false;
+         sr_cause += " need 3 arguments";
+      } // if(argN != 3) 
+      else //  if(argN != 3)
+      {
+         sr_side = arg[1].toInt();  // translate 3 argument strings to integers
+         sr_port = arg[2].toInt();
+         sr_pwm  = arg[3].toInt();
+         // range check the arguments
+         if(sr_side < 0 || sr_side > 1)  {sr_OK = false; sr_cause += " bad arg 1: side value.";}
+         if(sr_port < 0 || sr_port > 15) {sr_OK = false; sr_cause += " bad arg 2: port value.";}
+         if(sr_pwm < 100 || sr_pwm > 500) {sr_OK = false; sr_cause += " bad arg 3: PWM value.";}
+
+      } // else if(argN != 3)
+      if(sr_OK == false) // if we've run into a problem with the command arguments, report & abort
+      {
+         sp2sl("<STP command> argument error:",sr_cause);
+      } // if(sr_OK == false)
+      else // if(sr_OK == false)
+      {
+         // all went well with argument processing, lets move a servo
+         pwmDriver[sr_side].setPWM(sr_port, pwmClkStart, sr_pwm);
+         // and brag about what we've done on the console
+         sp4sl("<STP command> successful servo movement: side, port, PWM: ", sr_side, sr_port, sr_pwm);
+      } // else // if(sr_OK == false)
+      return sr_OK;
+   } // if(cmd == "SERVO_TEST_PWM" || cmd == "STP")
 
 // <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><> start of new command
 
