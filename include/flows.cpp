@@ -353,7 +353,7 @@ void do_flow()          // called from loop if there's a flow executing that nee
                f_lastAngK[L] = f_angK;
                f_lastAngA[L] = f_angA;
 
-               // now, one servo wihin the leg at a time, figure the pwm value, and move the servo
+               // now, one servo within the leg at a time, figure the pwm value, and move the servo
                // might have to temporarily negate angles, due to opposite servo mounting on either side of bot
                t_angH = f_angH;    // may need to negate this angle for PWM calculation purposes, depending on leg
                t_angK = f_angK;
@@ -443,19 +443,35 @@ void do_flow()          // called from loop if there's a flow executing that nee
                // starting with the hip...
                if((toeMoveAction & fa_moveServos) != 0)    // did flow_go command options tell us to move servos?
                {  if(f_angH != f_lastAngH[L])               // if new hip angle is different than last one, move the servo 
-                  {  pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L],  pwmClkStart, mapDegToPWM(t_angH,0));
+                  {  pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L],  pwmClkStart, mapDegToPWM(t_angH,0)); 
+                     #ifdef debug_servos
+                        nl;   // start a new line to keep debug output readable
+                        sp4sl("move hip: leg, angle, millis:",L,t_angH,millis());
+                        delay(5); //give the PCA board a rest before we move knee, or ankle
+                     #endif // debug_servos
                      f_lastAngH[L] = f_angH;                // and update last angle for this servo
                   }
                }
                if((toeMoveAction & fa_moveServos) != 0)    // did flow_go command options tell us to move servos?
                {  if(f_angK != f_lastAngK[L])               // only if the knee angle has changed...
                   {  pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L]+1,pwmClkStart, mapDegToPWM(t_angK,0));
+                     #ifdef debug_servos
+                        nl;
+                        sp4sl("move knee: leg, angle, millis:",L,t_angK,millis());
+                        delay(5); //give the PCA board rest before we move ankle (possibly)
+                     #endif // debug_servos
+
                      f_lastAngK[L] = f_angK;
                   }
                }
                if((toeMoveAction & fa_moveServos) != 0)    // did flow_go command options tell us to move servos?
                {  if(f_angA != f_lastAngA[L])               // only if ankle angle has changed...
                   {  pwmDriver[legIndexDriver[L]].setPWM(legIndexHipPin[L]+2,pwmClkStart, mapDegToPWM(t_angA,0));
+                     #ifdef debug_servos
+                        nl;
+                        sp4sl("move ankle: leg, angle, millis:",L,t_angA,millis());
+                        // no need for a delay here, since we alternate to the other controller for the next leg
+                     #endif // debug_servos
                      f_lastAngA[L] = f_angA;
                   }
                }
@@ -601,7 +617,7 @@ bool prepNextLine1()
    } // if
    // following line removed because it causes console messages in the middle of spreadsheet data
    // setStdRgbColour(rgbLedClr); // Set RGB led colour
-   if      (f_operation[f_active] == fo_moveGlobal)         {handle_fo_moveGlobal();} 
+   if      (f_operation[f_active] == fo_moveGlobal)      {handle_fo_moveGlobal();} 
    else if (f_operation[f_active] == fo_moveLocal)       {handle_fo_moveLocal();} 
    else if (f_operation[f_active] == fo_moveGRelHome)    {handle_fo_moveGRelHome();}
    else if (f_operation[f_active] == fo_moveLRelHome)    {handle_fo_moveLRelHome();}
@@ -623,7 +639,6 @@ bool prepNextLine1()
    else if (f_operation[f_active] == fo_toeSafetyY)      {handle_fo_toeSafetyY();}
    else if (f_operation[f_active] == fo_toeSafetyZ)      {handle_fo_toeSafetyZ();}
    else if (f_operation[f_active] == fo_toeSafetyReset)  {handle_fo_toeSafetyReset();}
-
 
    else
    {  // unsupported op code in nextfirst row - abort
