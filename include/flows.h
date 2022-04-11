@@ -7,19 +7,8 @@
 #define flows_h  // Precompiler macro used for precompiler check.
 
 #include <main.h>          // get all our header files
-/*
-// quick and dirty easily typed debug commands
-   #define sp1(x) Serial.print(x);
-   #define sp1l(_x) Serial.println(_x);
-   #define sp1s(x) Serial.print(x); Serial.print(" ");
-   #define sp2(x,y) Serial.print(x); Serial.print(y);
-   #define sp2s(x,y) Serial.print(x); Serial.print(" ");Serial.print(y);
-   #define sp2l(x,y) Serial.print(x); Serial.println(y);
-   #define sp2sl(x,y) Serial.print(x); Serial.print(" ");Serial.println(y);
-   #define sp3sl(_x,_y,_z) sp1s(_x);sp1s(_y);sp1l(_z);
-   #define sp Serial.print(" ");
-   #define nl Serial.println();
-*/
+
+// #define debug_servos       // include code to dump out servo move command info to console in mqttBroker.cpp
 
 //
 // A flow is a series of leg positions, as defined by a group of arrays. 
