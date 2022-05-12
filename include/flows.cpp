@@ -1,4 +1,4 @@
-// This is the file flows.cpp, which lives in the include directory
+// This is the file flows.cpp, which lives in the include directory.
 // and is invoked by an include statement in main.cpp
 // routines here have corresponding entries in include/flows.h
 
