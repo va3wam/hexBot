@@ -7,20 +7,6 @@
 #define flows_h  // Precompiler macro used for precompiler check.
 
 #include <main.h>          // get all our header files
-/*
-// quick and dirty easily typed debug commands
-   #define sp1(x) Serial.print(x);
-   #define sp1l(_x) Serial.println(_x);
-   #define sp1s(x) Serial.print(x); Serial.print(" ");
-   #define sp2(x,y) Serial.print(x); Serial.print(y);
-   #define sp2s(x,y) Serial.print(x); Serial.print(" ");Serial.print(y);
-   #define sp2l(x,y) Serial.print(x); Serial.println(y);
-   #define sp2sl(x,y) Serial.print(x); Serial.print(" ");Serial.println(y);
-   #define sp3sl(_x,_y,_z) sp1s(_x);sp1s(_y);sp1l(_z);
-   #define sp Serial.print(" ");
-   #define nl Serial.println();
-*/
-
 //
 // A flow is a series of leg positions, as defined by a group of arrays. 
 // A specific index into these arrays ( called a "flow row") defines a position
@@ -85,8 +71,9 @@ float f_legY[flowLength] [7];    // Y coord for each of 6 legs, 2nd index is leg
 float f_legZ[flowLength] [7];    // size 7 means indices 0 - 6, so can number legs from 1 to 6
 //  -----------------------------// end of flow row arrays
 
-int f_flowOps[20] ;              // flow comman operation codes, for translation of alpha mnemonics
+int f_flowOps[20] ;              // flow command operation codes, for translation of alpha mnemonics
                                  // initialized in flows.cpp/setupFlows(), used in mqttBroker.cpp/ flow command  handler
+int servoNum ;                     // servo number, used in do_flow()                                 
 
 float f_lastLegX[7] ;              // working copy of coords for each leg
 float f_lastLegY[7] ;
@@ -137,6 +124,15 @@ float f_graphX;                  // X coordinate used to generate graphable debu
 float f_graphY;
 float f_graphZ;
 
+int servoOffset[19];             // software defined PWM value when servo is at center point. index 0 is not used
+                                 // values are derived by using the SSP MQTT command (Set Servo to PWM value)...
+                                 // do this several times, adjusting the value until the servo is in the center position.
+                                    // command format: SSP, PWM, servo#, (optional end of range servo#)
+                                    //    110 <= PWM <= 490
+                                    //    1 <= servo# <= 18
+                                    //    servo #1 is hip for leg 1, the front right one
+                                    // example: ssp, 302, 1
+                                    // if above command results in centered servo, then servoOffset[1] = 302
 
 int toeMoveAction = 8;           // binary coded action to take when you calculated next toe position (frame) in do_flow()
                
@@ -208,10 +204,11 @@ bool DF;    // debug flag for conditionalizing generation of debug tracing
 
 // defines for routines acessed from elsewhere
 bool globCoordsToLocal(int legNumber, float gx, float gy, float gz, float *lx, float *ly, float *lz);
-int32_t mapDegToPWM(float degrees, float centerDeg);
+int32_t mapDegToPWM(float degrees, int servo);
 void anglesToCoords(float hip, float knee, float ankle, float *toeX, float *toeY, float *toeZ);
 void coordsToAngles(float Tx, float Ty, float Tz) ;
 void do_flow();
+void setupPerBotConfig();   // do the hardware specific setup
 
 // precalculate the computationally expensive trig values used in coordinate translation   
    float sin_p45 = +.707107;      // sin( + 45 degrees)

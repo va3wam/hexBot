@@ -59,6 +59,8 @@ void setup()
    setStdRgbColour(WHITE); // Indicates that boot up is in progress.
    Log.verboseln("<setup> Set up wifi connection."); 
    setupNetwork();
+   setupPerBotConfig();    // do setup unique to each hexbot. 
+         //code for above routine is in flows.cpp
    Log.traceln("<setup> Initialize servo drivers.");
    setupMobility();
    Log.verboseln("<setup> Display robot configuration in console trace."); 

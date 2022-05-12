@@ -575,9 +575,10 @@ bool processCmd(String payload)
                {  for(int srv=sr_srv2; srv>=sr_srv; srv--)
                   // now set the servo "srv" to an angle of sr_deg degrees
                   //use integer division ("/") and modulus ("%") to directly calculate driver#, and pin#
-                  {  pwmDriver[(srv-1) / 9].setPWM((srv-1) % 9, pwmClkStart, mapDegToPWM(sr_deg, 0)); 
+                  {
+                  pwmDriver[(srv-1) / 9].setPWM((srv-1) % 9, pwmClkStart, mapDegToPWM(sr_deg, srv)); 
                   sp2s("sdd) argN, srv,srv2,sr_deg, index= ",argN);sp;sp2s(sr_srv,sr_srv2);sp;sp2sl(sr_deg,srv);
-                  sp2s((srv-1)/9, (srv-1)%9);sp;sp1l(mapDegToPWM(sr_deg, 0));
+                  sp2s((srv-1)/9, (srv-1)%9);sp;sp1l(mapDegToPWM(sr_deg, srv));
                   delay(10);     // see if giving PWM drivers some breathing room helps
                   }
                }
