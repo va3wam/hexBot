@@ -7,6 +7,9 @@
 #define flows_h  // Precompiler macro used for precompiler check.
 
 #include <main.h>          // get all our header files
+
+// #define debug_servos       // include code to dump out servo move command info to console in mqttBroker.cpp
+
 //
 // A flow is a series of leg positions, as defined by a group of arrays. 
 // A specific index into these arrays ( called a "flow row") defines a position
