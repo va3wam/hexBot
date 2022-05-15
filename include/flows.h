@@ -117,6 +117,7 @@ bool f_goodData  ;               // used in flow processing do_flow() routine
 int f_nextTime = 0;              // millis timestamp for next frame movement to be generated
 float f_angH, f_angK, f_angA ;   // temp variables to hold servo angles
 int L;                           // leg number use as a loop index in many places
+float maxServoAngle = 90;        // maximum allowed servo angle, in degrees
 float safeMaxPosX = 6;             // max allowed displacement on local axes from home position
 float safeMaxNegX = 8;             // ..checking is done after local coords are calculated in PrepNextLine()
 float safeMaxPosY = 17;            // ..can argue that safety limits should be per leg. Front legs have more room?
