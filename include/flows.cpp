@@ -72,75 +72,6 @@ void setupFlows()
 
 } // void setupFlows()
 
-/**
- * @brief Do configuration set up that is unique to each robot, including:
- * - define servo calibration offset values
- * called from setup() in main.cpp
- * tried to put this routine in hexBot/lib/aaWeb-1.0.0/lib/aaNetwork-main/src/aaNetwork.cpp
- *    but couldn't get it to work, due to object structure issues I suspect
- =============================================================================*/
- void setupPerBotConfig()     // do the robot-specific setup
- {
-    String macAdd = WiFi.macAddress(); // Get MAC address as String
-    sp2("<setupPerBotConfig> MAC Address: ", macAdd);  // see if we can read this variable
-    if(macAdd == "3C:61:05:4A:DD:98")  // Doug's MAC address
-    {
-       sp1l("  Doing bot-specific setup for Doug's MAC address");
-       // set up the servo calibration offsets
-       // PWM value used = (PWM calculated from angle) + (calibration offset for this servo) - 299
-       // note that servoOffset[0] is not used
-       servoOffset[ 1] = 299;
-       servoOffset[ 2] = 299;
-       servoOffset[ 3] = 299;
-       servoOffset[ 4] = 299;
-       servoOffset[ 5] = 299;
-       servoOffset[ 6] = 299;
-       servoOffset[ 7] = 299;
-       servoOffset[ 8] = 299;
-       servoOffset[ 9] = 299;
-       servoOffset[10] = 299;
-       servoOffset[11] = 299;
-       servoOffset[12] = 299;
-       servoOffset[13] = 299;
-       servoOffset[14] = 299;
-       servoOffset[15] = 299;
-       servoOffset[16] = 299;
-       servoOffset[17] = 299;
-       servoOffset[18] = 299;
-
-    }
-    else if(macAdd == "94:B9:7E:5F:4A:40")  // Andrew's MAC address
-    {
-       sp1l("  Doing bot-specific setup for Andrew's MAC address");
-       // set up the servo calibration offsets
-       // PWM value used = (PWM calculated from angle) + (calibration offset for this servo)
-       // note that servoOffset[0] is not used
-       servoOffset[ 1] = 299;
-       servoOffset[ 2] = 299;
-       servoOffset[ 3] = 299;
-       servoOffset[ 4] = 299;
-       servoOffset[ 5] = 299;
-       servoOffset[ 6] = 299;
-       servoOffset[ 7] = 299;
-       servoOffset[ 8] = 299;
-       servoOffset[ 9] = 299;
-       servoOffset[10] = 299;
-       servoOffset[11] = 299;
-       servoOffset[12] = 299;
-       servoOffset[13] = 299;
-       servoOffset[14] = 299;
-       servoOffset[15] = 299;
-       servoOffset[16] = 299;
-       servoOffset[17] = 299;
-       servoOffset[18] = 299;
-    }
-    else    // neither MAC address matched
-    {
-       nl;
-       sp2l("<setupPerBotConfig> Unrecognized MAC address. Per Bot configuration was bypassed", macAdd);
-    }
- } // void setupPerBotConfig()
-
 // standard doxygen docs here
 
 /**
@@ -167,13 +98,17 @@ int32_t mapDegToPWM(float degrees, int servo)
 {
    // degrees is the desired angle, between -90 and +90 degrees
    // servo is the servo number (1 - 18) used for software position calibration table lookup
-   const float offset = 90; // max allowed deviation from center position
+   // maxServoAngle is the max allowed deviation from center position, in degrees
    // if max offset is exceeded, the fixup variable corrects it to edge of range
    // TODO #26 create constants for all magic numbers in this function. 
    // range check the desired degrees value
    float fixup = 0;       // initially, assume degrees is within range defined by offset
-   if(degrees < - offset)  { fixup = offset - degrees; } 
-   if(degrees >   offset)  { fixup = offset - degrees; }
+   if(degrees < - maxServoAngle)  { fixup = maxServoAngle - degrees; } 
+   if(degrees >   maxServoAngle)  { fixup = maxServoAngle - degrees; }
+   if(fixup != 0)    // if requested angle was out of allowable range...
+   {
+      sp6sl("<mapDegToPWM> Requested servo angle out of range. Angle:",degrees," servo:",servo," maxServoAngle:",maxServoAngle)
+   }
    // formula fits a line to two measured data points (x=degrees, y=PWM) with 
    // the points selected to minimize overall errors: (24,160) (166,460)
    // formula is based on y = M * x + b where M is the slope, 
@@ -186,7 +121,7 @@ int32_t mapDegToPWM(float degrees, int servo)
    {
       adjust = servoOffset[servo];  // look up its software corrected center
    }
-   return (degrees - (fixup - offset)) * 300 / 142 + 109.3 + (adjust - 299) ;
+   return (degrees - (fixup - maxServoAngle)) * 300 / 142 + 109.3 + (adjust - 299) ;
 } // mapDegToPWM()
 
 /**

@@ -239,7 +239,6 @@ void startWebServer();
 #include <ikLibrary.cpp> // InverseK.h inverted kinematic functions.
 #include <servoLegs.cpp> // Control leg servos.
 #include <oled.cpp> // Control OLED.
-// #include <daeIK.cpp> // Doug's inverted kinetics functions. 
 #include <flows.cpp>          // routines relates to leg movements
 
 /************************************************************************************
