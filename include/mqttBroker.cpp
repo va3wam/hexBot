@@ -213,6 +213,67 @@ bool processCmd(String payload)
          x = mqtt.publishMQTT(helpTopicTree, "ROTATE_OLED,orientation - Orient text on OLED. (arg values 0-3).");
          delay(1);
       } //while
+
+      x = false;
+      while (x == false)
+      {
+         x = mqtt.publishMQTT(helpTopicTree, "FLOW,time,opcode,10,0,0,0, 6 * (x, y, z) // several format variations" );
+         delay(1);
+      } //while
+
+       x = false;
+      while (x == false)
+      {
+         x = mqtt.publishMQTT(helpTopicTree, "   - see ...hexbot/docs/MQTT scripts/creating-flows.odt, section6 for details" );
+         delay(1);
+      } //while
+
+
+      x = false;
+      while (x == false)
+      {
+         x = mqtt.publishMQTT(helpTopicTree, "NEW_FLOW  //start of new flow sequence. No args");
+         delay(1);
+      } //while
+
+      x = false;
+      while (x == false)
+      {
+         x = mqtt.publishMQTT(helpTopicTree, "DO_FLOW,toe-action, frame-interval // end of a flow sequence");
+         delay(1);
+      } //while
+
+      x = false;
+      while (x == false)
+      {
+         x = mqtt.publishMQTT(helpTopicTree, "SERVO_TEST_PWM,<side (0-1)>,<port(0-15)>,<PWM (100-500?)> // set single servo PWM");
+         delay(1);
+      } //while
+
+      x = false;
+      while (x == false)
+      {
+         x = mqtt.publishMQTT(helpTopicTree, "SSD, degrees, servo#, (optional end of range servo#) // set servo degrees");
+         delay(1);
+      } //while
+
+      x = false;
+      while (x == false)
+      {
+         x = mqtt.publishMQTT(helpTopicTree, "SSP, PWM, servo#, (optional end of range servo#) // set servo PWM");
+         delay(1);
+      } //while
+
+
+      x = false;
+      while (x == false)
+      {
+         x = mqtt.publishMQTT(helpTopicTree, "SSO, servo#, (optional end of range servo#) // set servo off");
+         delay(1);
+      } //while
+
+
+
       Log.noticeln("<processCmd> List of valid MQTT commands sent to MQTT broker.");
       return true;
    } // if
