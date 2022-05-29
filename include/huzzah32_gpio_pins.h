@@ -55,26 +55,40 @@
  * The variable values are the GPIO numbers used in code to reference pins.
  * Physical pins 1 through 4 are not used by our code, nor are physical pins
  * 26 through 28 (see pin comments below for details).
+ * 
+ * Source References for the Espressif CPU and Adafruit Huzzah32 board behaviour details:
+ *    Adafruit reference for physical pins: https://learn.adafruit.com/assets/111179
+ *    Espressif GPIO: section 4.10, esp32_technical_reference_manual_en.pdf
+ *    Espressif GPIO, Section A.4, esp32_datasheet_en.pdf, and notes on table
+ * 
+ * Physical and GPIO pin information is also available in ..docs/circuitry/GPIO-pins.ods
+ * 
+ * Some other factors in assignment of functions to pins:
+ *    We avoid using A/D controller 2 due to complications with WiFi coexistence
+ *    Physical pin 24, GPIO 12 seems to interfere with software download if used
+ *    Physical pin 25, GPIO 13 may be same GPIO as CPU’s onboard LED
+ *    ADC1: 7/34, 8/39, 9/36, 20/32, 22/33  ( notation is <physical>/<GPIO> pin number)
+ *    ADC2: 5/26, 6/25, 10/4, 19/14, 21/15, 23/27, 24/12, 25/13
  ******************************************************************************/
 
 ///////////////////////////////////////////////////////////////////////////////
 // Variables used to reference the pins in the left 16 pin socket.
 ///////////////////////////////////////////////////////////////////////////////
-// Physical pin 1 is labeled RST button
-// Physical pin 2 is labeled 3V
-// Physical pin 3 is labeled NC
-// Physical pin 4 is labeled GND
+// Physical pin 1 is labelled RST button
+// Physical pin 2 is labelled 3V
+// Physical pin 3 is labelled NC
+// Physical pin 4 is labelled GND
 const int8_t PIN_5_LBL_A0 = 26; // Physical pin 5. Input and output.
 const int8_t PIN_6_LBL_A1 = 25; // Physical pin 6. Input and output.
 const int8_t PIN_7_LBL_A2 = 34; // Physical pin 7. Input only.
 const int8_t PIN_8_LBL_A3 = 39; // Physical pin 8. Input only.
 const int8_t PIN_9_LBL_A4 = 36; // Physical pin 9. Input only.
 const int8_t PIN_10_LBL_A5 = 4; // Physical pin 10. Input and output.
-const int8_t PIN_11_LBL_SCK = 5; // Physical pin 11. Output only.
-const int8_t PIN_12_LBL_MO = 18; // Physical pin 12. Output only.
-const int8_t PIN_13_LBL_MI = 19; // Physical pin 13. Input only.
-const int8_t PIN_14_LBL_RX = 16; // Physical pin 14. Input only.
-const int8_t PIN_15_LBL_TX = 17; // Physical pin 15. Output only.
+const int8_t PIN_11_LBL_SCK = 5; // Physical pin 11. Input and output.
+const int8_t PIN_12_LBL_MO = 18; // Physical pin 12. Input and output.
+const int8_t PIN_13_LBL_MI = 19; // Physical pin 13. Input and output.
+const int8_t PIN_14_LBL_RX = 16; // Physical pin 14. Input and output.
+const int8_t PIN_15_LBL_TX = 17; // Physical pin 15. Input and output.
 const int8_t PIN_16_LBL_21 = 21; // Physical pin 16. Input and output.
 ///////////////////////////////////////////////////////////////////////////////
 // Variables used to reference the pins in the right 12 pin socket.
@@ -86,10 +100,11 @@ const int8_t PIN_20_LBL_32 = 32; // Physical pin 20. Input and output.
 const int8_t PIN_21_LBL_15 = 15; // Physical pin 21. Input and output.
 const int8_t PIN_22_LBL_33 = 33; // Physical pin 22. Input and output.
 const int8_t PIN_23_LBL_27 = 27; // Physical pin 23. Input and output.
-const int8_t PIN_24_LBL_12 = 12; // Physical pin 24. Output only.
-const int8_t PIN_25_LBL_13 = 13; // Physical pin 25. Input and output.
+const int8_t PIN_24_LBL_12 = 12; // Physical pin 24. Input and output. Download impact
+const int8_t PIN_25_LBL_13 = 13; // Physical pin 25. Input and output. Onboard LED
 // Physical pin 26 is labeled USB
 // Physical pin 27 is labeled EN
 // Physical pin 28 is labeled BAT
+
 
 #endif // End of conditional preprocessor code
