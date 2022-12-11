@@ -20,9 +20,9 @@
  {
     String macAdd = WiFi.macAddress(); // Get MAC address as String
     sp2("<setupPerBotConfig> MAC Address: ", macAdd);  // see if we can read this variable
-    if(macAdd == "3C:61:05:4A:DD:98")  // Doug's MAC address
+    if(macAdd == "3C:61:05:4A:DD:98")  // Doug's robot 1 MAC address
     {
-       sp1l("  Doing bot-specific setup for Doug's MAC address");
+       sp1l("  Doing bot-specific setup for Doug's robot 1 MAC address");
        // set up the servo calibration offsets
        // PWM value used = (PWM calculated from angle) + (calibration offset for this servo) - 299
        // note that servoOffset[0] is not used
@@ -46,9 +46,60 @@
        servoOffset[18] = 299;
 
     }
-    else if(macAdd == "94:B9:7E:5F:4A:40")  // Andrew's MAC address
+    else if(macAdd == "94:B9:7E:5F:4A:40")  // Andrew's robot 1 MAC address
     {
-       sp1l("  Doing bot-specific setup for Andrew's MAC address");
+       sp1l("  Doing bot-specific setup for Andrew's robot 1 MAC address");
+       // set up the servo calibration offsets
+       // PWM value used = (PWM calculated from angle) + (calibration offset for this servo)
+       // note that servoOffset[0] is not used
+       servoOffset[ 1] = 299;
+       servoOffset[ 2] = 299;
+       servoOffset[ 3] = 299;
+       servoOffset[ 4] = 299;
+       servoOffset[ 5] = 299;
+       servoOffset[ 6] = 299;
+       servoOffset[ 7] = 299;
+       servoOffset[ 8] = 299;
+       servoOffset[ 9] = 299;
+       servoOffset[10] = 299;
+       servoOffset[11] = 299;
+       servoOffset[12] = 299;
+       servoOffset[13] = 299;
+       servoOffset[14] = 299;
+       servoOffset[15] = 299;
+       servoOffset[16] = 299;
+       servoOffset[17] = 299;
+       servoOffset[18] = 299;
+    }
+    else if(macAdd == "94:B9:7E:5F:48:B8")  // Doug's robot 2 MAC address
+    {
+       sp1l("  Doing bot-specific setup for Doug's robot 2 MAC address");
+       // set up the servo calibration offsets
+       // PWM value used = (PWM calculated from angle) + (calibration offset for this servo) - 299
+       // note that servoOffset[0] is not used
+       servoOffset[ 1] = 299;
+       servoOffset[ 2] = 299;
+       servoOffset[ 3] = 299;
+       servoOffset[ 4] = 299;
+       servoOffset[ 5] = 299;
+       servoOffset[ 6] = 299;
+       servoOffset[ 7] = 299;
+       servoOffset[ 8] = 299;
+       servoOffset[ 9] = 299;
+       servoOffset[10] = 299;
+       servoOffset[11] = 299;
+       servoOffset[12] = 299;
+       servoOffset[13] = 299;
+       servoOffset[14] = 299;
+       servoOffset[15] = 299;
+       servoOffset[16] = 299;
+       servoOffset[17] = 299;
+       servoOffset[18] = 299;
+
+    }
+    else if(macAdd == "94:B9:7E:5F:52:DC")  // Andrew's robot 2 MAC address
+    {
+       sp1l("  Doing bot-specific setup for Andrew's robot 2 MAC address");
        // set up the servo calibration offsets
        // PWM value used = (PWM calculated from angle) + (calibration offset for this servo)
        // note that servoOffset[0] is not used
